@@ -1,0 +1,1231 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>康揮のブログ - 農学部生の日常とニュース分析</title>
+  <style>
+    body {
+      font-family: 'Hiragino Kaku Gothic ProN', 'ヒラギノ角ゴ ProN W3', Meiryo, メイリオ, Arial, sans-serif;
+      line-height: 1.6;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      color: #333;
+    }
+    
+    header {
+      background: 
+        linear-gradient(rgba(44, 110, 73, 0.5), rgba(58, 133, 96, 0.6)),
+        linear-gradient(180deg, 
+          #87CEEB 0%,
+          #B0E0E6 15%,
+          #ADD8E6 30%,
+          #87CEEB 45%,
+          #4682B4 55%,
+          #1E90FF 65%,
+          #0080FF 75%,
+          #0066CC 85%,
+          #228B22 90%,
+          #32CD32 100%
+        );
+      color: white;
+      padding: 2rem 1rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(44, 110, 73, 0.3);
+      min-height: 500px;
+      background-size: cover;
+      background-position: center;
+    }
+    
+    /* 太陽の効果 */
+    header::after {
+      content: '';
+      position: absolute;
+      top: 8%;
+      right: 15%;
+      width: 80px;
+      height: 80px;
+      background: radial-gradient(circle, 
+        #FFD700 0%, 
+        #FFA500 40%, 
+        #FF8C00 70%, 
+        rgba(255, 140, 0, 0.8) 100%);
+      border-radius: 50%;
+      box-shadow: 
+        0 0 30px rgba(255, 215, 0, 0.8),
+        0 0 60px rgba(255, 165, 0, 0.4),
+        0 0 90px rgba(255, 140, 0, 0.2);
+      opacity: 0.9;
+      animation: sun-glow 4s ease-in-out infinite alternate;
+    }
+    
+    @keyframes sun-glow {
+      0% { 
+        box-shadow: 
+          0 0 30px rgba(255, 215, 0, 0.8),
+          0 0 60px rgba(255, 165, 0, 0.4),
+          0 0 90px rgba(255, 140, 0, 0.2);
+      }
+      100% { 
+        box-shadow: 
+          0 0 40px rgba(255, 215, 0, 1),
+          0 0 80px rgba(255, 165, 0, 0.6),
+          0 0 120px rgba(255, 140, 0, 0.3);
+      }
+    }
+    
+    .header-content {
+      position: relative;
+      z-index: 10;
+      padding-top: 1rem;
+    }
+    
+    /* 雲の効果 */
+    header .cloud {
+      position: absolute;
+      border-radius: 50px;
+      opacity: 0.8;
+      animation: float-cloud 25s infinite linear;
+    }
+    
+    header .cloud1 {
+      width: 100px;
+      height: 40px;
+      background: linear-gradient(45deg, rgba(255, 255, 255, 0.9), rgba(240, 248, 255, 0.7));
+      top: 12%;
+      left: -100px;
+      animation-delay: 0s;
+      box-shadow: 0 2px 10px rgba(255, 255, 255, 0.3);
+    }
+    
+    header .cloud2 {
+      width: 80px;
+      height: 35px;
+      background: linear-gradient(45deg, rgba(255, 255, 255, 0.8), rgba(248, 248, 255, 0.6));
+      top: 20%;
+      left: -80px;
+      animation-delay: 8s;
+      box-shadow: 0 2px 8px rgba(255, 255, 255, 0.2);
+    }
+    
+    header .cloud3 {
+      width: 120px;
+      height: 45px;
+      background: linear-gradient(45deg, rgba(255, 255, 255, 0.85), rgba(245, 245, 255, 0.65));
+      top: 28%;
+      left: -120px;
+      animation-delay: 16s;
+      box-shadow: 0 3px 12px rgba(255, 255, 255, 0.25);
+    }
+    
+    header .cloud4 {
+      width: 90px;
+      height: 38px;
+      background: linear-gradient(45deg, rgba(255, 255, 255, 0.75), rgba(250, 250, 255, 0.55));
+      top: 35%;
+      left: -90px;
+      animation-delay: 12s;
+      box-shadow: 0 2px 9px rgba(255, 255, 255, 0.2);
+    }
+    
+    @keyframes float-cloud {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(calc(100vw + 150px)); }
+    }
+    
+    /* 海の効果（ビーチ風に変更） */
+    header .ocean {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 60%;
+      background: linear-gradient(180deg, 
+        rgba(64, 224, 208, 0.7) 0%,
+        rgba(0, 206, 209, 0.8) 20%,
+        rgba(32, 178, 170, 0.85) 40%,
+        rgba(70, 130, 180, 0.9) 60%,
+        rgba(100, 149, 237, 0.95) 80%,
+        rgba(135, 206, 235, 1) 100%
+      );
+      z-index: 0;
+      animation: ocean-movement 10s ease-in-out infinite;
+    }
+    
+    @keyframes ocean-movement {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-3px); }
+    }
+    
+    /* ビーチの砂浜 */
+    header .beach {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 15%;
+      background: linear-gradient(180deg, 
+        rgba(238, 203, 173, 0.9) 0%,
+        rgba(222, 184, 135, 0.95) 50%,
+        rgba(210, 180, 140, 1) 100%
+      );
+      z-index: 3;
+    }
+    
+    /* 波の効果（ビーチ用） */
+    header .waves {
+      position: absolute;
+      bottom: 12%;
+      left: 0;
+      width: 100%;
+      height: 25px;
+      z-index: 4;
+    }
+    
+    header .wave {
+      position: absolute;
+      width: 150%;
+      height: 100%;
+      background: linear-gradient(90deg, 
+        transparent 0%, 
+        rgba(255, 255, 255, 0.6) 25%, 
+        rgba(255, 255, 255, 0.9) 50%, 
+        rgba(255, 255, 255, 0.6) 75%, 
+        transparent 100%
+      );
+      border-radius: 50%;
+      animation: beach-wave 8s ease-in-out infinite;
+    }
+    
+    header .wave1 {
+      animation-delay: 0s;
+      left: -25%;
+    }
+    
+    header .wave2 {
+      animation-delay: 2.5s;
+      left: -35%;
+      opacity: 0.8;
+    }
+    
+    header .wave3 {
+      animation-delay: 5s;
+      left: -45%;
+      opacity: 0.6;
+    }
+    
+    @keyframes beach-wave {
+      0% { transform: translateX(0) scaleY(0.8); }
+      50% { transform: translateX(20px) scaleY(1.5); }
+      100% { transform: translateX(40px) scaleY(0.8); }
+    }
+    
+    /* 海面の反射（ビーチ用） */
+    header .ocean-reflection {
+      position: absolute;
+      bottom: 20%;
+      left: 0;
+      width: 100%;
+      height: 40%;
+      background: linear-gradient(180deg, 
+        rgba(255, 255, 255, 0.2) 0%,
+        rgba(255, 255, 255, 0.1) 30%,
+        rgba(255, 255, 255, 0.05) 60%,
+        transparent 100%
+      );
+      z-index: 1;
+      animation: beach-reflection 6s ease-in-out infinite;
+    }
+    
+    @keyframes beach-reflection {
+      0%, 100% { opacity: 0.4; }
+      50% { opacity: 0.7; }
+    }
+    
+    /* カモメ */
+    header .seagulls {
+      position: absolute;
+      top: 30%;
+      left: 70%;
+      z-index: 6;
+    }
+    
+    header .seagull {
+      position: absolute;
+      width: 12px;
+      height: 3px;
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 50%;
+      animation: seagull-fly 12s infinite linear;
+    }
+    
+    header .seagull1 {
+      animation-delay: 0s;
+      top: 0px;
+      left: 0px;
+    }
+    
+    header .seagull2 {
+      animation-delay: 2s;
+      top: 8px;
+      left: 20px;
+    }
+    
+    header .seagull3 {
+      animation-delay: 4s;
+      top: 15px;
+      left: 35px;
+    }
+    
+    @keyframes seagull-fly {
+      0% { transform: translateX(0) translateY(0); opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { transform: translateX(-300px) translateY(20px); opacity: 0; }
+    }
+    
+    /* 船のシルエット */
+    header .ship {
+      position: absolute;
+      bottom: 35%;
+      right: 10%;
+      width: 60px;
+      height: 20px;
+      z-index: 3;
+    }
+    
+    header .ship-hull {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 8px;
+      background: rgba(139, 69, 19, 0.8);
+      border-radius: 0 0 30px 30px;
+    }
+    
+    header .ship-mast {
+      position: absolute;
+      bottom: 8px;
+      left: 50%;
+      width: 2px;
+      height: 15px;
+      background: rgba(139, 69, 19, 0.9);
+      transform: translateX(-50%);
+    }
+    
+    header .ship-sail {
+      position: absolute;
+      bottom: 8px;
+      left: 55%;
+      width: 15px;
+      height: 12px;
+      background: rgba(255, 255, 255, 0.7);
+      border-radius: 0 50% 0 0;
+      transform: translateX(-50%);
+    }
+    
+    /* 島のシルエット */
+    header .island {
+      position: absolute;
+      bottom: 25%;
+      right: 25%;
+      width: 80px;
+      height: 25px;
+      background: linear-gradient(to top, 
+        rgba(34, 139, 34, 0.7) 0%,
+        rgba(107, 142, 35, 0.5) 70%,
+        transparent 100%
+      );
+      border-radius: 50px 50px 0 0;
+      z-index: 2;
+    }
+    
+    header .palm-tree {
+      position: absolute;
+      top: -15px;
+      left: 60%;
+      width: 3px;
+      height: 15px;
+      background: rgba(139, 69, 19, 0.8);
+    }
+    
+    header .palm-tree::before {
+      content: '';
+      position: absolute;
+      top: -5px;
+      left: -4px;
+      width: 10px;
+      height: 8px;
+      background: rgba(34, 139, 34, 0.7);
+      border-radius: 50%;
+    }
+    
+    /* 鳥の群れ */
+    header .birds {
+      position: absolute;
+      top: 25%;
+      right: 20%;
+      z-index: 5;
+    }
+    
+    header .bird {
+      position: absolute;
+      width: 8px;
+      height: 2px;
+      background: rgba(0, 0, 0, 0.6);
+      border-radius: 50%;
+      animation: fly 15s infinite linear;
+    }
+    
+    header .bird1 {
+      animation-delay: 0s;
+      top: 0px;
+      left: 0px;
+    }
+    
+    header .bird2 {
+      animation-delay: 0.5s;
+      top: 5px;
+      left: 15px;
+    }
+    
+    header .bird3 {
+      animation-delay: 1s;
+      top: 10px;
+      left: 30px;
+    }
+    
+    header .bird4 {
+      animation-delay: 1.5s;
+      top: 8px;
+      left: 45px;
+    }
+    
+    header .bird5 {
+      animation-delay: 2s;
+      top: 3px;
+      left: 60px;
+    }
+    
+    @keyframes fly {
+      0% { transform: translateX(0) translateY(0); opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { transform: translateX(-200px) translateY(-30px); opacity: 0; }
+    }
+    
+    /* 木々のシルエット（ヤシの木風に変更） */
+    header .trees {
+      position: absolute;
+      bottom: 15%;
+      left: 0;
+      width: 100%;
+      height: 25%;
+      z-index: 5;
+    }
+    
+    header .palm {
+      position: absolute;
+      bottom: 0;
+    }
+    
+    header .palm1 {
+      left: 8%;
+      width: 4px;
+      height: 50px;
+      background: rgba(139, 69, 19, 0.8);
+    }
+    
+    header .palm1::before {
+      content: '';
+      position: absolute;
+      top: -8px;
+      left: -6px;
+      width: 15px;
+      height: 12px;
+      background: rgba(34, 139, 34, 0.8);
+      border-radius: 50%;
+      clip-path: polygon(0% 50%, 25% 0%, 50% 30%, 75% 0%, 100% 50%, 75% 100%, 50% 70%, 25% 100%);
+    }
+    
+    header .palm2 {
+      left: 15%;
+      width: 5px;
+      height: 60px;
+      background: rgba(139, 69, 19, 0.8);
+    }
+    
+    header .palm2::before {
+      content: '';
+      position: absolute;
+      top: -10px;
+      left: -7px;
+      width: 18px;
+      height: 15px;
+      background: rgba(34, 139, 34, 0.8);
+      border-radius: 50%;
+      clip-path: polygon(0% 50%, 25% 0%, 50% 30%, 75% 0%, 100% 50%, 75% 100%, 50% 70%, 25% 100%);
+    }
+    
+    header .palm3 {
+      left: 85%;
+      width: 4px;
+      height: 45px;
+      background: rgba(139, 69, 19, 0.8);
+    }
+    
+    header .palm3::before {
+      content: '';
+      position: absolute;
+      top: -7px;
+      left: -5px;
+      width: 14px;
+      height: 10px;
+      background: rgba(34, 139, 34, 0.8);
+      border-radius: 50%;
+      clip-path: polygon(0% 50%, 25% 0%, 50% 30%, 75% 0%, 100% 50%, 75% 100%, 50% 70%, 25% 100%);
+    }
+    
+    /* 光の効果 */
+    header .light-rays {
+      position: absolute;
+      top: 10%;
+      right: 10%;
+      width: 200px;
+      height: 200px;
+      background: 
+        linear-gradient(45deg, transparent 48%, rgba(255, 255, 255, 0.1) 49%, rgba(255, 255, 255, 0.1) 51%, transparent 52%),
+        linear-gradient(135deg, transparent 48%, rgba(255, 255, 255, 0.1) 49%, rgba(255, 255, 255, 0.1) 51%, transparent 52%),
+        linear-gradient(90deg, transparent 48%, rgba(255, 255, 255, 0.05) 49%, rgba(255, 255, 255, 0.05) 51%, transparent 52%),
+        linear-gradient(0deg, transparent 48%, rgba(255, 255, 255, 0.05) 49%, rgba(255, 255, 255, 0.05) 51%, transparent 52%);
+      border-radius: 50%;
+      animation: rotate-rays 20s infinite linear;
+      opacity: 0.6;
+    }
+    
+    @keyframes rotate-rays {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    .profile-photo {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      margin: 0 auto 1rem;
+      border: 4px solid rgba(255, 255, 255, 0.3);
+      overflow: hidden;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+    
+    .profile-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .profile-placeholder {
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+    }
+    
+    header h1 {
+      margin: 0;
+      font-size: 2.5rem;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    }
+    
+    .subtitle {
+      margin: 0.5rem 0 1.5rem;
+      font-size: 1.1rem;
+      opacity: 0.9;
+    }
+    
+    .social-links {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    
+    .social-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.7rem 1.2rem;
+      color: white;
+      text-decoration: none;
+      border-radius: 25px;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      font-weight: 500;
+    }
+    
+    .social-link.instagram {
+      background: linear-gradient(45deg, #E4405F, #F56040, #FFDC80);
+    }
+    
+    .social-link.twitter {
+      background: linear-gradient(45deg, #1DA1F2, #0e71c8);
+    }
+    
+    .social-link.note {
+      background: linear-gradient(45deg, #41C9B4, #2E8B7B);
+    }
+    
+    .social-link:hover {
+      transform: translateY(-3px) scale(1.05);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+      border-color: rgba(255, 255, 255, 0.5);
+    }
+    
+    .social-icon {
+      font-size: 1.2rem;
+    }
+    
+    main {
+      max-width: 800px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+    
+    .intro-section {
+      background: linear-gradient(135deg, white, #f8f9fa);
+      padding: 2rem;
+      margin-bottom: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+      border-left: 6px solid #2c6e49;
+      border-top: 1px solid rgba(44, 110, 73, 0.1);
+    }
+    
+    .intro-section h2 {
+      margin-top: 0;
+      color: #2c6e49;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .featured-photo {
+      width: 100%;
+      max-width: 500px;
+      height: 250px;
+      border-radius: 8px;
+      overflow: hidden;
+      margin: 1rem auto;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .featured-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .featured-placeholder {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #e9ecef, #dee2e6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      color: #6c757d;
+    }
+    
+    .post {
+      background: linear-gradient(135deg, white, #fdfdfd);
+      padding: 2rem;
+      margin-bottom: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      border: 1px solid rgba(44, 110, 73, 0.1);
+    }
+    
+    .post:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 24px rgba(44, 110, 73, 0.15);
+    }
+    
+    .post h2 {
+      margin-top: 0;
+      margin-bottom: 1rem;
+      color: #2c6e49;
+      font-size: 1.8rem;
+      line-height: 1.3;
+    }
+    
+    .post-date {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #4a90e2;
+      background: linear-gradient(45deg, #4a90e2, #667eea);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 1.5rem;
+      display: block;
+      text-shadow: 0 2px 4px rgba(74, 144, 226, 0.2);
+    }
+    
+    .post-content {
+      line-height: 1.8;
+      font-size: 1rem;
+      color: #333;
+    }
+    
+    .post-content p {
+      margin-bottom: 1rem;
+    }
+    
+    .post-content p:last-child {
+      margin-bottom: 0;
+    }
+
+    /* 質問コーナーのスタイル */
+    .question-section {
+      background: linear-gradient(135deg, #f0f8ff, #e6f3ff);
+      padding: 2rem;
+      margin: 2rem 0;
+      border-radius: 12px;
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+      border: 1px solid rgba(74, 144, 226, 0.2);
+    }
+    
+    .question-section .section-title {
+      text-align: center;
+      font-size: 2rem;
+      font-weight: 900;
+      margin-bottom: 1rem;
+      color: #2c6e49;
+    }
+    
+    .question-form {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 10px;
+      margin-bottom: 2rem;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .form-group {
+      margin-bottom: 1rem;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: #2c6e49;
+      font-weight: 600;
+    }
+    
+    .form-group input, .form-group textarea {
+      width: 100%;
+      padding: 0.8rem;
+      border: 2px solid #e9ecef;
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: border-color 0.3s ease;
+      box-sizing: border-box;
+    }
+    
+    .form-group input:focus, .form-group textarea:focus {
+      outline: none;
+      border-color: #4a90e2;
+      box-shadow: 0 0 10px rgba(74, 144, 226, 0.2);
+    }
+    
+    .submit-question-btn {
+      width: 100%;
+      padding: 1rem;
+      background: linear-gradient(45deg, #4a90e2, #667eea);
+      color: white;
+      border: none;
+      border-radius: 25px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .submit-question-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 16px rgba(74, 144, 226, 0.3);
+    }
+    
+    .questions-display {
+      margin-top: 2rem;
+    }
+    
+    .questions-display h3 {
+      color: #2c6e49;
+      border-bottom: 2px solid #e9ecef;
+      padding-bottom: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    .question-item {
+      background: white;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+      border-radius: 10px;
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+      border-left: 4px solid #4a90e2;
+    }
+    
+    .question-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.8rem;
+    }
+    
+    .questioner-name {
+      font-weight: 600;
+      color: #2c6e49;
+    }
+    
+    .question-date {
+      font-size: 0.9rem;
+      color: #666;
+      background: #f8f9fa;
+      padding: 0.2rem 0.6rem;
+      border-radius: 12px;
+    }
+    
+    .question-text {
+      background: #f8f9fa;
+      padding: 1rem;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      font-style: italic;
+      border-left: 3px solid #4a90e2;
+    }
+    
+    .answer-text {
+      background: linear-gradient(135deg, #e8f5e8, #f0f8f0);
+      padding: 1rem;
+      border-radius: 8px;
+      border-left: 3px solid #2c6e49;
+      line-height: 1.6;
+    }
+    
+    /* 質問一覧表示のスタイル */
+    .questions-list-section {
+      background: linear-gradient(135deg, #fff5f5, #ffe6e6);
+      padding: 2rem;
+      margin: 2rem 0;
+      border-radius: 12px;
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+      border: 1px solid rgba(220, 38, 127, 0.2);
+    }
+    
+    .questions-list-section .section-title {
+      text-align: center;
+      font-size: 2rem;
+      font-weight: 900;
+      margin-bottom: 1rem;
+      color: #2c6e49;
+    }
+    
+    .questions-list {
+      max-height: 400px;
+      overflow-y: auto;
+      background: white;
+      border-radius: 10px;
+      padding: 1rem;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .question-list-item {
+      background: #f8f9fa;
+      padding: 1rem;
+      margin-bottom: 0.8rem;
+      border-radius: 8px;
+      border-left: 3px solid #dc267f;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      cursor: pointer;
+    }
+    
+    .question-list-item:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(220, 38, 127, 0.2);
+      background: #f1f3f4;
+    }
+    
+    .question-list-item.active {
+      background: #e8f5e8;
+      border-left-color: #2c6e49;
+    }
+    
+    .question-list-item:last-child {
+      margin-bottom: 0;
+    }
+    
+    .question-list-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+    
+    .question-list-name {
+      font-weight: 600;
+      color: #2c6e49;
+      font-size: 0.9rem;
+    }
+    
+    .question-list-date {
+      font-size: 0.8rem;
+      color: #666;
+      background: #e9ecef;
+      padding: 0.2rem 0.5rem;
+      border-radius: 8px;
+    }
+    
+    .question-list-text {
+      color: #555;
+      font-size: 0.9rem;
+      line-height: 1.5;
+      font-style: italic;
+    }
+    
+    .question-answer {
+      margin-top: 1rem;
+      padding: 1rem;
+      background: linear-gradient(135deg, #e8f5e8, #f0f8f0);
+      border-radius: 8px;
+      border-left: 3px solid #2c6e49;
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+    
+    .question-answer.show {
+      display: block;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .click-hint {
+      font-size: 0.8rem;
+      color: #999;
+      text-align: center;
+      margin-bottom: 1rem;
+      font-style: italic;
+    }
+    
+    .questions-list::-webkit-scrollbar {
+      width: 6px;
+    }
+    
+    .questions-list::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 3px;
+    }
+    
+    .questions-list::-webkit-scrollbar-thumb {
+      background: #dc267f;
+      border-radius: 3px;
+    }
+    
+    .questions-list::-webkit-scrollbar-thumb:hover {
+      background: #b91c5c;
+    }
+    
+    footer {
+      text-align: center;
+      padding: 2rem 1rem;
+      background: linear-gradient(135deg, #2c6e49, #3a8560, #4a9470);
+      color: white;
+      margin-top: 3rem;
+      box-shadow: 0 -4px 12px rgba(44, 110, 73, 0.2);
+    }
+    
+    .footer-content {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    .footer-social {
+      margin-bottom: 1rem;
+    }
+    
+    .footer-social .social-link {
+      margin: 0 0.5rem;
+    }
+    
+    /* レスポンシブ対応の調整 */
+    @media (max-width: 768px) {
+      header {
+        padding: 1.5rem 1rem;
+        min-height: 400px;
+      }
+      
+      .social-links {
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      
+      .intro-section,
+      .post {
+        padding: 1.5rem;
+      }
+      
+      .post h2 {
+        font-size: 1.5rem;
+      }
+      
+      .post-date {
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <!-- 光の効果 -->
+    <div class="light-rays"></div>
+    
+    <!-- 雲の要素 -->
+    <div class="cloud cloud1"></div>
+    <div class="cloud cloud2"></div>
+    <div class="cloud cloud3"></div>
+    <div class="cloud cloud4"></div>
+    
+    <!-- 鳥の群れ -->
+    <div class="birds">
+      <div class="bird bird1"></div>
+      <div class="bird bird2"></div>
+      <div class="bird bird3"></div>
+      <div class="bird bird4"></div>
+      <div class="bird bird5"></div>
+    </div>
+    
+    <!-- カモメ -->
+    <div class="seagulls">
+      <div class="seagull seagull1"></div>
+      <div class="seagull seagull2"></div>
+      <div class="seagull seagull3"></div>
+    </div>
+    
+    <!-- ビーチと海岸線 -->
+    <div class="ocean"></div>
+    <div class="beach"></div>
+    <div class="ocean-reflection"></div>
+    <div class="waves">
+      <div class="wave wave1"></div>
+      <div class="wave wave2"></div>
+      <div class="wave wave3"></div>
+    </div>
+    
+    <!-- 島と船 -->
+    <div class="island">
+      <div class="palm-tree"></div>
+    </div>
+    <div class="ship">
+      <div class="ship-hull"></div>
+      <div class="ship-mast"></div>
+      <div class="ship-sail"></div>
+    </div>
+    
+    <!-- ビーチのヤシの木 -->
+    <div class="trees">
+      <div class="palm palm1"></div>
+      <div class="palm palm2"></div>
+      <div class="palm palm3"></div>
+    </div>
+    
+    <div class="header-content">
+      <div class="profile-photo">
+        <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwIiBoZWlnaHQ9IjEyMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8Y2lyY2xlIGN4PSI2MCIgY3k9IjYwIiByPSI2MCIgZmlsbD0iIzRhOTBlMiIvPgogIDx0ZXh0IHg9IjYwIiB5PSI3MCIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjQ4IiBmaWxsPSJ3aGl0ZSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+SzwvdGV4dD4KPC9zdmc+" alt="プロフィール写真">
+      </div>
+      <h1>康揮のブログ</h1>
+      <p class="subtitle">農学部生の日常とニュース分析 | 19歳大学生</p>
+      
+      <div class="social-links">
+        <a href="https://instagram.com/kouki__n" target="_blank" class="social-link instagram">
+          <span class="social-icon">📷</span>
+          <span>Instagram</span>
+        </a>
+        <a href="https://twitter.com/hgS9nGJWWF17545" target="_blank" class="social-link twitter">
+          <span class="social-icon">🐦</span>
+          <span>Twitter</span>
+        </a>
+        <a href="https://note.com/natty_cobra963" target="_blank" class="social-link note">
+          <span class="social-icon">📝</span>
+          <span>Note</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="intro-section">
+      <h2>🌱 はじめに</h2>
+      <p>こんにちは！丹羽康揮です。19歳の農学部生として、日々の学習や研究、そして気になるニュースについて発信していきます。特に軍事技術、ロケット開発、ドローン研究に興味があり、これらの技術が農業分野にどう応用できるかを探求しています。</p>
+      
+      <div class="featured-photo">
+        <img src="https://lh6.googleusercontent.com/_3YR5sai5K2jKoeQaZUY81XT6LRpHt7fshXrOzrhLNDxm10gPKs3avWvt_fFMrqdfk3x_Nx6uSMrAPQ8VcDuPYxqi1Ut9VG3FTTFgio0YYrmY9yHIl-mqZ8DPpqPNGZFR3zlkq08aB9UCShXGKykiXxKes_UMjtL8oETb5xXvKTZQCdiGRbo" alt="活動写真">
+      </div>
+      
+      <p>このブログでは、大学での学び、自作ドローンプロジェクトの進捗、世界情勢の分析などを共有していきます。皆さんとの交流も楽しみにしています！</p>
+    </div>
+
+    <div class="post">
+      <h2>🍜 香川でうどんを食べた</h2>
+      <div class="post-date">2025年8月16日</div>
+      <div class="post-content">
+        <p>香川県の石川うどんでぶっかけうどんとプリンを食べました！うどんはものすごく腰があって、さすが本場の讃岐うどんだなと感動しました。一緒に頼んだプリンが想像以上に濃厚で、なめらかな舌触りと深いコクが最高においしかったです。香川に来たらやっぱりうどんは外せませんが、このプリンも絶対におすすめです！</p>
+      </div>
+    </div>
+
+    <div class="post">
+      <h2>🚗 愛車の洗車</h2>
+      <div class="post-date">2025年8月18日</div>
+      <div class="post-content">
+        <p>半年間ほとんど洗車をせず、外の駐車場に置きっぱなしだった愛車を、ついに洗車機に通しました。長い間たまった汚れが一気に落ちてピカピカになり、まるで新車のようで感動！しかも７００円で入れるだけできれいになるなんて驚きです。</p>
+        <p>正直、初めて洗車機に車を入れるときは「ちゃんと真っ直ぐ止められるかな…」と少し怖かったですが、実際にやってみるととても簡単。これからはもっと気軽に利用して愛車をきれいに保とうと思います。</p>
+      </div>
+    </div>
+
+    <!-- 質問コーナー -->
+    <div class="question-section">
+      <h2 class="section-title">💬 質問コーナー</h2>
+      <p style="text-align: center; margin-bottom: 2rem; color: #666;">気軽に質問や感想をお聞かせください！</p>
+      
+      <div class="question-form">
+        <div class="form-group">
+          <label for="questionName">お名前（ニックネーム可）</label>
+          <input type="text" id="questionName" placeholder="例：田中太郎">
+        </div>
+        
+        <div class="form-group">
+          <label for="questionContent">質問・コメント</label>
+          <textarea id="questionContent" rows="4" placeholder="何でもお気軽にどうぞ！農業、技術、大学生活など..."></textarea>
+        </div>
+        
+        <button class="submit-question-btn" onclick="submitQuestion()">質問を送信</button>
+      </div>
+    </div>
+
+    <!-- 質問一覧セクション -->
+    <div class="questions-list-section">
+      <h2 class="section-title">📋 質問一覧</h2>
+      <p style="text-align: center; margin-bottom: 1rem; color: #666;">これまでにいただいた質問を一覧で見ることができます</p>
+      <p class="click-hint">💡 質問をクリックすると回答が表示されます</p>
+      
+      <div class="questions-list" id="questionsList">
+        
+        <div class="question-list-item" onclick="toggleAnswer(this)">
+          <div class="question-list-header">
+            <span class="question-list-name">サッカー好きさん</span>
+            <span class="question-list-date">8月17日</span>
+          </div>
+          <div class="question-list-text">何をしに香川に行ったのですか？</div>
+          <div class="question-answer">
+            <strong>康揮の回答：</strong>FC岐阜対カマタマーレ讃岐のサッカーの試合を見に行きました！サッカー観戦が目的でしたが、せっかく香川に来たので本場の讃岐うどんも味わってきました。試合も面白く、うどんも最高で、とても充実した香川旅行になりました。
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-content">
+      <div class="footer-social">
+        <a href="https://instagram.com/kouki_n" target="_blank" class="social-link instagram">
+          <span class="social-icon">📷</span>
+          <span>@kouki_n</span>
+        </a>
+        <a href="https://twitter.com/hgS9nGJWWF17545" target="_blank" class="social-link twitter">
+          <span class="social-icon">🐦</span>
+          <span>@hgS9nGJWWF17545</span>
+        </a>
+        <a href="https://note.com/natty_cobra963" target="_blank" class="social-link note">
+          <span class="social-icon">📝</span>
+          <span>natty_cobra963</span>
+        </a>
+      </div>
+      <p>© 2025 丹羽康揮 (Koki Niwa) - 農学部生のブログ</p>
+      <p>Instagram: @kouki_n (こうき) | Twitter: @hgS9nGJWWF17545 (NK) | Note: natty_cobra963</p>
+    </div>
+  </footer>
+
+  <script>
+    // DOMが完全に読み込まれてから実行
+    document.addEventListener('DOMContentLoaded', function() {
+      // 質問送信機能
+      window.submitQuestion = function() {
+        const nameElement = document.getElementById('questionName');
+        const contentElement = document.getElementById('questionContent');
+        
+        if (!nameElement || !contentElement) {
+          console.error('フォーム要素が見つかりません');
+          return;
+        }
+        
+        const name = nameElement.value.trim();
+        const content = contentElement.value.trim();
+        
+        if (!name || !content) {
+          alert('お名前と質問内容を入力してください！');
+          return;
+        }
+        
+        // 実際のサイトでは、ここでサーバーに送信する処理を行います
+        alert(name + 'さん、質問をありがとうございます！\n\n「' + content + '」\n\n後日回答させていただきます！');
+        
+        // フォームをリセット
+        nameElement.value = '';
+        contentElement.value = '';
+      };
+      
+      // 質問一覧の回答表示切り替え機能
+      window.toggleAnswer = function(element) {
+        const answer = element.querySelector('.question-answer');
+        const isCurrentlyVisible = answer.classList.contains('show');
+        
+        // 他の質問の回答を閉じる
+        const allAnswers = document.querySelectorAll('.question-answer');
+        const allItems = document.querySelectorAll('.question-list-item');
+        allAnswers.forEach(ans => ans.classList.remove('show'));
+        allItems.forEach(item => item.classList.remove('active'));
+        
+        // クリックされた質問の回答を切り替え
+        if (!isCurrentlyVisible) {
+          answer.classList.add('show');
+          element.classList.add('active');
+        }
+      };
+      
+      // エンターキーでの送信（Shift+Enterで改行）
+      const contentTextarea = document.getElementById('questionContent');
+      if (contentTextarea) {
+        contentTextarea.addEventListener('keydown', function(e) {
+          if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            window.submitQuestion();
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html>
