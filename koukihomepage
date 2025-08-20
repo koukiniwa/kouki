@@ -12,6 +12,409 @@
       padding: 0;
       background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
       color: #333;
+      position: relative;
+    }
+    
+    /* 高度なサイドデコレーション */
+    .side-decoration {
+      position: fixed !important;
+      top: 0 !important;
+      width: 250px !important;
+      height: 100vh !important;
+      z-index: 999 !important;
+      pointer-events: none !important;
+      display: block !important;
+      background: linear-gradient(135deg, 
+        rgba(20, 20, 25, 0.95) 0%,
+        rgba(25, 25, 30, 0.9) 30%,
+        rgba(30, 30, 35, 0.85) 60%,
+        rgba(35, 35, 40, 0.8) 100%) !important;
+      backdrop-filter: blur(20px) !important;
+      box-shadow: 
+        inset -2px 0 20px rgba(255, 255, 255, 0.05),
+        0 0 50px rgba(0, 0, 0, 0.4) !important;
+      border: 1px solid rgba(255, 255, 255, 0.1) !important;
+      overflow: hidden !important;
+    }
+    
+    .side-decoration::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.03) 0%, transparent 50%),
+        radial-gradient(circle at 80% 70%, rgba(255, 255, 255, 0.02) 0%, transparent 40%),
+        linear-gradient(45deg, transparent 40%, rgba(255, 255, 255, 0.01) 50%, transparent 60%);
+      z-index: 1;
+    }
+    
+    .side-decoration.left {
+      left: 0 !important;
+      border-right: 2px solid rgba(255, 255, 255, 0.2) !important;
+    }
+    
+    .side-decoration.right {
+      right: 0 !important;
+      border-left: 2px solid rgba(255, 255, 255, 0.2) !important;
+    }
+    
+    /* 3D回転する名前テキスト */
+    .side-text {
+      position: absolute !important;
+      top: 50% !important;
+      left: 50% !important;
+      transform: translate(-50%, -50%) rotate(-90deg) !important;
+      font-size: 5.5rem !important;
+      font-weight: 900 !important;
+      color: transparent !important;
+      background: linear-gradient(135deg, 
+        #ffffff 0%, 
+        #f0f0f0 25%, 
+        #e0e0e0 50%, 
+        #d0d0d0 75%, 
+        #ffffff 100%) !important;
+      -webkit-background-clip: text !important;
+      background-clip: text !important;
+      display: block !important;
+      font-family: 'Arial Black', Arial, sans-serif !important;
+      text-shadow: 
+        0 0 30px rgba(255, 255, 255, 0.8),
+        0 0 60px rgba(255, 255, 255, 0.5) !important;
+      letter-spacing: 0.4rem !important;
+      z-index: 10 !important;
+      animation: textGlow 4s ease-in-out infinite alternate !important;
+    }
+    
+    @keyframes textGlow {
+      0% {
+        text-shadow: 
+          0 0 30px rgba(255, 255, 255, 0.8),
+          0 0 60px rgba(255, 255, 255, 0.5);
+      }
+      100% {
+        text-shadow: 
+          0 0 50px rgba(255, 255, 255, 1),
+          0 0 100px rgba(255, 255, 255, 0.8),
+          0 0 150px rgba(255, 255, 255, 0.6);
+      }
+    }
+    
+    /* 高度な装飾要素 */
+    .decorative-elements {
+      position: absolute !important;
+      width: 100% !important;
+      height: 100% !important;
+      display: block !important;
+      z-index: 2 !important;
+    }
+    
+    /* フローティング粒子システム */
+    .particle {
+      position: absolute !important;
+      background: rgba(255, 255, 255, 0.4) !important;
+      border-radius: 50% !important;
+      display: block !important;
+      animation: floatParticle 8s ease-in-out infinite !important;
+    }
+    
+    .side-decoration.left .particle1 {
+      width: 4px !important;
+      height: 4px !important;
+      top: 15% !important;
+      left: 20% !important;
+      animation-delay: 0s !important;
+    }
+    
+    .side-decoration.left .particle2 {
+      width: 6px !important;
+      height: 6px !important;
+      top: 35% !important;
+      left: 70% !important;
+      animation-delay: 2s !important;
+    }
+    
+    .side-decoration.left .particle3 {
+      width: 3px !important;
+      height: 3px !important;
+      top: 55% !important;
+      left: 40% !important;
+      animation-delay: 4s !important;
+    }
+    
+    .side-decoration.left .particle4 {
+      width: 5px !important;
+      height: 5px !important;
+      top: 75% !important;
+      left: 60% !important;
+      animation-delay: 6s !important;
+    }
+    
+    .side-decoration.right .particle1 {
+      width: 4px !important;
+      height: 4px !important;
+      top: 20% !important;
+      right: 25% !important;
+      animation-delay: 1s !important;
+    }
+    
+    .side-decoration.right .particle2 {
+      width: 6px !important;
+      height: 6px !important;
+      top: 40% !important;
+      right: 65% !important;
+      animation-delay: 3s !important;
+    }
+    
+    .side-decoration.right .particle3 {
+      width: 3px !important;
+      height: 3px !important;
+      top: 60% !important;
+      right: 35% !important;
+      animation-delay: 5s !important;
+    }
+    
+    .side-decoration.right .particle4 {
+      width: 5px !important;
+      height: 5px !important;
+      top: 80% !important;
+      right: 55% !important;
+      animation-delay: 7s !important;
+    }
+    
+    @keyframes floatParticle {
+      0%, 100% {
+        transform: translateY(0px) scale(1);
+        opacity: 0.3;
+      }
+      25% {
+        transform: translateY(-15px) scale(1.2);
+        opacity: 0.7;
+      }
+      50% {
+        transform: translateY(-25px) scale(0.8);
+        opacity: 1;
+      }
+      75% {
+        transform: translateY(-10px) scale(1.1);
+        opacity: 0.5;
+      }
+    }
+    
+    /* 3D幾何学パターン */
+    .geometric-pattern {
+      position: absolute !important;
+      width: 100% !important;
+      height: 100% !important;
+      display: block !important;
+      z-index: 3 !important;
+    }
+    
+    .hexagon {
+      position: absolute !important;
+      width: 40px !important;
+      height: 40px !important;
+      background: linear-gradient(45deg, 
+        rgba(255, 255, 255, 0.05), 
+        rgba(200, 200, 200, 0.1)) !important;
+      clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%) !important;
+      display: block !important;
+      animation: rotate3D 12s linear infinite !important;
+      box-shadow: 
+        0 0 20px rgba(255, 255, 255, 0.05),
+        inset 0 0 10px rgba(255, 255, 255, 0.02) !important;
+    }
+    
+    .side-decoration.left .hexagon1 {
+      top: 25% !important;
+      left: 15% !important;
+      animation-delay: 0s !important;
+    }
+    
+    .side-decoration.left .hexagon2 {
+      top: 70% !important;
+      left: 65% !important;
+      animation-delay: 4s !important;
+      transform: scale(0.8) !important;
+    }
+    
+    .side-decoration.right .hexagon1 {
+      top: 30% !important;
+      right: 20% !important;
+      animation-delay: 2s !important;
+    }
+    
+    .side-decoration.right .hexagon2 {
+      top: 75% !important;
+      right: 60% !important;
+      animation-delay: 6s !important;
+      transform: scale(1.2) !important;
+    }
+    
+    @keyframes rotate3D {
+      0% {
+        transform: rotateY(0deg) rotateZ(0deg);
+      }
+      33% {
+        transform: rotateY(120deg) rotateZ(120deg);
+      }
+      66% {
+        transform: rotateY(240deg) rotateZ(240deg);
+      }
+      100% {
+        transform: rotateY(360deg) rotateZ(360deg);
+      }
+    }
+    
+    /* 波紋エフェクト */
+    .ripple-effect {
+      position: absolute !important;
+      width: 100px !important;
+      height: 100px !important;
+      border: 2px solid rgba(255, 255, 255, 0.1) !important;
+      border-radius: 50% !important;
+      display: block !important;
+      animation: ripple 6s ease-out infinite !important;
+    }
+    
+    .side-decoration.left .ripple1 {
+      top: 10% !important;
+      left: 30% !important;
+      animation-delay: 0s !important;
+    }
+    
+    .side-decoration.left .ripple2 {
+      top: 60% !important;
+      left: 20% !important;
+      animation-delay: 3s !important;
+      transform: scale(0.6) !important;
+    }
+    
+    .side-decoration.right .ripple1 {
+      top: 15% !important;
+      right: 25% !important;
+      animation-delay: 1.5s !important;
+    }
+    
+    .side-decoration.right .ripple2 {
+      top: 65% !important;
+      right: 30% !important;
+      animation-delay: 4.5s !important;
+      transform: scale(0.8) !important;
+    }
+    
+    @keyframes ripple {
+      0% {
+        transform: scale(0.1);
+        opacity: 1;
+      }
+      50% {
+        transform: scale(0.5);
+        opacity: 0.6;
+      }
+      100% {
+        transform: scale(1);
+        opacity: 0;
+      }
+    }
+    
+    /* グリッドライン */
+    .grid-lines {
+      position: absolute !important;
+      top: 0 !important;
+      left: 0 !important;
+      width: 100% !important;
+      height: 100% !important;
+      display: block !important;
+      z-index: 1 !important;
+      background-image: 
+        linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px) !important;
+      background-size: 25px 25px !important;
+      animation: gridMove 20s linear infinite !important;
+    }
+    
+    @keyframes gridMove {
+      0% {
+        transform: translate(0, 0);
+      }
+      100% {
+        transform: translate(25px, 25px);
+      }
+    }
+    
+    /* エネルギーライン */
+    .energy-line {
+      position: absolute !important;
+      height: 2px !important;
+      background: linear-gradient(90deg, 
+        transparent 0%, 
+        rgba(255, 255, 255, 0.2) 20%, 
+        rgba(255, 255, 255, 0.4) 50%, 
+        rgba(255, 255, 255, 0.2) 80%, 
+        transparent 100%) !important;
+      display: block !important;
+      animation: energyFlow 8s ease-in-out infinite !important;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.2) !important;
+    }
+    
+    .side-decoration.left .energy-line1 {
+      top: 20% !important;
+      left: 0 !important;
+      width: 100% !important;
+      animation-delay: 0s !important;
+    }
+    
+    .side-decoration.left .energy-line2 {
+      top: 80% !important;
+      left: 0 !important;
+      width: 100% !important;
+      animation-delay: 4s !important;
+    }
+    
+    .side-decoration.right .energy-line1 {
+      top: 30% !important;
+      right: 0 !important;
+      width: 100% !important;
+      animation-delay: 2s !important;
+    }
+    
+    .side-decoration.right .energy-line2 {
+      top: 70% !important;
+      right: 0 !important;
+      width: 100% !important;
+      animation-delay: 6s !important;
+    }
+    
+    @keyframes energyFlow {
+      0%, 100% {
+        opacity: 0.2;
+        transform: scaleX(0.8);
+      }
+      50% {
+        opacity: 1;
+        transform: scaleX(1.2);
+      }
+    }
+    
+    /* レスポンシブ対応 */
+    @media (min-width: 1501px) {
+      .side-decoration {
+        display: block;
+      }
+      
+      body {
+        padding-left: 270px;
+        padding-right: 270px;
+      }
+    }
+    
+    @media (max-width: 1500px) {
+      .side-decoration {
+        display: none !important;
+      }
     }
     
     header {
@@ -575,8 +978,8 @@
       background: linear-gradient(45deg, #E4405F, #F56040, #FFDC80);
     }
     
-    .social-link.twitter {
-      background: linear-gradient(45deg, #1DA1F2, #0e71c8);
+    .social-link.x {
+      background: linear-gradient(45deg, #000000, #1a1a1a);
     }
     
     .social-link.note {
@@ -765,73 +1168,6 @@
       box-shadow: 0 8px 16px rgba(74, 144, 226, 0.3);
     }
     
-    .questions-display {
-      margin-top: 2rem;
-    }
-    
-    .questions-display h3 {
-      color: #2c6e49;
-      border-bottom: 2px solid #e9ecef;
-      padding-bottom: 0.5rem;
-      margin-bottom: 1.5rem;
-    }
-    
-    .question-item {
-      background: white;
-      padding: 1.5rem;
-      margin-bottom: 1rem;
-      border-radius: 10px;
-      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
-      border-left: 4px solid #4a90e2;
-    }
-    
-    .question-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 0.8rem;
-    }
-    
-    .questioner-name {
-      font-weight: 600;
-      color: #2c6e49;
-    }
-    
-    .question-date {
-      font-size: 0.9rem;
-      color: #666;
-      background: #f8f9fa;
-      padding: 0.2rem 0.6rem;
-      border-radius: 12px;
-    }
-    
-    .question-text {
-      background: #f8f9fa;
-      padding: 1rem;
-      border-radius: 8px;
-      margin-bottom: 1rem;
-      font-style: italic;
-      border-left: 3px solid #4a90e2;
-    }
-    
-    .answer-text {
-      background: linear-gradient(135deg, #e8f5e8, #f0f8f0);
-      padding: 1rem;
-      border-radius: 8px;
-      border-left: 3px solid #2c6e49;
-      line-height: 1.6;
-    }
-    
-    /* 質問一覧表示のスタイル */
-    .questions-list-section {
-      background: linear-gradient(135deg, #fff5f5, #ffe6e6);
-      padding: 2rem;
-      margin: 2rem 0;
-      border-radius: 12px;
-      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-      border: 1px solid rgba(220, 38, 127, 0.2);
-    }
-    
     .questions-list-section .section-title {
       text-align: center;
       font-size: 2rem;
@@ -970,6 +1306,24 @@
     }
     
     /* レスポンシブ対応の調整 */
+    @media (min-width: 1200px) {
+      body {
+        padding-left: 270px !important;
+        padding-right: 270px !important;
+      }
+    }
+    
+    @media (max-width: 1199px) {
+      .side-decoration {
+        display: none !important;
+      }
+      
+      body {
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+      }
+    }
+    
     @media (max-width: 768px) {
       header {
         padding: 1.5rem 1rem;
@@ -998,6 +1352,45 @@
   </style>
 </head>
 <body>
+  <!-- サイドデコレーション（PC表示時のみ） -->
+  <div class="side-decoration left">
+    <div class="grid-lines"></div>
+    <div class="side-text">KOUKI</div>
+    <div class="decorative-elements">
+      <div class="particle particle1"></div>
+      <div class="particle particle2"></div>
+      <div class="particle particle3"></div>
+      <div class="particle particle4"></div>
+    </div>
+    <div class="geometric-pattern">
+      <div class="hexagon hexagon1"></div>
+      <div class="hexagon hexagon2"></div>
+    </div>
+    <div class="ripple-effect ripple1"></div>
+    <div class="ripple-effect ripple2"></div>
+    <div class="energy-line energy-line1"></div>
+    <div class="energy-line energy-line2"></div>
+  </div>
+  
+  <div class="side-decoration right">
+    <div class="grid-lines"></div>
+    <div class="side-text">NIWA</div>
+    <div class="decorative-elements">
+      <div class="particle particle1"></div>
+      <div class="particle particle2"></div>
+      <div class="particle particle3"></div>
+      <div class="particle particle4"></div>
+    </div>
+    <div class="geometric-pattern">
+      <div class="hexagon hexagon1"></div>
+      <div class="hexagon hexagon2"></div>
+    </div>
+    <div class="ripple-effect ripple1"></div>
+    <div class="ripple-effect ripple2"></div>
+    <div class="energy-line energy-line1"></div>
+    <div class="energy-line energy-line2"></div>
+  </div>
+
   <header>
     <!-- 光の効果 -->
     <div class="light-rays"></div>
@@ -1055,7 +1448,7 @@
       <div class="profile-photo">
         <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwIiBoZWlnaHQ9IjEyMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8Y2lyY2xlIGN4PSI2MCIgY3k9IjYwIiByPSI2MCIgZmlsbD0iIzRhOTBlMiIvPgogIDx0ZXh0IHg9IjYwIiB5PSI3MCIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjQ4IiBmaWxsPSJ3aGl0ZSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+SzwvdGV4dD4KPC9zdmc+" alt="プロフィール写真">
       </div>
-      <h1>康揮のブログ</h1>
+      <h1>丹羽康揮</h1>
       <p class="subtitle">農学部生の日常とニュース分析 | 19歳大学生</p>
       
       <div class="social-links">
@@ -1063,9 +1456,9 @@
           <span class="social-icon">📷</span>
           <span>Instagram</span>
         </a>
-        <a href="https://twitter.com/hgS9nGJWWF17545" target="_blank" class="social-link twitter">
-          <span class="social-icon">🐦</span>
-          <span>Twitter</span>
+        <a href="https://x.com/hgS9nGJWWF17545" target="_blank" class="social-link x">
+          <span class="social-icon">✕</span>
+          <span>X</span>
         </a>
         <a href="https://note.com/natty_cobra963" target="_blank" class="social-link note">
           <span class="social-icon">📝</span>
@@ -1088,19 +1481,19 @@
     </div>
 
     <div class="post">
-      <h2>🍜 香川でうどんを食べた</h2>
-      <div class="post-date">2025年8月16日</div>
-      <div class="post-content">
-        <p>香川県の石川うどんでぶっかけうどんとプリンを食べました！うどんはものすごく腰があって、さすが本場の讃岐うどんだなと感動しました。一緒に頼んだプリンが想像以上に濃厚で、なめらかな舌触りと深いコクが最高においしかったです。香川に来たらやっぱりうどんは外せませんが、このプリンも絶対におすすめです！</p>
-      </div>
-    </div>
-
-    <div class="post">
       <h2>🚗 愛車の洗車</h2>
       <div class="post-date">2025年8月18日</div>
       <div class="post-content">
         <p>半年間ほとんど洗車をせず、外の駐車場に置きっぱなしだった愛車を、ついに洗車機に通しました。長い間たまった汚れが一気に落ちてピカピカになり、まるで新車のようで感動！しかも７００円で入れるだけできれいになるなんて驚きです。</p>
         <p>正直、初めて洗車機に車を入れるときは「ちゃんと真っ直ぐ止められるかな…」と少し怖かったですが、実際にやってみるととても簡単。これからはもっと気軽に利用して愛車をきれいに保とうと思います。</p>
+      </div>
+    </div>
+
+    <div class="post">
+      <h2>🍜 香川でうどんを食べた</h2>
+      <div class="post-date">2025年8月16日</div>
+      <div class="post-content">
+        <p>香川県の石川うどんでぶっかけうどんとプリンを食べました！うどんはものすごく腰があって、さすが本場の讃岐うどんだなと感動しました。一緒に頼んだプリンが想像以上に濃厚で、なめらかな舌触りと深いコクが最高においしかったです。香川に来たらやっぱりうどんは外せませんが、このプリンも絶対におすすめです！</p>
       </div>
     </div>
 
@@ -1150,12 +1543,12 @@
   <footer>
     <div class="footer-content">
       <div class="footer-social">
-        <a href="https://instagram.com/kouki_n" target="_blank" class="social-link instagram">
+        <a href="https://instagram.com/kouki__n" target="_blank" class="social-link instagram">
           <span class="social-icon">📷</span>
-          <span>@kouki_n</span>
+          <span>@kouki__n</span>
         </a>
-        <a href="https://twitter.com/hgS9nGJWWF17545" target="_blank" class="social-link twitter">
-          <span class="social-icon">🐦</span>
+        <a href="https://x.com/hgS9nGJWWF17545" target="_blank" class="social-link x">
+          <span class="social-icon">✕</span>
           <span>@hgS9nGJWWF17545</span>
         </a>
         <a href="https://note.com/natty_cobra963" target="_blank" class="social-link note">
@@ -1164,7 +1557,7 @@
         </a>
       </div>
       <p>© 2025 丹羽康揮 (Koki Niwa) - 農学部生のブログ</p>
-      <p>Instagram: @kouki_n (こうき) | Twitter: @hgS9nGJWWF17545 (NK) | Note: natty_cobra963</p>
+      <p>Instagram: @kouki__n (こうき) | X: @hgS9nGJWWF17545 (NK) | Note: natty_cobra963</p>
     </div>
   </footer>
 
