@@ -1045,6 +1045,42 @@
         font-size: 0.9rem;
       }
     }
+/* 折りたたみ機能用CSS */
+.post-header {
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.post-header:hover {
+  background-color: rgba(44, 110, 73, 0.05);
+  border-radius: 8px;
+}
+
+.post .post-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease-out;
+}
+
+.post .post-content.active {
+  max-height: 3000px;
+  transition: max-height 0.6s ease-in;
+}
+
+.toggle-icon {
+  float: right;
+  transition: transform 0.3s;
+  font-size: 1.2rem;
+  color: #2c6e49;
+  margin-right: 10px;
+}
+
+.toggle-icon.active {
+  transform: rotate(180deg);
+}
+.nav-item[href^="#blog-"]::before {
+  background: #e67e22;
+}
   </style>
 </head>
 <body>
@@ -1055,11 +1091,12 @@
       <span></span>
       <span></span>
     </div>
-    <div class="nav-dropdown" id="navDropdown">
-      <a href="#intro" class="nav-item" onclick="closeNav()">はじめに</a>
-      <a href="#blog" class="nav-item" onclick="closeNav()">ブログ</a>
-    </div>
-  </div>
+<div class="nav-dropdown" id="navDropdown">
+  <a href="#intro" class="nav-item" onclick="closeNav()">はじめに</a>
+  <a href="#blog-sep-2025" class="nav-item" onclick="closeNav()">2025年9月</a>
+  <a href="#blog-aug-2025" class="nav-item" onclick="closeNav()">2025年8月</a>
+ </div>
+</div>
 
   <!-- サイドデコレーション（PC表示時のみ） -->
   <div class="side-decoration left">
@@ -1177,9 +1214,42 @@
       <p>楽しく生活している丹羽康揮の動向や生活について発信していきます　ぜひ見てね!</p>
     </div>
 
-    <div class="post" id="blog">
+<div class="post" id="blog-sep-2025">
+ <div class="post-header" onclick="togglePost(this)">
+    <span class="toggle-icon">▼</span>
+      <h2> 🔥夏休み終わり　後期開始</h2>
+      <div class="post-date">2025年９月2日</div>
+      </div>
+      <div class="post-content">
+        <p>2か月近くあった夏休みもあっというまに終わってしまい新学期が始まりました。今思うと今年の夏休みは両方の祖父母といとこに会い、3回サッカー観戦をし、2回の万博と室戸市、白川郷に行くなど多くの楽しい経験をしました。アルバイトもして去年よりもはるかに充実した夏休み期間だったと感じます。</p>
+　　　　<p>さて、今学期はオンラインが2つありますが1限は週3回もあります。段々と寒くなってきて朝起きるのが大変になってきてしまいそうですが、気合を入れて間に合うようにしたいです。</p>
+      </div>
+    </div>
+
+
+ <div class="post">
+  <div class="post-header" onclick="togglePost(this)">
+    <span class="toggle-icon">▼</span>
+      <h2>🎪 大阪・関西万博2025に行ってきた(2回目）!!</h2>
+      <div class="post-date">2025年9月17日</div>
+      </div>
+      <div class="post-content">
+        <p>9月17日と18日の2日間でまたしても大阪万博に行ってきました!万博は地理が好きな僕にとってとても面白い場所だったためもう一度行こうということになりました。</p>
+
+　　　　<p>待ち時間が比較的短いということもあり今回は中東や中央アジアなどに位置するあまりなじみのない国に多くいきました。特に印象的だったのはトルクメニスタンです。中央アジアの北朝鮮と言われるだけあって大統領の肖像画が入り口にあるのが衝撃的でした。パビリオンはとても豪華で、首都には大理石でできた白色の建物が立ち並ぶんだとか。天然ガスなどの資源が豊かな国であることを感じさせられます。特徴的な国すぎてキーホルダーを買ってしまいました。大切にしたいです。</p>
+
+　　　　<p>抽選で当たった未来の都市パビリオンと三菱未来館にも行きました。様々な企業が未来を考え新しい技術の開発を行っており未来にワクワクさせられました。特に川崎重工業の四足歩行の乗り物がかっこよかったです。ぜひ調べて見てください!</p>
+
+　　　　<p>万博はとても好奇心を搔き立てられます。次は2027年に横浜で花博があるそうなのでそちらも行きたいです</p>
+      </div>
+    </div>
+
+ <div class="post">
+  <div class="post-header" onclick="togglePost(this)">
+    <span class="toggle-icon">▼</span>
       <h2>🎪 大阪・関西万博2025に行ってきた！</h2>
       <div class="post-date">2025年9月7日</div>
+      </div>
       <div class="post-content">
         <p>9月6日と7日の2日間で、大阪・関西万博に行ってきました！まず最初に感じたのは、万博の人の多さと規模の大きさです。想像していた以上にスケールが大きく、到着した瞬間に圧倒されました。</p>
         
@@ -1193,9 +1263,12 @@
       </div>
     </div>
 
-    <div class="post">
+ <div class="post">
+  <div class="post-header" onclick="togglePost(this)">
+    <span class="toggle-icon">▼</span>
       <h2>🏘️ 白川郷で古き良き日本の夏を体験</h2>
       <div class="post-date">2025年9月3日</div>
+      </div>
       <div class="post-content">
         <p>名古屋から白川郷へ日帰り旅行に行ってきました！バスで約2時間50分の道のりでしたが、到着した瞬間に別世界に来たような感覚になりました。</p>
         <p>白川郷に着くとセミの鳴き声が響いていて、名古屋よりも少し涼しく感じられました。合掌造りの茅葺き屋根の建物群を眺めながら歩いていると、まさに「古き良き日本の夏」を肌で感じることができました。</p>
@@ -1203,9 +1276,12 @@
       </div>
     </div>
 
-    <div class="post">
+ <div class="post">
+  <div class="post-header" onclick="togglePost(this)">
+    <span class="toggle-icon">▼</span>
       <h2>⚽ トヨタスタジアムサイコー！</h2>
       <div class="post-date">2025年8月31日</div>
+       </div>
       <div class="post-content">
         <p>名古屋グランパス対FC東京の試合をトヨタスタジアムで観戦してきました！J1のサッカーの試合を見るのは初めてだったのですが、想像以上の迫力と興奮でした。</p>
         <p>まず驚いたのは観客席の角度の急さ。すり鉢状になったスタジアムのおかげで、どの席からでもピッチが近く感じられて、臨場感が半端ありませんでした。</p>
@@ -1213,18 +1289,24 @@
       </div>
     </div>
 
-    <div class="post">
+<div class="post">
+ <div class="post-header" onclick="togglePost(this)">
+    <span class="toggle-icon">▼</span>
       <h2>🚗 愛車の洗車</h2>
       <div class="post-date">2025年8月18日</div>
+       </div>
       <div class="post-content">
         <p>半年間ほとんど洗車をせず、外の駐車場に置きっぱなしだった愛車を、ついに洗車機に通しました。長い間たまった汚れが一気に落ちてピカピカになり、まるで新車のようで感動！</p>
         <p>正直、初めて洗車機に車を入れるときは「ちゃんと真っ直ぐ止められるかな…」と少し怖かったですが、実際にやってみるととても簡単。これからはもっと気軽に利用して愛車をきれいに保とうと思います。</p>
       </div>
     </div>
 
-    <div class="post">
+<div class="post" id="blog-aug-2025">
+ <div class="post-header" onclick="togglePost(this)">
+    <span class="toggle-icon">▼</span>
       <h2>🍜 香川でうどんを食べた</h2>
       <div class="post-date">2025年8月16日</div>
+       </div>
       <div class="post-content">
         <p>香川県の石川うどんでぶっかけうどんとプリンを食べました！うどんはものすごく腰があって、さすが本場の讃岐うどんだなと感動しました。一緒に頼んだプリンが想像以上に濃厚で、なめらかな舌触りと深いコクが最高においしかったです。</p>
       </div>
@@ -1279,6 +1361,14 @@
           closeNav();
         }
       });
+// ブログ記事の折りたたみ機能
+      window.togglePost = function(header) {
+        const content = header.nextElementSibling;
+        const icon = header.querySelector('.toggle-icon');
+        
+        content.classList.toggle('active');
+        icon.classList.toggle('active');
+      };
       
       // スムーズスクロール
       document.querySelectorAll('a[href^="#"]').forEach(anchor => {
