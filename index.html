@@ -8,6 +8,7 @@
  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
   <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+  <link rel="stylesheet" href="styles.css">
 
 <meta name="description" content="丹羽康揮の日常、旅行、サッカー観戦などを発信するブログ。万博訪問記、白川郷旅行記など、楽しい体験を共有しています。">
 <meta name="keywords" content="丹羽康揮, ブログ, 旅行, サッカー, 万博, 大学生, 日記">
@@ -25,1460 +26,268 @@
 <meta name="twitter:title" content="丹羽康揮 - 農学部生のブログ">
 <meta name="twitter:description" content="楽しく生活している丹羽康揮の動向や生活について発信していきます">
 
-  <style>
-/* 自己紹介部分の文字サイズ調整 */
-.intro-section {
-  font-size: 1.3rem; /* 全体的に少し大きく */
-}
-
-.intro-section p {
-  font-size: 1.2rem; /* 段落テキストをさらに大きく */
-  line-height: 1.9; /* 行間も少し広げる */
-}
-
-.intro-section h2 {
-  font-size: 2.2rem; /* 見出しも大きく */
-}
-    body {
-      font-family: 'Hiragino Kaku Gothic ProN', 'ヒラギノ角ゴ ProN W3', Meiryo, メイリオ, Arial, sans-serif;
-      line-height: 1.6;
-      margin: 0;
-      padding: 0;
-      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-      color: #333;
-      position: relative;
-    }
-  
-    /* 宇宙空間サイドデコレーション */
-    .side-decoration {
-      position: fixed !important;
-      top: 0 !important;
-      width: 250px !important;
-      height: 100vh !important;
-      z-index: 999 !important;
-      pointer-events: none !important;
-      display: block !important;
-      background: 
-        radial-gradient(circle at 20% 30%, rgba(25, 25, 112, 0.4) 0%, transparent 50%),
-        radial-gradient(circle at 80% 70%, rgba(72, 61, 139, 0.3) 0%, transparent 50%),
-        linear-gradient(135deg, 
-          rgba(8, 8, 20, 0.98) 0%,
-          rgba(15, 15, 30, 0.95) 25%,
-          rgba(20, 20, 40, 0.9) 50%,
-          rgba(25, 25, 50, 0.85) 75%,
-          rgba(30, 30, 60, 0.8) 100%) !important;
-      backdrop-filter: blur(25px) !important;
-      box-shadow: 
-        inset -3px 0 25px rgba(138, 43, 226, 0.1),
-        0 0 80px rgba(75, 0, 130, 0.3) !important;
-      border: 1px solid rgba(147, 112, 219, 0.2) !important;
-      overflow: hidden !important;
-    }
-    
-    .side-decoration::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: 
-        radial-gradient(circle at 30% 20%, rgba(138, 43, 226, 0.15) 0%, transparent 40%),
-        radial-gradient(circle at 70% 80%, rgba(75, 0, 130, 0.1) 0%, transparent 40%),
-        radial-gradient(circle at 50% 50%, rgba(65, 105, 225, 0.08) 0%, transparent 60%);
-      z-index: 1;
-    }
-    
-    .side-decoration.left {
-      left: 0 !important;
-      border-right: 2px solid rgba(255, 255, 255, 0.2) !important;
-    }
-    
-    .side-decoration.right {
-      right: 0 !important;
-      border-left: 2px solid rgba(255, 255, 255, 0.2) !important;
-    }
-    
-    /* 惑星システム */
-    .design-centerpiece {
-      position: absolute !important;
-      top: 50% !important;
-      left: 50% !important;
-      transform: translate(-50%, -50%) !important;
-      width: 150px !important;
-      height: 150px !important;
-      display: block !important;
-      z-index: 10 !important;
-    }
-    
-    .solar-system {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      animation: galaxyRotate 60s linear infinite;
-    }
-    
-    .orbit {
-      position: absolute;
-      border: 1px solid rgba(147, 112, 219, 0.3);
-      border-radius: 50%;
-      animation: orbitRotate 20s linear infinite;
-    }
-    
-    .orbit.orbit1 {
-      width: 100%;
-      height: 100%;
-      animation-duration: 30s;
-    }
-    
-    .orbit.orbit2 {
-      width: 70%;
-      height: 70%;
-      top: 15%;
-      left: 15%;
-      animation-duration: 20s;
-      animation-direction: reverse;
-    }
-    
-    .orbit.orbit3 {
-      width: 40%;
-      height: 40%;
-      top: 30%;
-      left: 30%;
-      animation-duration: 15s;
-    }
-    
-    .planet {
-      position: absolute;
-      border-radius: 50%;
-      box-shadow: 0 0 15px;
-    }
-    
-    .sun {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 20px;
-      height: 20px;
-      transform: translate(-50%, -50%);
-      background: radial-gradient(circle, #FFD700 0%, #FF8C00 50%, #FF4500 100%);
-      border-radius: 50%;
-      box-shadow: 
-        0 0 20px #FFD700,
-        0 0 40px #FF8C00,
-        0 0 60px #FF4500;
-      animation: sunPulse 4s ease-in-out infinite alternate;
-    }
-    
-    .planet1 {
-      top: -8px;
-      left: 50%;
-      width: 12px;
-      height: 12px;
-      background: radial-gradient(circle, #4169E1 0%, #0000CD 100%);
-      box-shadow: 0 0 10px #4169E1;
-      transform: translateX(-50%);
-    }
-    
-    .planet2 {
-      top: -6px;
-      left: 50%;
-      width: 8px;
-      height: 8px;
-      background: radial-gradient(circle, #32CD32 0%, #228B22 100%);
-      box-shadow: 0 0 8px #32CD32;
-      transform: translateX(-50%);
-    }
-    
-    .planet3 {
-      top: -5px;
-      left: 50%;
-      width: 6px;
-      height: 6px;
-      background: radial-gradient(circle, #FF69B4 0%, #DC143C 100%);
-      box-shadow: 0 0 6px #FF69B4;
-      transform: translateX(-50%);
-    }
-    
-    @keyframes galaxyRotate {
-      0% { transform: translate(-50%, -50%) rotate(0deg); }
-      100% { transform: translate(-50%, -50%) rotate(360deg); }
-    }
-    
-    @keyframes orbitRotate {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-    
-    @keyframes sunPulse {
-      0% {
-        box-shadow: 
-          0 0 20px #FFD700,
-          0 0 40px #FF8C00,
-          0 0 60px #FF4500;
-        transform: translate(-50%, -50%) scale(1);
-      }
-      100% {
-        box-shadow: 
-          0 0 30px #FFD700,
-          0 0 60px #FF8C00,
-          0 0 90px #FF4500;
-        transform: translate(-50%, -50%) scale(1.2);
-      }
-    }
-    
-    /* 星空と星座 */
-    .stars {
-      position: absolute !important;
-      width: 100% !important;
-      height: 100% !important;
-      display: block !important;
-      z-index: 2 !important;
-    }
-    
-    .star {
-      position: absolute !important;
-      background: #FFFFFF !important;
-      border-radius: 50% !important;
-      display: block !important;
-      animation: starTwinkle 3s ease-in-out infinite alternate !important;
-    }
-    
-    .star.small {
-      width: 2px !important;
-      height: 2px !important;
-    }
-    
-    .star.medium {
-      width: 3px !important;
-      height: 3px !important;
-      box-shadow: 0 0 6px #FFFFFF !important;
-    }
-    
-    .star.large {
-      width: 4px !important;
-      height: 4px !important;
-      box-shadow: 0 0 10px #FFFFFF !important;
-    }
-    
-    /* 左サイドバーの星配置 */
-    .side-decoration.left .star1 {
-      top: 10% !important;
-      left: 20% !important;
-      animation-delay: 0s !important;
-    }
-    
-    .side-decoration.left .star2 {
-      top: 25% !important;
-      left: 70% !important;
-      animation-delay: 1s !important;
-    }
-    
-    .side-decoration.left .star3 {
-      top: 15% !important;
-      left: 80% !important;
-      animation-delay: 2s !important;
-    }
-    
-    .side-decoration.left .star4 {
-      top: 70% !important;
-      left: 30% !important;
-      animation-delay: 3s !important;
-    }
-    
-    .side-decoration.left .star5 {
-      top: 85% !important;
-      left: 60% !important;
-      animation-delay: 4s !important;
-    }
-    
-    .side-decoration.left .star6 {
-      top: 90% !important;
-      left: 20% !important;
-      animation-delay: 0.5s !important;
-    }
-    
-    .side-decoration.left .star7 {
-      top: 40% !important;
-      left: 15% !important;
-      animation-delay: 1.5s !important;
-    }
-    
-    .side-decoration.left .star8 {
-      top: 60% !important;
-      left: 80% !important;
-      animation-delay: 2.5s !important;
-    }
-    
-    /* 右サイドバーの星配置 */
-    .side-decoration.right .star1 {
-      top: 15% !important;
-      right: 25% !important;
-      animation-delay: 0.5s !important;
-    }
-    
-    .side-decoration.right .star2 {
-      top: 30% !important;
-      right: 75% !important;
-      animation-delay: 1.5s !important;
-    }
-    
-    .side-decoration.right .star3 {
-      top: 20% !important;
-      right: 80% !important;
-      animation-delay: 2.5s !important;
-    }
-    
-    .side-decoration.right .star4 {
-      top: 75% !important;
-      right: 35% !important;
-      animation-delay: 3.5s !important;
-    }
-    
-    .side-decoration.right .star5 {
-      top: 80% !important;
-      right: 65% !important;
-      animation-delay: 4.5s !important;
-    }
-    
-    .side-decoration.right .star6 {
-      top: 95% !important;
-      right: 25% !important;
-      animation-delay: 1s !important;
-    }
-    
-    .side-decoration.right .star7 {
-      top: 45% !important;
-      right: 20% !important;
-      animation-delay: 2s !important;
-    }
-    
-    .side-decoration.right .star8 {
-      top: 65% !important;
-      right: 85% !important;
-      animation-delay: 3s !important;
-    }
-    
-    @keyframes starTwinkle {
-      0% {
-        opacity: 0.3;
-        transform: scale(1);
-      }
-      100% {
-        opacity: 1;
-        transform: scale(1.5);
-      }
-    }
-    
-    /* 3D幾何学パターン */
-    .geometric-pattern {
-      position: absolute !important;
-      width: 100% !important;
-      height: 100% !important;
-      display: block !important;
-      z-index: 3 !important;
-    }
-    
-    .hexagon {
-      position: absolute !important;
-      width: 40px !important;
-      height: 40px !important;
-      background: linear-gradient(45deg, 
-        rgba(138, 43, 226, 0.2), 
-        rgba(75, 0, 130, 0.3)) !important;
-      clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%) !important;
-      display: block !important;
-      animation: rotate3D 15s linear infinite !important;
-      box-shadow: 
-        0 0 20px rgba(138, 43, 226, 0.3),
-        inset 0 0 10px rgba(147, 112, 219, 0.2) !important;
-    }
-    
-    .side-decoration.left .hexagon1 {
-      top: 25% !important;
-      left: 15% !important;
-      animation-delay: 0s !important;
-    }
-    
-    .side-decoration.left .hexagon2 {
-      top: 70% !important;
-      left: 65% !important;
-      animation-delay: 5s !important;
-      transform: scale(0.8) !important;
-    }
-    
-    .side-decoration.right .hexagon1 {
-      top: 30% !important;
-      right: 20% !important;
-      animation-delay: 2.5s !important;
-    }
-    
-    .side-decoration.right .hexagon2 {
-      top: 75% !important;
-      right: 60% !important;
-      animation-delay: 7.5s !important;
-      transform: scale(1.2) !important;
-    }
-    
-    @keyframes rotate3D {
-      0% {
-        transform: rotateY(0deg) rotateZ(0deg);
-      }
-      33% {
-        transform: rotateY(120deg) rotateZ(120deg);
-      }
-      66% {
-        transform: rotateY(240deg) rotateZ(240deg);
-      }
-      100% {
-        transform: rotateY(360deg) rotateZ(360deg);
-      }
-    }
-    
-    /* 波紋エフェクト */
-    .ripple-effect {
-      position: absolute !important;
-      width: 100px !important;
-      height: 100px !important;
-      border: 2px solid rgba(138, 43, 226, 0.3) !important;
-      border-radius: 50% !important;
-      display: block !important;
-      animation: ripple 8s ease-out infinite !important;
-    }
-    
-    .side-decoration.left .ripple1 {
-      top: 10% !important;
-      left: 30% !important;
-      animation-delay: 0s !important;
-    }
-    
-    .side-decoration.left .ripple2 {
-      top: 60% !important;
-      left: 20% !important;
-      animation-delay: 4s !important;
-      transform: scale(0.6) !important;
-    }
-    
-    .side-decoration.right .ripple1 {
-      top: 15% !important;
-      right: 25% !important;
-      animation-delay: 2s !important;
-    }
-    
-    .side-decoration.right .ripple2 {
-      top: 65% !important;
-      right: 30% !important;
-      animation-delay: 6s !important;
-      transform: scale(0.8) !important;
-    }
-    
-    @keyframes ripple {
-      0% {
-        transform: scale(0.1);
-        opacity: 1;
-      }
-      50% {
-        transform: scale(0.5);
-        opacity: 0.6;
-      }
-      100% {
-        transform: scale(1);
-        opacity: 0;
-      }
-    }
-    
-    /* 宇宙塵と流星 */
-    .cosmic-dust {
-      position: absolute !important;
-      width: 100% !important;
-      height: 100% !important;
-      display: block !important;
-      z-index: 3 !important;
-    }
-    
-    .meteor {
-      position: absolute !important;
-      height: 1px !important;
-      background: linear-gradient(90deg, 
-        transparent 0%, 
-        rgba(255, 255, 255, 0.8) 30%, 
-        rgba(173, 216, 230, 1) 50%, 
-        rgba(255, 255, 255, 0.8) 70%, 
-        transparent 100%) !important;
-      display: block !important;
-      animation: meteorShower 12s ease-in-out infinite !important;
-      box-shadow: 0 0 8px rgba(173, 216, 230, 0.6) !important;
-    }
-    
-    .side-decoration.left .meteor1 {
-      top: 20% !important;
-      left: 0 !important;
-      width: 60% !important;
-      animation-delay: 0s !important;
-      transform: rotate(-30deg) !important;
-    }
-    
-    .side-decoration.left .meteor2 {
-      top: 60% !important;
-      left: 0 !important;
-      width: 80% !important;
-      animation-delay: 4s !important;
-      transform: rotate(-45deg) !important;
-    }
-    
-    .side-decoration.left .meteor3 {
-      top: 85% !important;
-      left: 0 !important;
-      width: 50% !important;
-      animation-delay: 8s !important;
-      transform: rotate(-20deg) !important;
-    }
-    
-    .side-decoration.right .meteor1 {
-      top: 30% !important;
-      right: 0 !important;
-      width: 70% !important;
-      animation-delay: 2s !important;
-      transform: rotate(30deg) !important;
-    }
-    
-    .side-decoration.right .meteor2 {
-      top: 50% !important;
-      right: 0 !important;
-      width: 60% !important;
-      animation-delay: 6s !important;
-      transform: rotate(45deg) !important;
-    }
-    
-    .side-decoration.right .meteor3 {
-      top: 75% !important;
-      right: 0 !important;
-      width: 80% !important;
-      animation-delay: 10s !important;
-      transform: rotate(25deg) !important;
-    }
-    
-    @keyframes meteorShower {
-      0%, 90%, 100% {
-        opacity: 0;
-        transform: scaleX(0);
-      }
-      5% {
-        opacity: 1;
-        transform: scaleX(1);
-      }
-      15% {
-        opacity: 0.8;
-        transform: scaleX(1.5);
-      }
-      25% {
-        opacity: 0;
-        transform: scaleX(0);
-      }
-    }
-    
-    /* ナビゲーションメニュー */
-    .nav-menu {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      z-index: 1000;
-      background: rgba(20, 20, 25, 0.95);
-      border-radius: 50px;
-      padding: 15px;
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-      backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      transition: all 0.3s ease;
-    }
-    
-    .nav-menu:hover {
-      background: rgba(20, 20, 25, 1);
-      transform: scale(1.05);
-    }
-    
-    .hamburger {
-      width: 30px;
-      height: 30px;
-      cursor: pointer;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-around;
-      align-items: center;
-    }
-    
-    .hamburger span {
-      width: 25px;
-      height: 3px;
-      background: linear-gradient(45deg, #ffffff, #e0e0e0);
-      border-radius: 2px;
-      transition: all 0.3s ease;
-      box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
-    }
-    
-    .hamburger.active span:nth-child(1) {
-      transform: rotate(45deg) translate(6px, 6px);
-    }
-    
-    .hamburger.active span:nth-child(2) {
-      opacity: 0;
-    }
-    
-    .hamburger.active span:nth-child(3) {
-      transform: rotate(-45deg) translate(6px, -6px);
-    }
-    
-    .nav-dropdown {
-      position: absolute;
-      top: 70px;
-      right: 0;
-      background: rgba(20, 20, 25, 0.98);
-      border-radius: 15px;
-      min-width: 200px;
-      opacity: 0;
-      visibility: hidden;
-      transform: translateY(-20px);
-      transition: all 0.3s ease;
-      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
-      backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-    }
-    
-    .nav-dropdown.show {
-      opacity: 1;
-      visibility: visible;
-      transform: translateY(0);
-    }
-    
-    .nav-item {
-      display: block;
-      padding: 15px 20px;
-      color: #ffffff;
-      text-decoration: none;
-      font-weight: 500;
-      font-size: 0.95rem;
-      transition: all 0.3s ease;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    }
-    
-    .nav-item:last-child {
-      border-bottom: none;
-    }
-    
-    .nav-item:hover {
-      background: rgba(255, 255, 255, 0.1);
-      color: #f0f0f0;
-      padding-left: 25px;
-    }
-    
-    .nav-item::before {
-      content: '';
-      display: inline-block;
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      margin-right: 10px;
-      transition: all 0.3s ease;
-    }
-    
-    .nav-item[href="#intro"]::before {
-      background: #4a90e2;
-    }
-    
-    .nav-item[href="#blog"]::before {
-      background: #2c6e49;
-    }
-    
-    .nav-item:hover::before {
-      transform: scale(1.5);
-      box-shadow: 0 0 15px currentColor;
-    }
-    
-    @media (min-width: 1501px) {
-      .side-decoration {
-        display: block;
-      }
-      
-      body {
-        padding-left: 270px;
-        padding-right: 270px;
-      }
-    }
-    
-    @media (max-width: 1500px) {
-      .side-decoration {
-        display: none !important;
-      }
-    }
-    
-    header {
-      background: 
-        linear-gradient(rgba(44, 110, 73, 0.5), rgba(58, 133, 96, 0.6)),
-        linear-gradient(180deg, 
-          #87CEEB 0%,
-          #B0E0E6 15%,
-          #ADD8E6 30%,
-          #87CEEB 45%,
-          #4682B4 55%,
-          #1E90FF 65%,
-          #0080FF 75%,
-          #0066CC 85%,
-          #228B22 90%,
-          #32CD32 100%
-        );
-      color: white;
-      padding: 0.5rem 1rem;
-      text-align: center;
-      top: 0;
-      left: 0;
-      right: 0;
-      overflow: hidden;
-      box-shadow: 0 4px 12px rgba(44, 110, 73, 0.3);
-      min-height: 120px;
-      background-size: cover;
-      background-position: center;
-    }
-    
-    header::after {
-      content: '';
-      position: absolute;
-      top: 8%;
-      right: 15%;
-      width: 80px;
-      height: 80px;
-      background: radial-gradient(circle, 
-        #FFD700 0%, 
-        #FFA500 40%, 
-        #FF8C00 70%, 
-        rgba(255, 140, 0, 0.8) 100%);
-      border-radius: 50%;
-      box-shadow: 
-        0 0 30px rgba(255, 215, 0, 0.8),
-        0 0 60px rgba(255, 165, 0, 0.4),
-        0 0 90px rgba(255, 140, 0, 0.2);
-      opacity: 0.9;
-      animation: sun-glow 4s ease-in-out infinite alternate;
-    }
-    
-    @keyframes sun-glow {
-      0% { 
-        box-shadow: 
-          0 0 30px rgba(255, 215, 0, 0.8),
-          0 0 60px rgba(255, 165, 0, 0.4),
-          0 0 90px rgba(255, 140, 0, 0.2);
-      }
-      100% { 
-        box-shadow: 
-          0 0 40px rgba(255, 215, 0, 1),
-          0 0 80px rgba(255, 165, 0, 0.6),
-          0 0 120px rgba(255, 140, 0, 0.3);
-      }
-    }
-    
-    .header-content {
-      position: relative;
-      z-index: 10;
-      padding-top: 1rem;
-    }
-    
-    header h1 {
-      margin: 0;
-      font-size: 4rem;
-      font-weight: 400;
-      background: linear-gradient(135deg, 
-        #2c3e50 0%, 
-        #34495e 15%, 
-        #1a252f 30%, 
-        #2c3e50 45%, 
-        #4a6741 60%, 
-        #2c4e3a 75%, 
-        #1e3a32 90%, 
-        #2c3e50 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      background-size: 400% 400%;
-      text-shadow: 
-        0 0 30px rgba(44, 62, 80, 0.8),
-        0 0 60px rgba(52, 73, 94, 0.6),
-        0 0 90px rgba(26, 37, 47, 0.4),
-        0 6px 12px rgba(0, 0, 0, 0.6);
-      letter-spacing: 0.2rem;
-      animation: nameGlow 4s ease-in-out infinite alternate, gradientShift 8s ease-in-out infinite;
-      font-family: 'Georgia', 'Times New Roman', serif;
-      position: relative;
-      line-height: 1.1;
-      font-style: italic;
-      text-transform: capitalize;
-    }
-    
-    @keyframes nameGlow {
-      0% {
-        text-shadow: 
-          0 0 30px rgba(44, 62, 80, 0.8),
-          0 0 60px rgba(52, 73, 94, 0.6),
-          0 0 90px rgba(26, 37, 47, 0.4),
-          0 6px 12px rgba(0, 0, 0, 0.6);
-        transform: scale(1);
-      }
-      100% {
-        text-shadow: 
-          0 0 50px rgba(44, 62, 80, 1),
-          0 0 100px rgba(52, 73, 94, 0.8),
-          0 0 150px rgba(26, 37, 47, 0.6),
-          0 0 200px rgba(44, 110, 73, 0.4),
-          0 8px 16px rgba(0, 0, 0, 0.7);
-        transform: scale(1.03);
-      }
-    }
-    
-    @keyframes gradientShift {
-      0% {
-        background-position: 0% 50%;
-      }
-      50% {
-        background-position: 100% 50%;
-      }
-      100% {
-        background-position: 0% 50%;
-      }
-    }
-    
-    .social-links {
-      display: flex;
-      justify-content: center;
-      gap: 0.5rem;
-      margin-top: 1.5rem;
-    }
-    
-    .social-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.2rem;
-      padding: 0.3rem 0.5rem;
-      color: white;
-      text-decoration: none;
-      border-radius: 15px;
-      transition: all 0.3s ease;
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      font-weight: 500;
-      font-size: 0.7rem;
-    }
-    
-    .social-link.instagram {
-      background: linear-gradient(45deg, #E4405F, #F56040, #FFDC80);
-    }
-    
-    .social-link.x {
-      background: linear-gradient(45deg, #000000, #1a1a1a);
-    }
-    
-    .social-link.note {
-      background: linear-gradient(45deg, #41C9B4, #2E8B7B);
-    }
-
-    .social-link.netcity {
-      background: linear-gradient(45deg, #667eea, #764ba2);
-    }
-
-    .social-link:hover {
-      transform: translateY(-3px) scale(1.05);
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-      border-color: rgba(255, 255, 255, 0.5);
-    }
-    
-    .social-icon {
-      font-size: 0.8rem;
-    }
-    
-    main {
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 2rem 1rem;
-    }
-    
-    .intro-section {
-      background: linear-gradient(135deg, white, #f8f9fa);
-      padding: 2rem;
-      margin-bottom: 2rem;
-      border-radius: 12px;
-      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-      border-left: 6px solid #2c6e49;
-      border-top: 1px solid rgba(44, 110, 73, 0.1);
-    }
-    
-    .intro-section h2 {
-      margin-top: 0;
-      color: #2c6e49;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    
-    .featured-photo {
-      width: 100%;
-      max-width: 500px;
-      height: 250px;
-      border-radius: 8px;
-      overflow: hidden;
-      margin: 1rem auto;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-    
-    .featured-photo img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-    
-    .featured-placeholder {
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(135deg, #e9ecef, #dee2e6);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.5rem;
-      color: #6c757d;
-    }
-    
-    .post {
-      background: linear-gradient(135deg, white, #fdfdfd);
-      padding: 2rem;
-      margin-bottom: 2rem;
-      border-radius: 12px;
-      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-      border: 1px solid rgba(44, 110, 73, 0.1);
-    }
-    
-    .post:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 12px 24px rgba(44, 110, 73, 0.15);
-    }
-    
-    .post h2 {
-      margin-top: 0;
-      margin-bottom: 1rem;
-      color: #2c6e49;
-      font-size: 1.8rem;
-      line-height: 1.3;
-    }
-    
-    .post-date {
-      font-size: 1.2rem;
-      font-weight: 600;
-      color: #4a90e2;
-      background: linear-gradient(45deg, #4a90e2, #667eea);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      margin-bottom: 1.5rem;
-      display: block;
-      text-shadow: 0 2px 4px rgba(74, 144, 226, 0.2);
-    }
-    
-    .post-content {
-      line-height: 1.8;
-      font-size: 1rem;
-      color: #333;
-    }
-    
-    .post-content p {
-      margin-bottom: 1rem;
-    }
-    
-    .post-content p:last-child {
-      margin-bottom: 0;
-    }
-    
-    footer {
-      text-align: center;
-      padding: 2rem 1rem;
-      background: linear-gradient(135deg, #2c6e49, #3a8560, #4a9470);
-      color: white;
-      margin-top: 3rem;
-      box-shadow: 0 -4px 12px rgba(44, 110, 73, 0.2);
-    }
-    
-    .footer-content {
-      max-width: 800px;
-      margin: 0 auto;
-    }
-    
-    .footer-social {
-      margin-bottom: 1rem;
-    }
-    
-    .footer-social .social-link {
-      margin: 0 0.5rem;
-    }
-    
-    @media (max-width: 768px) {
-      header {
-        padding: 0.4rem 1rem;
-        min-height: 100px;
-        left: 0;
-        right: 0;
-      }
-      
-      header h1 {
-        font-size: 2.8rem;
-        letter-spacing: 0.15rem;
-      }
-      
-      main {
-        padding: 2rem 1rem;
-      }
-      
-      .social-links {
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 0.2rem;
-        margin-top: 1rem;
-      }
-      
-      .intro-section,
-      .post {
-        padding: 1.5rem;
-      }
-      
-      .post h2 {
-        font-size: 1.5rem;
-      }
-      
-      .post-date {
-        font-size: 1rem;
-      }
-      
-      .nav-menu {
-        top: 15px;
-        right: 15px;
-        padding: 12px;
-      }
-      
-      .nav-dropdown {
-        min-width: 180px;
-        top: 60px;
-      }
-      
-      .nav-item {
-        padding: 12px 18px;
-        font-size: 0.9rem;
-      }
-    }
-/* 折りたたみ機能用CSS */
-.post-header {
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.post-header:hover {
-  background-color: rgba(44, 110, 73, 0.05);
-  border-radius: 8px;
-}
-
-.post .post-content {
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.4s ease-out;
-}
-
-.post .post-content.active {
-  max-height: 3000px;
-  transition: max-height 0.6s ease-in;
-}
-
-.toggle-icon {
-  float: right;
-  transition: transform 0.3s;
-  font-size: 1.2rem;
-  color: #2c6e49;
-  margin-right: 10px;
-}
-
-.toggle-icon.active {
-  transform: rotate(180deg);
-}
-.nav-item[href^="#blog-"]::before {
-  background: #e67e22;
-}
-#intro, #blog-oct-2025, #blog-sep-2025, #blog-aug-2025 {
-  scroll-margin-top: 70px;
-}
-
-  </style>
 </head>
 <body>
-  <!-- ナビゲーションメニュー -->
-  <div class="nav-menu">
-    <div class="hamburger" onclick="toggleNav()">
-      <span></span>
-      <span></span>
-      <span></span>
+  <!-- サイドバーナビゲーション -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <h1>丹羽康揮</h1>
+      <p class="subtitle">Kouki Niwa</p>
     </div>
-<div class="nav-dropdown" id="navDropdown">
-  <a href="#intro" class="nav-item" onclick="closeNav()">はじめに</a>
-  <a href="#blog-oct-2025" class="nav-item" onclick="closeNav()">2025年10月</a>
-  <a href="#blog-sep-2025" class="nav-item" onclick="closeNav()">2025年9月</a>
-  <a href="#blog-aug-2025" class="nav-item" onclick="closeNav()">2025年8月</a>
- </div>
-</div>
 
-  <!-- サイドデコレーション（PC表示時のみ） -->
-  <div class="side-decoration left">
-    <div class="stars">
-      <div class="star small star1"></div>
-      <div class="star medium star2"></div>
-      <div class="star large star3"></div>
-      <div class="star small star4"></div>
-      <div class="star medium star5"></div>
-      <div class="star small star6"></div>
-      <div class="star large star7"></div>
-      <div class="star medium star8"></div>
-    </div>
-    <div class="design-centerpiece">
-      <div class="solar-system">
-        <div class="orbit orbit1">
-          <div class="planet planet1"></div>
-        </div>
-        <div class="orbit orbit2">
-          <div class="planet planet2"></div>
-        </div>
-        <div class="orbit orbit3">
-          <div class="planet planet3"></div>
-        </div>
-        <div class="sun"></div>
-      </div>
-    </div>
-    <div class="geometric-pattern">
-      <div class="hexagon hexagon1"></div>
-      <div class="hexagon hexagon2"></div>
-    </div>
-    <div class="ripple-effect ripple1"></div>
-    <div class="ripple-effect ripple2"></div>
-    <div class="cosmic-dust">
-      <div class="meteor meteor1"></div>
-      <div class="meteor meteor2"></div>
-      <div class="meteor meteor3"></div>
-    </div>
-  </div>
-  
-  <div class="side-decoration right">
-    <div class="stars">
-      <div class="star medium star1"></div>
-      <div class="star small star2"></div>
-      <div class="star large star3"></div>
-      <div class="star medium star4"></div>
-      <div class="star small star5"></div>
-      <div class="star large star6"></div>
-      <div class="star small star7"></div>
-      <div class="star medium star8"></div>
-    </div>
-    <div class="design-centerpiece">
-      <div class="solar-system">
-        <div class="orbit orbit1">
-          <div class="planet planet1"></div>
-        </div>
-        <div class="orbit orbit2">
-          <div class="planet planet2"></div>
-        </div>
-        <div class="orbit orbit3">
-          <div class="planet planet3"></div>
-        </div>
-        <div class="sun"></div>
-      </div>
-    </div>
-    <div class="geometric-pattern">
-      <div class="hexagon hexagon1"></div>
-      <div class="hexagon hexagon2"></div>
-    </div>
-    <div class="ripple-effect ripple1"></div>
-    <div class="ripple-effect ripple2"></div>
-    <div class="cosmic-dust">
-      <div class="meteor meteor1"></div>
-      <div class="meteor meteor2"></div>
-      <div class="meteor meteor3"></div>
-    </div>
-  </div>
+    <nav class="sidebar-nav">
+      <a href="#intro" class="nav-link">プロフィール</a>
+      <a href="#nov-2025" class="nav-link">2025年11月</a>
+      <a href="#oct-2025" class="nav-link">2025年10月</a>
+      <a href="#sep-2025" class="nav-link">2025年9月</a>
+      <a href="#aug-2025" class="nav-link">2025年8月</a>
+    </nav>
 
-  <header>
-    <div class="header-content">
-      <h1><span class="first-name">Niwa</span><span class="last-name">Kouki</span></h1>
-      
-      <div class="social-links">
-        <a href="https://instagram.com/kouki__n" target="_blank" class="social-link instagram">
-          <span class="social-icon">📷</span>
-          <span>Instagram</span>
-        </a>
-        <a href="https://x.com/hgS9nGJWWF17545" target="_blank" class="social-link x">
-          <span class="social-icon">✕</span>
-          <span>X</span>
-        </a>
-        <a href="https://note.com/natty_cobra963" target="_blank" class="social-link note">
-          <span class="social-icon">📝</span>
-          <span>Note</span>
-        </a>
-        <a href="https://koukiniwa.github.io/net-city-beta/" target="_blank" class="social-link netcity">
-          <span class="social-icon">🌐</span>
-          <span>NetCity Beta</span>
-        </a>
-      </div>
+    <div class="sidebar-social">
+      <a href="https://instagram.com/kouki__n" target="_blank" class="social-icon" title="Instagram">📷</a>
+      <a href="https://x.com/hgS9nGJWWF17545" target="_blank" class="social-icon" title="X">✕</a>
+      <a href="https://note.com/natty_cobra963" target="_blank" class="social-icon" title="Note">📝</a>
+      <a href="https://koukiniwa.github.io/net-city-beta/" target="_blank" class="social-icon" title="NetCity Beta">🌐</a>
     </div>
+  </aside>
+
+  <!-- モバイルヘッダー -->
+  <header class="mobile-header">
+    <h1>丹羽康揮</h1>
+    <button class="mobile-menu-btn" onclick="toggleMobileMenu()">☰</button>
   </header>
 
-  <main>
-    <div class="intro-section" id="intro">
-      <h2>🌱 自己紹介</h2>
-      <h3>丹羽康揮</h3>
-      <ul>
-        <li>誕生日11月8日</li>
-        <li>血液型AB型</li>
-        <li>好きな食べ物　ハンバーガー　ラーメン</li>
-        <li>趣味　ニュースを読む　旅行</li>
-      </ul>
+  <!-- モバイルメニュー -->
+  <nav class="mobile-nav" id="mobileNav">
+    <a href="#intro" class="nav-link" onclick="closeMobileMenu()">プロフィール</a>
+    <a href="#nov-2025" class="nav-link" onclick="closeMobileMenu()">2025年11月</a>
+    <a href="#oct-2025" class="nav-link" onclick="closeMobileMenu()">2025年10月</a>
+    <a href="#sep-2025" class="nav-link" onclick="closeMobileMenu()">2025年9月</a>
+    <a href="#aug-2025" class="nav-link" onclick="closeMobileMenu()">2025年8月</a>
+  </nav>
 
-      <div class="featured-photo">
-  <img src="https://lh3.googleusercontent.com/pw/AP1GczMfN9SWUtNZuB4PGdOOE0p0lZxsAQOm_uWBcyXQLFBfH9pF4_pc7Xx7PA1_wTlXwLEo_AiyPBbPRWccRi7LVoTcb9VUi_1vF-3PK1a9WwvbZvZRQNCdrmN8-vmxnossndP-XcojFlRQdB2QpUP5wIna=w1197-h898-s-no-gm?authuser=0" alt="丹羽康揮の写真">
-</div>
-      
-      <p>楽しく生活している丹羽康揮の動向や生活について発信していきます　ぜひ見てね!</p>
-    </div>
+  <!-- メインコンテンツ -->
+  <main class="main-content">
+    <!-- プロフィール -->
+    <section id="intro" class="profile-section">
+      <div class="profile-container">
+        <div class="profile-image">
+          <img src="https://lh3.googleusercontent.com/pw/AP1GczMfN9SWUtNZuB4PGdOOE0p0lZxsAQOm_uWBcyXQLFBfH9pF4_pc7Xx7PA1_wTlXwLEo_AiyPBbPRWccRi7LVoTcb9VUi_1vF-3PK1a9WwvbZvZRQNCdrmN8-vmxnossndP-XcojFlRQdB2QpUP5wIna=w1197-h898-s-no-gm?authuser=0" alt="丹羽康揮">
+        </div>
+        <div class="profile-info">
+          <h2>丹羽康揮</h2>
+          <p class="profile-title">農学部生</p>
+          <ul class="profile-details">
+            <li><span class="label">誕生日</span>11月8日</li>
+            <li><span class="label">血液型</span>AB型</li>
+            <li><span class="label">好きな食べ物</span>ハンバーガー、ラーメン</li>
+            <li><span class="label">趣味</span>ニュースを読む、旅行</li>
+          </ul>
+          <p class="profile-bio">楽しく生活している丹羽康揮の動向や生活について発信していきます。</p>
+          <div class="profile-social">
+            <a href="https://instagram.com/kouki__n" target="_blank" class="profile-social-link" title="Instagram">📷 Instagram</a>
+            <a href="https://x.com/hgS9nGJWWF17545" target="_blank" class="profile-social-link" title="X">✕ X</a>
+            <a href="https://note.com/natty_cobra963" target="_blank" class="profile-social-link" title="Note">📝 Note</a>
+            <a href="https://koukiniwa.github.io/net-city-beta/" target="_blank" class="profile-social-link" title="NetCity Beta">🌐 NetCity Beta</a>
+          </div>
+        </div>
+      </div>
+    </section>
 
-<div class="post" id="blog-oct-2025">
- <div class="post-header" onclick="togglePost(this)">
-    <span class="toggle-icon">▼</span>
-      <h2>🌱 種うえ</h2>
-      <div class="post-date">2025年10月30日</div>
-      </div>
-      <div class="post-content">
-        <p>農学部の実習の一環として冬野菜を育てることになりました。自分はにんじんとかぶを植えました。</p>
-        <p>今後水やりをして成長を見守りたいと思います。収穫が楽しみです！</p>
-      </div>
-    </div>
+    <!-- 記事一覧 -->
+    <section id="nov-2025" class="blog-section">
+      <h2 class="section-title">2025年11月</h2>
 
- <div class="post">
- <div class="post-header" onclick="togglePost(this)">
-    <span class="toggle-icon">▼</span>
-      <h2>💬 リアクション機能の追加と今後の課題</h2>
-      <div class="post-date">2025年10月29日</div>
-      </div>
-      <div class="post-content">
+      <article class="blog-post">
+        <time class="post-date">2025.11.08</time>
+        <h3>20歳の誕生日</h3>
+        <p>20歳の誕生日を迎えることができました。とても大きな節目だと思います。自分が100歳まで生きると考えると、1/5が終わったことになります。</p>
+        <p>大人になると時間の経過が早いと感じるようになると言われていますが、もうすでに感じています。ですので、一日一日を大切にして充実した日々を送っていきたいと思います。</p>
+        <p>また、20歳という日に合わせてこのサイトのデザインも大人っぽくなりました。今後ともよろしくお願いします。</p>
+      </article>
+
+      <article class="blog-post">
+        <time class="post-date">2025.11.07</time>
+        <h3>匿名アプリの難しさ</h3>
+        <p>現在、匿名チャットのWebアプリを開発していますが、最も大きな課題は<strong>安全性の確保</strong>です。</p>
+        <p>日本の匿名アプリで最も大きなシェアを誇っていた「2ちゃんねる」では、匿名であるがゆえに多くの誹謗中傷のコメントや犯罪予告などの不適切発言が問題視され、創設者の西村博之さんへの多額の賠償請求が発生する事態となってしまいました。</p>
+        <p>自分のアプリも入室時に個人情報を書く必要がなく、現在のところ安全性への整備が甘いということは認識しています。利用者が増加するにつれてこういった整備も難しくなってしまうので、早い段階で対策を行いたいと考えています。</p>
+      </article>
+
+      <article class="blog-post">
+        <time class="post-date">2025.11.05</time>
+        <h3>デザイン変更</h3>
+        <p>ネットシティベータのウェブアプリのデザインを大幅に変更しました。今まではインスタグラムのリール形式でしたが、それでは見づらいと感じ、ヤフーニュースのアプリのようなデザインに変更しました。</p>
+        <p>これでルーム数が多くなってもカテゴリーごとに分類でき、ルームを見つけやすくなりました。より使いやすいデザインに今後も改善を加えていきたいと思います。</p>
+      </article>
+
+      <article class="blog-post">
+        <time class="post-date">2025.11.02</time>
+        <h3>苗植え</h3>
+        <p>農学部の実習の一環として冬野菜を育てることになりました。2月までに収穫可能な野菜しか得られないということもあり、今回は苗から育てることにしました。</p>
+        <p>ネギとレタスの苗を3つずつ、白菜の苗を4つ、カリフラワーの苗を1つ植えました。日曜日だったので時間があり、土をしっかり耕して丁寧に畝を作りました。他の人の畑と比べてもきれいに仕上がったと思います。</p>
+        <p>収穫が楽しみです！</p>
+      </article>
+    </section>
+
+    <section id="oct-2025" class="blog-section">
+      <h2 class="section-title">2025年10月</h2>
+
+      <article class="blog-post">
+        <time class="post-date">2025.10.29</time>
+        <h3>リアクション機能の追加と今後の課題</h3>
         <p>リアクション機能が追加されました。バッドボタンを入れないことで、より質の良い会話を目指しています。</p>
         <p>一方で、24時間でメッセージが消えるシステムについてはエラーが発生しており、メッセージが消えていない状況です。早急に解決したい課題です。</p>
         <p>また、複数の部屋を作れるようにするシステムもバックエンドのエラーで実装できていません。こちらも解決していきたいと思います。</p>
-      </div>
-    </div>
+      </article>
 
- <div class="post">
- <div class="post-header" onclick="togglePost(this)">
-    <span class="toggle-icon">▼</span>
-      <h2>🌃 ネットシティベータの未来</h2>
-      <div class="post-date">2025年10月28日</div>
-      </div>
-      <div class="post-content">
-        <p>「ネットシティベータ」は、日本中のユーザーが仮想空間でリアルタイムに交流できる次世代コミュニケーションアプリです。</p>
-        <p>未来的な街並みを舞台に、まるでそこに居るかのような臨場感ある会話体験を提供します。</p>
+      <article class="blog-post">
+        <time class="post-date">2025.10.28</time>
+        <h3>ネットシティベータの未来</h3>
+        <p>「ネットシティベータ」は、日本中のユーザーが仮想空間でリアルタイムに交流できる次世代コミュニケーションアプリです。未来的な街並みを舞台に、まるでそこに居るかのような臨場感ある会話体験を提供します。</p>
 
-        <h3 style="color: #2c6e49; margin-top: 1.5rem; margin-bottom: 1rem;">【今後の開発方針】</h3>
+        <h4>今後の開発方針</h4>
+        <p><strong>スケーラビリティの強化</strong><br>
+        利用者の増加に対応し、快適な会話環境を維持するため、サーバーインフラとUI/UXの継続的な改善を行います。</p>
 
-        <h4 style="color: #4a90e2; margin-top: 1rem;">■ スケーラビリティの強化</h4>
-        <p>利用者の増加に対応し、快適な会話環境を維持するため、サーバーインフラとUI/UXの継続的な改善を行います。</p>
+        <p><strong>世界観の深化</strong><br>
+        「仮想都市」というコンセプトをより鮮明にし、没入感の高い空間デザインを追求します。</p>
 
-        <h4 style="color: #4a90e2; margin-top: 1rem;">■ 世界観の深化</h4>
-        <p>「仮想都市」というコンセプトをより鮮明にし、没入感の高い空間デザインを追求します。</p>
+        <p><strong>アクセシビリティの向上</strong><br>
+        SNSを活用したプロモーション展開と、iOS/Androidアプリストアでの配信を予定しています。</p>
 
-        <h4 style="color: #4a90e2; margin-top: 1rem;">■ アクセシビリティの向上</h4>
-        <p>SNSを活用したプロモーション展開と、iOS/Androidアプリストアでの配信を予定しています。</p>
+        <p><strong>安心・安全な運営</strong><br>
+        収益化モデルの確立と並行して、ユーザーの安全性を最優先とした運営体制を構築します。モデレーション機能の強化、プライバシー保護、利用規約の整備など、健全なコミュニティ形成に全力で取り組んでまいります。</p>
+      </article>
 
-        <h4 style="color: #4a90e2; margin-top: 1rem;">■ 安心・安全な運営</h4>
-        <p>収益化モデルの確立と並行して、ユーザーの安全性を最優先とした運営体制を構築します。モデレーション機能の強化、プライバシー保護、利用規約の整備など、健全なコミュニティ形成に全力で取り組んでまいります。</p>
-      </div>
-    </div>
-
- <div class="post">
- <div class="post-header" onclick="togglePost(this)">
-    <span class="toggle-icon">▼</span>
-      <h2>💻 ネットシティベータのウェブ版公開！</h2>
-      <div class="post-date">2025年10月27日</div>
-      </div>
-      <div class="post-content">
+      <article class="blog-post">
+        <time class="post-date">2025.10.27</time>
+        <h3>ネットシティベータのウェブ版公開！</h3>
         <p>ネットシティベータというアプリのウェブ版が公開されました！ぜひ使ってみてください！</p>
-        <p>サイトはこちら: <a href="https://koukiniwa.github.io/net-city-beta/" target="_blank" style="color: #4a90e2; text-decoration: underline;">https://koukiniwa.github.io/net-city-beta/</a></p>
+        <p>サイトはこちら: <a href="https://koukiniwa.github.io/net-city-beta/" target="_blank">https://koukiniwa.github.io/net-city-beta/</a></p>
         <p>今後さらなる機能の追加とアンドロイドでのアプリの公開を予定しています。こうご期待！</p>
-      </div>
-    </div>
+      </article>
 
- <div class="post">
- <div class="post-header" onclick="togglePost(this)">
-    <span class="toggle-icon">▼</span>
-      <h2> 🔥夏休み終わり　後期開始</h2>
-      <div class="post-date">2025年10月2日</div>
-      </div>
-      <div class="post-content">
+      <article class="blog-post">
+        <time class="post-date">2025.10.02</time>
+        <h3>夏休み終わり　後期開始</h3>
         <p>2か月近くあった夏休みもあっというまに終わってしまい新学期が始まりました。今思うと今年の夏休みは両方の祖父母といとこに会い、3回サッカー観戦をし、2回の万博と室戸市、白川郷に行くなど多くの楽しい経験をしました。アルバイトもして去年よりもはるかに充実した夏休み期間だったと感じます。</p>
-　　　　<p>さて、今学期はオンラインが2つありますが1限は週3回もあります。段々と寒くなってきて朝起きるのが大変になってきてしまいそうですが、気合を入れて間に合うようにしたいです。</p>
-      </div>
-    </div>
+        <p>さて、今学期はオンラインが2つありますが1限は週3回もあります。段々と寒くなってきて朝起きるのが大変になってきてしまいそうですが、気合を入れて間に合うようにしたいです。</p>
+      </article>
+    </section>
 
+    <section id="sep-2025" class="blog-section">
+      <h2 class="section-title">2025年9月</h2>
 
- <div class="post"id="blog-sep-2025">
->
-  <div class="post-header" onclick="togglePost(this)">
-    <span class="toggle-icon">▼</span>
-      <h2>🎪 大阪・関西万博2025に行ってきた(2回目）!!</h2>
-      <div class="post-date">2025年9月17日</div>
-      </div>
-      <div class="post-content">
+      <article class="blog-post">
+        <time class="post-date">2025.09.17</time>
+        <h3>大阪・関西万博2025に行ってきた(2回目）!!</h3>
         <p>9月17日と18日の2日間でまたしても大阪万博に行ってきました!万博は地理が好きな僕にとってとても面白い場所だったためもう一度行こうということになりました。</p>
+        <p>待ち時間が比較的短いということもあり今回は中東や中央アジアなどに位置するあまりなじみのない国に多くいきました。特に印象的だったのはトルクメニスタンです。中央アジアの北朝鮮と言われるだけあって大統領の肖像画が入り口にあるのが衝撃的でした。パビリオンはとても豪華で、首都には大理石でできた白色の建物が立ち並ぶんだとか。天然ガスなどの資源が豊かな国であることを感じさせられます。特徴的な国すぎてキーホルダーを買ってしまいました。大切にしたいです。</p>
+        <p>抽選で当たった未来の都市パビリオンと三菱未来館にも行きました。様々な企業が未来を考え新しい技術の開発を行っており未来にワクワクさせられました。特に川崎重工業の四足歩行の乗り物がかっこよかったです。ぜひ調べて見てください!</p>
+        <p>万博はとても好奇心を搔き立てられます。次は2027年に横浜で花博があるそうなのでそちらも行きたいです</p>
+      </article>
 
-　　　　<p>待ち時間が比較的短いということもあり今回は中東や中央アジアなどに位置するあまりなじみのない国に多くいきました。特に印象的だったのはトルクメニスタンです。中央アジアの北朝鮮と言われるだけあって大統領の肖像画が入り口にあるのが衝撃的でした。パビリオンはとても豪華で、首都には大理石でできた白色の建物が立ち並ぶんだとか。天然ガスなどの資源が豊かな国であることを感じさせられます。特徴的な国すぎてキーホルダーを買ってしまいました。大切にしたいです。</p>
-
-　　　　<p>抽選で当たった未来の都市パビリオンと三菱未来館にも行きました。様々な企業が未来を考え新しい技術の開発を行っており未来にワクワクさせられました。特に川崎重工業の四足歩行の乗り物がかっこよかったです。ぜひ調べて見てください!</p>
-
-　　　　<p>万博はとても好奇心を搔き立てられます。次は2027年に横浜で花博があるそうなのでそちらも行きたいです</p>
-      </div>
-    </div>
-
- <div class="post">
-  <div class="post-header" onclick="togglePost(this)">
-    <span class="toggle-icon">▼</span>
-      <h2>🎪 大阪・関西万博2025に行ってきた！</h2>
-      <div class="post-date">2025年9月7日</div>
-      </div>
-      <div class="post-content">
+      <article class="blog-post">
+        <time class="post-date">2025.09.07</time>
+        <h3>大阪・関西万博2025に行ってきた！</h3>
         <p>9月6日と7日の2日間で、大阪・関西万博に行ってきました！まず最初に感じたのは、万博の人の多さと規模の大きさです。想像していた以上にスケールが大きく、到着した瞬間に圧倒されました。</p>
-        
         <p>土日ということもあってとても混雑していて、どのパビリオンに入るにも長い列に並ぶ必要がありました。でも、待った甲斐は十分にありました！どこのパビリオンもそれぞれ特徴的で、地理が好きな僕にとってはまさにサイコーの体験でした。</p>
-        
         <p>特に印象的だったのは<strong>アメリカ館</strong>です。ロケットで宇宙に行く体験ができるシミュレーションが本当にリアルで、まるで実際に宇宙飛行士になったような感覚でした。宇宙から地球を見下ろす映像は鳥肌が立つほど美しく、絶対におすすめのパビリオンです！</p>
-        
         <p><strong>命の未来パビリオン</strong>では、最新のアンドロイド技術を間近で見ることができ、未来について深く考えさせられました。アンドロイドの技術の進歩は目覚ましいものがありましたが、同時に「アンドロイドが普及したら人間との共生が難しい問題になるだろうな」とも感じました。技術の進歩と人間社会の調和について、改めて考える良い機会になりました。</p>
-        
         <p>2日間では全てを回りきれないほど盛りだくさんの内容で、最先端の技術や世界各国の文化に触れることができました。また必ず訪れたいと思える、本当に素晴らしい万博でした！</p>
-      </div>
-    </div>
+      </article>
 
- <div class="post">
-  <div class="post-header" onclick="togglePost(this)">
-    <span class="toggle-icon">▼</span>
-      <h2>🏘️ 白川郷で古き良き日本の夏を体験</h2>
-      <div class="post-date">2025年9月3日</div>
-      </div>
-      <div class="post-content">
+      <article class="blog-post">
+        <time class="post-date">2025.09.03</time>
+        <h3>白川郷で古き良き日本の夏を体験</h3>
         <p>名古屋から白川郷へ日帰り旅行に行ってきました！バスで約2時間50分の道のりでしたが、到着した瞬間に別世界に来たような感覚になりました。</p>
         <p>白川郷に着くとセミの鳴き声が響いていて、名古屋よりも少し涼しく感じられました。合掌造りの茅葺き屋根の建物群を眺めながら歩いていると、まさに「古き良き日本の夏」を肌で感じることができました。</p>
         <p>帰る前には、合掌造りの建物をリノベーションした「落人」という喫茶店に立ち寄りました。古い建物の雰囲気を活かした落ち着いた空間で、注文したゆずジュースが本当に美味しかった！</p>
-      </div>
-    </div>
+      </article>
+    </section>
 
- <div class="post">
-  <div class="post-header" onclick="togglePost(this)">
-    <span class="toggle-icon">▼</span>
-      <h2>⚽ トヨタスタジアムサイコー！</h2>
-      <div class="post-date">2025年8月31日</div>
-       </div>
-      <div class="post-content">
+    <section id="aug-2025" class="blog-section">
+      <h2 class="section-title">2025年8月</h2>
+
+      <article class="blog-post">
+        <time class="post-date">2025.08.31</time>
+        <h3>トヨタスタジアムサイコー！</h3>
         <p>名古屋グランパス対FC東京の試合をトヨタスタジアムで観戦してきました！J1のサッカーの試合を見るのは初めてだったのですが、想像以上の迫力と興奮でした。</p>
         <p>まず驚いたのは観客席の角度の急さ。すり鉢状になったスタジアムのおかげで、どの席からでもピッチが近く感じられて、臨場感が半端ありませんでした。</p>
         <p>肝心の試合は惜しくも同点でしたが、90分間ずっと手に汗握る熱い戦いでした。また別の試合も絶対に見に行きたいと思います！</p>
-      </div>
-    </div>
+      </article>
 
-<div class="post">
- <div class="post-header" onclick="togglePost(this)">
-    <span class="toggle-icon">▼</span>
-      <h2>🚗 愛車の洗車</h2>
-      <div class="post-date">2025年8月18日</div>
-       </div>
-      <div class="post-content">
+      <article class="blog-post">
+        <time class="post-date">2025.08.18</time>
+        <h3>愛車の洗車</h3>
         <p>半年間ほとんど洗車をせず、外の駐車場に置きっぱなしだった愛車を、ついに洗車機に通しました。長い間たまった汚れが一気に落ちてピカピカになり、まるで新車のようで感動！</p>
         <p>正直、初めて洗車機に車を入れるときは「ちゃんと真っ直ぐ止められるかな…」と少し怖かったですが、実際にやってみるととても簡単。これからはもっと気軽に利用して愛車をきれいに保とうと思います。</p>
-      </div>
-    </div>
+      </article>
 
-<div class="post" id="blog-aug-2025">
- <div class="post-header" onclick="togglePost(this)">
-    <span class="toggle-icon">▼</span>
-      <h2>🍜 香川でうどんを食べた</h2>
-      <div class="post-date">2025年8月16日</div>
-       </div>
-      <div class="post-content">
+      <article class="blog-post">
+        <time class="post-date">2025.08.16</time>
+        <h3>香川でうどんを食べた</h3>
         <p>香川県の石川うどんでぶっかけうどんとプリンを食べました！うどんはものすごく腰があって、さすが本場の讃岐うどんだなと感動しました。一緒に頼んだプリンが想像以上に濃厚で、なめらかな舌触りと深いコクが最高においしかったです。</p>
+      </article>
+    </section>
+
+    <!-- フッター -->
+    <footer class="main-footer">
+      <div class="footer-links">
+        <a href="https://instagram.com/kouki__n" target="_blank">Instagram</a>
+        <a href="https://x.com/hgS9nGJWWF17545" target="_blank">X</a>
+        <a href="https://note.com/natty_cobra963" target="_blank">Note</a>
       </div>
-    </div>
+      <p class="copyright">© 2025 Kouki Niwa. All rights reserved.</p>
+    </footer>
   </main>
 
-  <footer>
-    <div class="footer-content">
-      <div class="footer-social">
-        <a href="https://instagram.com/kouki__n" target="_blank" class="social-link instagram">
-          <span class="social-icon">📷</span>
-          <span>@kouki__n</span>
-        </a>
-        <a href="https://x.com/hgS9nGJWWF17545" target="_blank" class="social-link x">
-          <span class="social-icon">✕</span>
-          <span>@hgS9nGJWWF17545</span>
-        </a>
-        <a href="https://note.com/natty_cobra963" target="_blank" class="social-link note">
-          <span class="social-icon">📝</span>
-          <span>natty_cobra963</span>
-        </a>
-      </div>
-      <p>© 2025 丹羽康揮 (Koki Niwa) - 農学部生のブログ</p>
-      <p>Instagram: @kouki__n (こうき) | X: @hgS9nGJWWF17545 (NK) | Note: natty_cobra963</p>
-    </div>
-  </footer>
-
   <script>
-    // DOMが完全に読み込まれてから実行
-    document.addEventListener('DOMContentLoaded', function() {
-      // ナビゲーションメニューの制御
-      window.toggleNav = function() {
-        const hamburger = document.querySelector('.hamburger');
-        const dropdown = document.getElementById('navDropdown');
-        
-        hamburger.classList.toggle('active');
-        dropdown.classList.toggle('show');
-      };
-      
-      window.closeNav = function() {
-        const hamburger = document.querySelector('.hamburger');
-        const dropdown = document.getElementById('navDropdown');
-        
-        hamburger.classList.remove('active');
-        dropdown.classList.remove('show');
-      };
-      
-      // メニュー外をクリックした時に閉じる
-      document.addEventListener('click', function(e) {
-        const navMenu = document.querySelector('.nav-menu');
-        if (!navMenu.contains(e.target)) {
-          closeNav();
+    // スムーズスクロール
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
         }
       });
-// ブログ記事の折りたたみ機能
-      window.togglePost = function(header) {
-        const content = header.nextElementSibling;
-        const icon = header.querySelector('.toggle-icon');
-        
-        content.classList.toggle('active');
-        icon.classList.toggle('active');
-      };
-      
-      // スムーズスクロール
-      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
-          e.preventDefault();
-          const target = document.querySelector(this.getAttribute('href'));
-          if (target) {
-            target.scrollIntoView({
-              behavior: 'smooth',
-              block: 'start'
-            });
-          }
-        });
+    });
+
+    // モバイルメニュー
+    function toggleMobileMenu() {
+      const mobileNav = document.getElementById('mobileNav');
+      mobileNav.classList.toggle('active');
+    }
+
+    function closeMobileMenu() {
+      const mobileNav = document.getElementById('mobileNav');
+      mobileNav.classList.remove('active');
+    }
+
+    // アクティブリンクのハイライト
+    window.addEventListener('scroll', () => {
+      const sections = document.querySelectorAll('section[id]');
+      const navLinks = document.querySelectorAll('.nav-link');
+
+      let current = '';
+      sections.forEach(section => {
+        const sectionTop = section.offsetTop;
+        const sectionHeight = section.clientHeight;
+        if (pageYOffset >= sectionTop - 200) {
+          current = section.getAttribute('id');
+        }
+      });
+
+      navLinks.forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('href') === `#${current}`) {
+          link.classList.add('active');
+        }
       });
     });
   </script>
