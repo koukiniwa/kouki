@@ -201,7 +201,7 @@
         <div id="successMessage" class="success-message"></div>
         <div id="errorMessage" class="error-message"></div>
 
-        <h2>新規記事投稿</h2>
+        <h2 id="editorTitle">新規記事投稿</h2>
 
         <div class="form-group">
           <label>投稿日</label>
@@ -227,7 +227,8 @@
           </div>
         </div>
 
-        <button onclick="publishPost()">記事を投稿</button>
+        <button id="submitBtn" onclick="publishPost()">記事を投稿</button>
+        <button id="cancelEditBtn" onclick="cancelEdit()" style="display: none; background: #999; margin-top: 10px;">編集をキャンセル</button>
       </div>
 
       <!-- 記事管理セクション -->
@@ -244,7 +245,7 @@
   <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
     import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
-    import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, query, orderBy, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+    import { getFirestore, collection, addDoc, getDocs, deleteDoc, updateDoc, doc, query, orderBy, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
     // Firebase設定
     const firebaseConfig = {
@@ -271,6 +272,7 @@
     window.serverTimestamp = serverTimestamp;
     window.getDocs = getDocs;
     window.deleteDoc = deleteDoc;
+    window.updateDoc = updateDoc;
     window.doc = doc;
     window.query = query;
     window.orderBy = orderBy;
@@ -290,6 +292,7 @@
 
   <script>
     let selectedImage = null;
+    let editingPostId = null; // 編集中の記事ID
 
     // ログイン
     async function login() {
@@ -352,7 +355,7 @@
       reader.readAsDataURL(file);
     }
 
-    // 記事を投稿
+    // 記事を投稿または更新
     async function publishPost() {
       const dateInput = document.getElementById('postDate').value;
       const title = document.getElementById('postTitle').value;
@@ -375,30 +378,46 @@
         // 本文を段落ごとに分割
         const paragraphs = content.split('\n').filter(p => p.trim() !== '');
 
-        // Firestoreに保存
-        const docRef = await window.addDoc(window.collection(window.db, 'posts'), {
+        const postData = {
           date: formattedDate,
           title: title,
           paragraphs: paragraphs,
           image: selectedImage || null,
-          createdAt: window.serverTimestamp(),
           month: formattedDate.substring(0, 7) // "2025.11" 形式
-        });
+        };
+
+        if (editingPostId) {
+          // 編集モード：既存の記事を更新
+          await window.updateDoc(window.doc(window.db, 'posts', editingPostId), postData);
+          successDiv.textContent = '記事を更新しました！';
+
+          // 編集モードを解除
+          cancelEdit();
+
+          // 記事一覧を再読み込み
+          if (document.getElementById('postsList').innerHTML !== '') {
+            loadPostsList();
+          }
+        } else {
+          // 新規投稿モード
+          postData.createdAt = window.serverTimestamp();
+          await window.addDoc(window.collection(window.db, 'posts'), postData);
+          successDiv.textContent = '記事を投稿しました！';
+
+          // フォームをクリア
+          document.getElementById('postDate').value = '';
+          document.getElementById('postTitle').value = '';
+          document.getElementById('postContent').value = '';
+          document.getElementById('imagePreview').innerHTML = '';
+          selectedImage = null;
+        }
 
         // 成功メッセージ
-        successDiv.textContent = '記事を投稿しました！';
         successDiv.style.display = 'block';
         setTimeout(() => successDiv.style.display = 'none', 3000);
 
-        // フォームをクリア
-        document.getElementById('postDate').value = '';
-        document.getElementById('postTitle').value = '';
-        document.getElementById('postContent').value = '';
-        document.getElementById('imagePreview').innerHTML = '';
-        selectedImage = null;
-
       } catch (error) {
-        errorDiv.textContent = '投稿に失敗しました: ' + error.message;
+        errorDiv.textContent = (editingPostId ? '更新' : '投稿') + 'に失敗しました: ' + error.message;
         errorDiv.style.display = 'block';
         setTimeout(() => errorDiv.style.display = 'none', 5000);
       }
@@ -432,7 +451,10 @@
                   <div style="font-size: 18px; font-weight: bold; margin-bottom: 8px;">${post.title}</div>
                   <div style="color: #666; font-size: 14px;">${post.paragraphs[0].substring(0, 80)}...</div>
                 </div>
-                <button onclick="deletePost('${postId}', '${post.title}')" style="width: auto; padding: 8px 15px; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); margin-left: 15px;">削除</button>
+                <div style="display: flex; gap: 10px; margin-left: 15px;">
+                  <button onclick="editPost('${postId}')" style="width: auto; padding: 8px 15px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">編集</button>
+                  <button onclick="deletePost('${postId}', '${post.title}')" style="width: auto; padding: 8px 15px; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">削除</button>
+                </div>
               </div>
             </div>
           `;
@@ -461,8 +483,73 @@
       }
     }
 
+    // 記事を編集モードにする
+    async function editPost(postId) {
+      try {
+        // Firestoreから記事を取得
+        const postDoc = await window.doc(window.db, 'posts', postId);
+        const docSnap = await window.getDocs(window.query(window.collection(window.db, 'posts')));
+
+        let postData = null;
+        docSnap.forEach((doc) => {
+          if (doc.id === postId) {
+            postData = doc.data();
+          }
+        });
+
+        if (!postData) {
+          alert('記事が見つかりませんでした');
+          return;
+        }
+
+        // 編集中の記事IDを保存
+        editingPostId = postId;
+
+        // フォームに値をセット
+        document.getElementById('postDate').value = postData.date.replace(/\./g, '-'); // "2025.11.28" → "2025-11-28"
+        document.getElementById('postTitle').value = postData.title;
+        document.getElementById('postContent').value = postData.paragraphs.join('\n');
+
+        // 画像がある場合
+        if (postData.image) {
+          selectedImage = postData.image;
+          document.getElementById('imagePreview').innerHTML = `<img src="${selectedImage}" alt="プレビュー">`;
+        }
+
+        // UIを編集モードに変更
+        document.getElementById('editorTitle').textContent = '記事を編集';
+        document.getElementById('submitBtn').textContent = '変更を保存';
+        document.getElementById('cancelEditBtn').style.display = 'block';
+
+        // フォームの位置までスクロール
+        document.getElementById('editorTitle').scrollIntoView({ behavior: 'smooth' });
+
+      } catch (error) {
+        alert('記事の読み込みに失敗しました: ' + error.message);
+      }
+    }
+
+    // 編集をキャンセル
+    function cancelEdit() {
+      editingPostId = null;
+
+      // フォームをクリア
+      document.getElementById('postDate').value = '';
+      document.getElementById('postTitle').value = '';
+      document.getElementById('postContent').value = '';
+      document.getElementById('imagePreview').innerHTML = '';
+      selectedImage = null;
+
+      // UIを新規投稿モードに戻す
+      document.getElementById('editorTitle').textContent = '新規記事投稿';
+      document.getElementById('submitBtn').textContent = '記事を投稿';
+      document.getElementById('cancelEditBtn').style.display = 'none';
+    }
+
     window.loadPostsList = loadPostsList;
     window.deletePost = deletePost;
+    window.editPost = editPost;
+    window.cancelEdit = cancelEdit;
   </script>
 </body>
 </html>
