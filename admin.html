@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ブログ管理画面</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .header {
+      background: white;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      margin-bottom: 30px;
+      text-align: center;
+    }
+
+    .header h1 {
+      color: #667eea;
+      margin-bottom: 10px;
+    }
+
+    #userEmail {
+      color: #666;
+      font-size: 14px;
+    }
+
+    .auth-container {
+      background: white;
+      padding: 40px;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+
+    .auth-container h2 {
+      color: #333;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: #333;
+      font-weight: 600;
+    }
+
+    input[type="email"],
+    input[type="password"],
+    input[type="text"],
+    textarea {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 16px;
+      transition: border-color 0.3s;
+    }
+
+    input:focus,
+    textarea:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+
+    textarea {
+      min-height: 150px;
+      resize: vertical;
+      font-family: inherit;
+    }
+
+    .image-upload {
+      border: 2px dashed #e0e0e0;
+      border-radius: 8px;
+      padding: 30px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .image-upload:hover {
+      border-color: #667eea;
+      background: #f8f9ff;
+    }
+
+    .image-upload input {
+      display: none;
+    }
+
+    .image-preview {
+      margin-top: 15px;
+      max-width: 100%;
+    }
+
+    .image-preview img {
+      max-width: 100%;
+      max-height: 300px;
+      border-radius: 8px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    button {
+      width: 100%;
+      padding: 15px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    .logout-btn {
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      margin-top: 10px;
+    }
+
+    #editor {
+      display: none;
+    }
+
+    .success-message {
+      background: #4caf50;
+      color: white;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      text-align: center;
+      display: none;
+    }
+
+    .error-message {
+      background: #f44336;
+      color: white;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      text-align: center;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- ログインフォーム -->
+    <div id="loginForm" class="auth-container">
+      <h2>ブログ管理画面 ログイン</h2>
+      <div class="form-group">
+        <label>メールアドレス</label>
+        <input type="email" id="loginEmail" placeholder="email@example.com">
+      </div>
+      <div class="form-group">
+        <label>パスワード</label>
+        <input type="password" id="loginPassword" placeholder="パスワード">
+      </div>
+      <button onclick="login()">ログイン</button>
+      <div id="loginError" class="error-message"></div>
+    </div>
+
+    <!-- 記事投稿フォーム -->
+    <div id="editor">
+      <div class="header">
+        <h1>ブログ管理画面</h1>
+        <p id="userEmail"></p>
+        <button class="logout-btn" onclick="logout()">ログアウト</button>
+      </div>
+
+      <div class="auth-container">
+        <div id="successMessage" class="success-message"></div>
+        <div id="errorMessage" class="error-message"></div>
+
+        <h2>新規記事投稿</h2>
+
+        <div class="form-group">
+          <label>投稿日</label>
+          <input type="text" id="postDate" placeholder="2025.11.28">
+        </div>
+
+        <div class="form-group">
+          <label>タイトル</label>
+          <input type="text" id="postTitle" placeholder="記事のタイトル">
+        </div>
+
+        <div class="form-group">
+          <label>本文</label>
+          <textarea id="postContent" placeholder="記事の内容を入力してください&#10;&#10;段落ごとに改行してください"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>画像（任意）</label>
+          <div class="image-upload" onclick="document.getElementById('imageInput').click()">
+            <p>📷 クリックまたはタップして画像を選択</p>
+            <input type="file" id="imageInput" accept="image/*" onchange="previewImage(event)">
+            <div id="imagePreview" class="image-preview"></div>
+          </div>
+        </div>
+
+        <button onclick="publishPost()">記事を投稿</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+    import { getFirestore, collection, addDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+    // Firebase設定
+    const firebaseConfig = {
+      apiKey: "AIzaSyC3qFo-qx2NOsfpmJ1sfUSDMit4ALiqBz4",
+      authDomain: "my-blog-98be9.firebaseapp.com",
+      projectId: "my-blog-98be9",
+      storageBucket: "my-blog-98be9.firebasestorage.app",
+      messagingSenderId: "107291416222",
+      appId: "1:107291416222:web:0934aee64004a759f9cd8f"
+    };
+
+    // Firebase初期化
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // グローバルに公開
+    window.auth = auth;
+    window.db = db;
+    window.signInWithEmailAndPassword = signInWithEmailAndPassword;
+    window.signOut = signOut;
+    window.addDoc = addDoc;
+    window.collection = collection;
+    window.serverTimestamp = serverTimestamp;
+
+    // 認証状態の監視
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        document.getElementById('loginForm').style.display = 'none';
+        document.getElementById('editor').style.display = 'block';
+        document.getElementById('userEmail').textContent = user.email;
+      } else {
+        document.getElementById('loginForm').style.display = 'block';
+        document.getElementById('editor').style.display = 'none';
+      }
+    });
+  </script>
+
+  <script>
+    let selectedImage = null;
+
+    // ログイン
+    async function login() {
+      const email = document.getElementById('loginEmail').value;
+      const password = document.getElementById('loginPassword').value;
+      const errorDiv = document.getElementById('loginError');
+
+      try {
+        await window.signInWithEmailAndPassword(window.auth, email, password);
+      } catch (error) {
+        errorDiv.textContent = 'ログインに失敗しました: ' + error.message;
+        errorDiv.style.display = 'block';
+      }
+    }
+
+    // ログアウト
+    async function logout() {
+      await window.signOut(window.auth);
+    }
+
+    // 画像プレビュー
+    function previewImage(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      // ファイルサイズチェック（1MB以下推奨）
+      if (file.size > 1024 * 1024) {
+        alert('画像サイズは1MB以下を推奨します');
+      }
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        selectedImage = e.target.result;
+        const preview = document.getElementById('imagePreview');
+        preview.innerHTML = `<img src="${selectedImage}" alt="プレビュー">`;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    // 記事を投稿
+    async function publishPost() {
+      const date = document.getElementById('postDate').value;
+      const title = document.getElementById('postTitle').value;
+      const content = document.getElementById('postContent').value;
+      const successDiv = document.getElementById('successMessage');
+      const errorDiv = document.getElementById('errorMessage');
+
+      // バリデーション
+      if (!date || !title || !content) {
+        errorDiv.textContent = '日付、タイトル、本文は必須です';
+        errorDiv.style.display = 'block';
+        setTimeout(() => errorDiv.style.display = 'none', 3000);
+        return;
+      }
+
+      try {
+        // 本文を段落ごとに分割
+        const paragraphs = content.split('\n').filter(p => p.trim() !== '');
+
+        // Firestoreに保存
+        const docRef = await window.addDoc(window.collection(window.db, 'posts'), {
+          date: date,
+          title: title,
+          paragraphs: paragraphs,
+          image: selectedImage || null,
+          createdAt: window.serverTimestamp(),
+          month: date.substring(0, 7) // "2025.11" 形式
+        });
+
+        // 成功メッセージ
+        successDiv.textContent = '記事を投稿しました！';
+        successDiv.style.display = 'block';
+        setTimeout(() => successDiv.style.display = 'none', 3000);
+
+        // フォームをクリア
+        document.getElementById('postDate').value = '';
+        document.getElementById('postTitle').value = '';
+        document.getElementById('postContent').value = '';
+        document.getElementById('imagePreview').innerHTML = '';
+        selectedImage = null;
+
+      } catch (error) {
+        errorDiv.textContent = '投稿に失敗しました: ' + error.message;
+        errorDiv.style.display = 'block';
+        setTimeout(() => errorDiv.style.display = 'none', 5000);
+      }
+    }
+  </script>
+</body>
+</html>
