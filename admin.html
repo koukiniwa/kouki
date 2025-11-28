@@ -297,21 +297,44 @@
       await window.signOut(window.auth);
     }
 
-    // 画像プレビュー
+    // 画像プレビュー（自動圧縮機能付き）
     function previewImage(event) {
       const file = event.target.files[0];
       if (!file) return;
 
-      // ファイルサイズチェック（1MB以下推奨）
-      if (file.size > 1024 * 1024) {
-        alert('画像サイズは1MB以下を推奨します');
-      }
-
       const reader = new FileReader();
       reader.onload = function(e) {
-        selectedImage = e.target.result;
-        const preview = document.getElementById('imagePreview');
-        preview.innerHTML = `<img src="${selectedImage}" alt="プレビュー">`;
+        const img = new Image();
+        img.onload = function() {
+          // 画像を圧縮
+          const canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+
+          // 最大幅800pxに制限
+          const maxWidth = 800;
+          if (width > maxWidth) {
+            height = (height * maxWidth) / width;
+            width = maxWidth;
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+
+          // 品質を調整して圧縮（0.7 = 70%品質）
+          selectedImage = canvas.toDataURL('image/jpeg', 0.7);
+
+          const preview = document.getElementById('imagePreview');
+          preview.innerHTML = `<img src="${selectedImage}" alt="プレビュー">`;
+
+          // 圧縮後のサイズを表示
+          const sizeKB = Math.round(selectedImage.length / 1024);
+          console.log(`画像サイズ: ${sizeKB} KB`);
+        };
+        img.src = e.target.result;
       };
       reader.readAsDataURL(file);
     }
