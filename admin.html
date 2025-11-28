@@ -205,7 +205,7 @@
 
         <div class="form-group">
           <label>投稿日</label>
-          <input type="text" id="postDate" placeholder="2025.11.28">
+          <input type="date" id="postDate">
         </div>
 
         <div class="form-group">
@@ -341,14 +341,14 @@
 
     // 記事を投稿
     async function publishPost() {
-      const date = document.getElementById('postDate').value;
+      const dateInput = document.getElementById('postDate').value;
       const title = document.getElementById('postTitle').value;
       const content = document.getElementById('postContent').value;
       const successDiv = document.getElementById('successMessage');
       const errorDiv = document.getElementById('errorMessage');
 
       // バリデーション
-      if (!date || !title || !content) {
+      if (!dateInput || !title || !content) {
         errorDiv.textContent = '日付、タイトル、本文は必須です';
         errorDiv.style.display = 'block';
         setTimeout(() => errorDiv.style.display = 'none', 3000);
@@ -356,17 +356,20 @@
       }
 
       try {
+        // 日付を "2025-11-28" から "2025.11.28" 形式に変換
+        const formattedDate = dateInput.replace(/-/g, '.');
+
         // 本文を段落ごとに分割
         const paragraphs = content.split('\n').filter(p => p.trim() !== '');
 
         // Firestoreに保存
         const docRef = await window.addDoc(window.collection(window.db, 'posts'), {
-          date: date,
+          date: formattedDate,
           title: title,
           paragraphs: paragraphs,
           image: selectedImage || null,
           createdAt: window.serverTimestamp(),
-          month: date.substring(0, 7) // "2025.11" 形式
+          month: formattedDate.substring(0, 7) // "2025.11" 形式
         });
 
         // 成功メッセージ
