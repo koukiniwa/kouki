@@ -396,6 +396,7 @@ body {
 
   .mobile-header {
     display: flex;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   }
 
   .mobile-nav {
@@ -404,19 +405,26 @@ body {
 
   .main-content {
     margin-left: 0;
-    padding: 5rem 1.5rem 2rem;
+    padding: 5rem 1rem 2rem;
   }
 
   .profile-container {
     flex-direction: column;
-    padding: 1.5rem;
-    gap: 1rem;
+    padding: 1.5rem 1.2rem;
+    gap: 1.2rem;
+    border-radius: 12px;
   }
 
   .profile-image {
-    width: 80px;
-    height: 80px;
+    width: 100px;
+    height: 100px;
     margin: 0 auto;
+    border-radius: 50%;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  .profile-image img {
+    border-radius: 50%;
   }
 
   .profile-info {
@@ -424,7 +432,19 @@ body {
   }
 
   .profile-info h2 {
-    font-size: 1.2rem;
+    font-size: 1.4rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .profile-title {
+    font-size: 0.9rem;
+    margin-bottom: 0.8rem;
+  }
+
+  .profile-bio {
+    font-size: 0.95rem;
+    line-height: 1.7;
+    margin-bottom: 1.2rem;
   }
 
   .profile-details li {
@@ -439,32 +459,79 @@ body {
 
   .profile-social {
     justify-content: center;
+    gap: 0.8rem;
   }
 
   .profile-social-link {
-    font-size: 0.75rem;
-    padding: 0.4rem 0.8rem;
+    font-size: 0.85rem;
+    padding: 0.6rem 1rem;
+    border-radius: 8px;
+    white-space: nowrap;
   }
 
   .section-title {
-    font-size: 1.3rem;
+    font-size: 1.4rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.6rem;
   }
 
   .blog-post {
-    padding: 1.8rem;
+    padding: 1.5rem 1.2rem;
+    margin-bottom: 1.5rem;
+    border-radius: 12px;
+  }
+
+  .blog-post:hover {
+    transform: none;
+  }
+
+  .post-date {
+    font-size: 0.8rem;
+    margin-bottom: 0.8rem;
   }
 
   .blog-post h3 {
-    font-size: 1.3rem;
+    font-size: 1.35rem;
+    margin-bottom: 1rem;
+    line-height: 1.5;
   }
 
   .blog-post h4 {
-    font-size: 1.1rem;
+    font-size: 1.15rem;
+    margin: 1.5rem 0 0.8rem;
+  }
+
+  .blog-post p {
+    font-size: 1rem;
+    line-height: 1.9;
+    margin-bottom: 1rem;
+  }
+
+  /* 画像のレスポンシブ対応 */
+  .blog-post img {
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   }
 
   .footer-links {
     flex-direction: column;
     gap: 1rem;
+  }
+
+  .main-footer {
+    margin-top: 3rem;
+    padding-top: 2rem;
+  }
+
+  /* タップ領域を広げる */
+  .mobile-menu-btn {
+    padding: 0.8rem;
+    margin: -0.5rem;
+  }
+
+  .mobile-nav .nav-link {
+    padding: 1.2rem 1.5rem;
+    font-size: 1rem;
   }
 }
 
