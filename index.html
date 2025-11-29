@@ -262,6 +262,21 @@
       mobileNav.classList.remove('active');
     }
 
+    // メニュー外をクリックしたら閉じる
+    document.addEventListener('click', function(event) {
+      const mobileNav = document.getElementById('mobileNav');
+      const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+      const mobileHeader = document.querySelector('.mobile-header');
+
+      // メニューが開いている場合のみ処理
+      if (mobileNav && mobileNav.classList.contains('active')) {
+        // クリックされた場所がメニュー内でもヘッダー内でもない場合
+        if (!mobileNav.contains(event.target) && !mobileHeader.contains(event.target)) {
+          closeMobileMenu();
+        }
+      }
+    });
+
     // アクティブリンクのハイライト
     window.addEventListener('scroll', () => {
       const sections = document.querySelectorAll('section[id]');
