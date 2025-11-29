@@ -149,18 +149,22 @@ body {
   flex-direction: column;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   max-height: 0;
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
   transition: max-height 0.3s ease;
 }
 
 .mobile-nav.active {
-  max-height: 300px;
+  max-height: 80vh;
 }
 
 .mobile-nav .nav-link {
   padding: 1rem 1.5rem;
   border-radius: 0;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  white-space: normal;
+  word-wrap: break-word;
+  line-height: 1.5;
 }
 
 /* メインコンテンツ */
@@ -532,6 +536,14 @@ body {
   .mobile-nav .nav-link {
     padding: 1.2rem 1.5rem;
     font-size: 1rem;
+    white-space: normal;
+    word-wrap: break-word;
+    line-height: 1.6;
+  }
+
+  /* スクロール可能なメニュー */
+  .mobile-nav {
+    -webkit-overflow-scrolling: touch;
   }
 }
 
