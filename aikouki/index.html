@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AIこうき と話そう</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+            <h1>🤖 AIこうき</h1>
+            <p>丹羽康揮のAIアバターと会話できます</p>
+        </div>
+
+        <div class="chat-messages" id="chatMessages">
+            <div class="message ai-message">
+                <p>あ、どうも。何か話しかけてください。</p>
+            </div>
+        </div>
+
+        <div class="chat-input-area">
+            <input 
+                type="text" 
+                id="userInput" 
+                placeholder="何か話しかけてください..." 
+                onkeypress="handleKeyPress(event)"
+            >
+            <button onclick="sendMessage()">送信</button>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
