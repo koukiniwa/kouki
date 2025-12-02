@@ -104,7 +104,9 @@
     </div>
 
     <!-- 記事一覧（Firestoreから動的に読み込まれます） -->
-    <div id="blogPosts"></div>
+    <div id="blogPosts">
+      <p style="text-align: center; padding: 50px; color: #888;">記事を読み込み中...</p>
+    </div>
 
     <!-- フッター -->
     <footer class="main-footer">
@@ -136,8 +138,11 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    // 記事を読み込む
-    async function loadPosts() {
+    // 記事を読み込む（リトライ機能付き）
+    async function loadPosts(retryCount = 0) {
+      const maxRetries = 3;
+      const blogPostsContainer = document.getElementById('blogPosts');
+
       try {
         const postsQuery = query(collection(db, 'posts'), orderBy('date', 'desc'));
         const querySnapshot = await getDocs(postsQuery);
@@ -157,7 +162,6 @@
         });
 
         // HTMLを生成
-        const blogPostsContainer = document.getElementById('blogPosts');
         let html = '';
 
         // 月ごとにセクションを作成
@@ -201,7 +205,19 @@
 
       } catch (error) {
         console.error('記事の読み込みエラー:', error);
-        document.getElementById('blogPosts').innerHTML = '<p style="text-align: center; padding: 50px;">記事の読み込みに失敗しました。</p>';
+
+        // リトライ
+        if (retryCount < maxRetries) {
+          console.log(`リトライ中... (${retryCount + 1}/${maxRetries})`);
+          blogPostsContainer.innerHTML = `<p style="text-align: center; padding: 50px; color: #888;">読み込み中... (再試行 ${retryCount + 1}/${maxRetries})</p>`;
+          setTimeout(() => loadPosts(retryCount + 1), 1500);
+        } else {
+          blogPostsContainer.innerHTML = `
+            <div style="text-align: center; padding: 50px;">
+              <p style="margin-bottom: 15px;">記事の読み込みに失敗しました。</p>
+              <button onclick="location.reload()" style="padding: 10px 20px; background: #667eea; color: white; border: none; border-radius: 5px; cursor: pointer;">再読み込み</button>
+            </div>`;
+        }
       }
     }
 
