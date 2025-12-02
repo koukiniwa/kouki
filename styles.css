@@ -251,7 +251,7 @@ body {
 .ai-kouki-link {
   display: inline-block;
   padding: 0.8rem 1.5rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #1a1a2e;
   color: #fff;
   text-decoration: none;
   border-radius: 25px;
@@ -259,12 +259,13 @@ body {
   font-weight: 600;
   margin: 0.8rem 0 1rem;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 4px 15px rgba(26, 26, 46, 0.4);
 }
 
 .ai-kouki-link:hover {
   transform: translateY(-3px);
-  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+  box-shadow: 0 6px 20px rgba(26, 26, 46, 0.6);
+  background: #2a2a4e;
 }
 
 .profile-social {
