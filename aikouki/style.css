@@ -6,7 +6,7 @@
 
 body {
     font-family: 'Arial', sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #1a365d 0%, #2c5282 100%);
     min-height: 100vh;
     display: flex;
     justify-content: center;
@@ -27,7 +27,7 @@ body {
 }
 
 .chat-header {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #1a365d 0%, #2c5282 100%);
     color: white;
     padding: 20px;
     text-align: center;
@@ -86,7 +86,7 @@ body {
 }
 
 .user-message p {
-    background: #667eea;
+    background: #2c5282;
     color: white;
     border-radius: 15px 15px 0 15px;
 }
@@ -120,11 +120,11 @@ body {
 }
 
 #userInput:focus {
-    border-color: #667eea;
+    border-color: #2c5282;
 }
 
 button {
-    background: #667eea;
+    background: #2c5282;
     color: white;
     border: none;
     border-radius: 25px;
@@ -135,7 +135,7 @@ button {
 }
 
 button:hover {
-    background: #764ba2;
+    background: #1a365d;
 }
 
 button:active {
