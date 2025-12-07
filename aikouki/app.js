@@ -1,8 +1,31 @@
 // バックエンド API エンドポイント
 const API_ENDPOINT = 'https://ai-kouki-backend-610abb7fb0bc.herokuapp.com/api/chat';
+const TTS_ENDPOINT = 'https://ai-kouki-backend-610abb7fb0bc.herokuapp.com/api/tts';
 
 // 会話履歴
 let conversationHistory = [];
+
+// 音声再生機能
+async function playVoice(text) {
+    try {
+        const response = await fetch(TTS_ENDPOINT, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ text: text })
+        });
+
+        if (!response.ok) throw new Error('音声生成エラー');
+
+        const audioBlob = await response.blob();
+        const audioUrl = URL.createObjectURL(audioBlob);
+        const audio = new Audio(audioUrl);
+        audio.play();
+    } catch (error) {
+        console.error('音声再生エラー:', error);
+    }
+}
 
 async function sendMessage() {
     const userInput = document.getElementById('userInput');
@@ -47,6 +70,9 @@ async function sendMessage() {
         // AIの返答を表示
         addMessageToChat(data.reply, 'ai');
         conversationHistory.push({ role: 'assistant', content: data.reply });
+
+        // 音声で再生
+        playVoice(data.reply);
 
     } catch (error) {
         console.error('エラー:', error);
