@@ -1,29 +1,97 @@
 // バックエンド API エンドポイント
 const API_ENDPOINT = 'https://ai-kouki-backend-610abb7fb0bc.herokuapp.com/api/chat';
-const TTS_ENDPOINT = 'https://ai-kouki-backend-610abb7fb0bc.herokuapp.com/api/tts';
 
 // 会話履歴
 let conversationHistory = [];
 
-// 音声再生機能
-async function playVoice(text) {
+// 音声認識の設定
+let recognition = null;
+let isListening = false;
+
+// Web Speech API の初期化
+if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    recognition = new SpeechRecognition();
+    recognition.lang = 'ja-JP';
+    recognition.continuous = false;
+    recognition.interimResults = false;
+
+    recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        document.getElementById('userInput').value = transcript;
+        sendMessage();
+    };
+
+    recognition.onerror = (event) => {
+        console.error('音声認識エラー:', event.error);
+        stopListening();
+        if (event.error === 'no-speech') {
+            addMessageToChat('音声が聞こえませんでした。もう一度試してください。', 'ai');
+        }
+    };
+
+    recognition.onend = () => {
+        stopListening();
+    };
+}
+
+// 音声認識の開始/停止
+function toggleVoiceRecognition() {
+    if (!recognition) {
+        alert('お使いのブラウザは音声認識に対応していません。Chrome または Edge をお使いください。');
+        return;
+    }
+
+    if (isListening) {
+        stopListening();
+    } else {
+        startListening();
+    }
+}
+
+function startListening() {
+    if (!recognition || isListening) return;
+
     try {
-        const response = await fetch(TTS_ENDPOINT, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ text: text })
-        });
-
-        if (!response.ok) throw new Error('音声生成エラー');
-
-        const audioBlob = await response.blob();
-        const audioUrl = URL.createObjectURL(audioBlob);
-        const audio = new Audio(audioUrl);
-        audio.play();
+        recognition.start();
+        isListening = true;
+        const micButton = document.getElementById('micButton');
+        micButton.classList.add('listening');
+        micButton.textContent = '⏹️';
     } catch (error) {
-        console.error('音声再生エラー:', error);
+        console.error('音声認識開始エラー:', error);
+    }
+}
+
+function stopListening() {
+    if (!recognition || !isListening) return;
+
+    try {
+        recognition.stop();
+    } catch (error) {
+        console.error('音声認識停止エラー:', error);
+    }
+
+    isListening = false;
+    const micButton = document.getElementById('micButton');
+    micButton.classList.remove('listening');
+    micButton.textContent = '🎤';
+}
+
+// 音声再生機能（ブラウザネイティブに変更）
+function playVoice(text) {
+    if ('speechSynthesis' in window) {
+        // 既存の音声を停止
+        window.speechSynthesis.cancel();
+
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'ja-JP';
+        utterance.rate = 1.0;
+        utterance.pitch = 1.0;
+
+        window.speechSynthesis.speak(utterance);
+    } else {
+        console.warn('音声合成に対応していません');
     }
 }
 

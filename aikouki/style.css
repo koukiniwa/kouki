@@ -107,6 +107,7 @@ body {
     padding: 20px;
     background: #f9f9f9;
     border-top: 1px solid #e0e0e0;
+    align-items: center;
 }
 
 #userInput {
@@ -140,6 +141,43 @@ button:hover {
 
 button:active {
     transform: scale(0.98);
+}
+
+.mic-button {
+    background: white;
+    color: #2c5282;
+    border: 2px solid #2c5282;
+    font-size: 20px;
+    width: 48px;
+    height: 48px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+}
+
+.mic-button:hover {
+    background: #f0f0f0;
+    border-color: #1a365d;
+}
+
+.mic-button.listening {
+    background: #ff4444;
+    color: white;
+    border-color: #ff4444;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.05);
+        opacity: 0.8;
+    }
 }
 
 @keyframes slideIn {

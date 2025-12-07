@@ -21,10 +21,13 @@
         </div>
 
         <div class="chat-input-area">
-            <input 
-                type="text" 
-                id="userInput" 
-                placeholder="何か話しかけてください..." 
+            <button id="micButton" onclick="toggleVoiceRecognition()" class="mic-button" title="音声入力">
+                🎤
+            </button>
+            <input
+                type="text"
+                id="userInput"
+                placeholder="何か話しかけてください..."
                 onkeypress="handleKeyPress(event)"
             >
             <button onclick="sendMessage()">送信</button>
