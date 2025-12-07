@@ -78,20 +78,27 @@ function stopListening() {
     micButton.textContent = '🎤';
 }
 
-// 音声再生機能（ブラウザネイティブに変更）
-function playVoice(text) {
-    if ('speechSynthesis' in window) {
-        // 既存の音声を停止
-        window.speechSynthesis.cancel();
+// 音声再生機能（バックエンドAPIを使用）
+async function playVoice(text) {
+    const TTS_ENDPOINT = 'https://ai-kouki-backend-610abb7fb0bc.herokuapp.com/api/tts';
 
-        const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = 'ja-JP';
-        utterance.rate = 1.0;
-        utterance.pitch = 1.0;
+    try {
+        const response = await fetch(TTS_ENDPOINT, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ text: text })
+        });
 
-        window.speechSynthesis.speak(utterance);
-    } else {
-        console.warn('音声合成に対応していません');
+        if (!response.ok) throw new Error('音声生成エラー');
+
+        const audioBlob = await response.blob();
+        const audioUrl = URL.createObjectURL(audioBlob);
+        const audio = new Audio(audioUrl);
+        await audio.play();
+    } catch (error) {
+        console.error('音声再生エラー:', error);
     }
 }
 
