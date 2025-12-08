@@ -79,10 +79,16 @@ function stopListening() {
 }
 
 // 音声再生機能（バックエンドAPIを使用）
-async function playVoice(text) {
+async function playVoice(text, button) {
     const TTS_ENDPOINT = 'https://ai-kouki-backend-610abb7fb0bc.herokuapp.com/api/tts';
 
     try {
+        // ボタンの状態を変更（ローディング表示）
+        if (button) {
+            button.disabled = true;
+            button.textContent = '⏳';
+        }
+
         const response = await fetch(TTS_ENDPOINT, {
             method: 'POST',
             headers: {
@@ -96,9 +102,28 @@ async function playVoice(text) {
         const audioBlob = await response.blob();
         const audioUrl = URL.createObjectURL(audioBlob);
         const audio = new Audio(audioUrl);
+
+        // 再生終了時にボタンを元に戻す
+        audio.onended = () => {
+            if (button) {
+                button.disabled = false;
+                button.textContent = '🔊';
+            }
+        };
+
         await audio.play();
+
+        // 再生中はボタンを停止アイコンに
+        if (button) {
+            button.textContent = '▶️';
+        }
     } catch (error) {
         console.error('音声再生エラー:', error);
+        if (button) {
+            button.disabled = false;
+            button.textContent = '🔊';
+        }
+        alert('音声再生に失敗しました');
     }
 }
 
@@ -142,12 +167,9 @@ async function sendMessage() {
         // ローディングを削除
         loadingDiv.remove();
         
-        // AIの返答を表示
+        // AIの返答を表示（音声ボタン付き）
         addMessageToChat(data.reply, 'ai');
         conversationHistory.push({ role: 'assistant', content: data.reply });
-
-        // 音声で再生
-        playVoice(data.reply);
 
     } catch (error) {
         console.error('エラー:', error);
@@ -160,13 +182,25 @@ function addMessageToChat(message, sender) {
     const chatMessages = document.getElementById('chatMessages');
     const messageDiv = document.createElement('div');
     messageDiv.className = `message ${sender}-message`;
-    
+
     const p = document.createElement('p');
     p.textContent = message;
-    
     messageDiv.appendChild(p);
+
+    // AIメッセージの場合は音声再生ボタンを追加
+    if (sender === 'ai') {
+        const voiceButton = document.createElement('button');
+        voiceButton.className = 'voice-button';
+        voiceButton.textContent = '🔊';
+        voiceButton.title = '音声で聞く';
+        voiceButton.onclick = function() {
+            playVoice(message, voiceButton);
+        };
+        messageDiv.appendChild(voiceButton);
+    }
+
     chatMessages.appendChild(messageDiv);
-    
+
     // 下にスクロール
     chatMessages.scrollTop = chatMessages.scrollHeight;
 
