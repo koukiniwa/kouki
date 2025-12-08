@@ -248,4 +248,9 @@ button:active {
     .ai-message {
         gap: 10px;
     }
+
+    /* スマホではマイクボタンを非表示 */
+    .mic-button {
+        display: none;
+    }
 }
