@@ -133,14 +133,54 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    // 記事を読み込む（リトライ機能付き）
+    // タイムアウト付きPromise
+    function withTimeout(promise, ms) {
+      const timeout = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('タイムアウト')), ms)
+      );
+      return Promise.race([promise, timeout]);
+    }
+
+    // キャッシュからデータを読み込む
+    function loadFromCache() {
+      try {
+        const cached = localStorage.getItem('blogPostsCache');
+        if (cached) {
+          const data = JSON.parse(cached);
+          // キャッシュが24時間以内なら使用
+          if (Date.now() - data.timestamp < 24 * 60 * 60 * 1000) {
+            return data.posts;
+          }
+        }
+      } catch (e) {
+        console.error('キャッシュ読み込みエラー:', e);
+      }
+      return null;
+    }
+
+    // キャッシュにデータを保存
+    function saveToCache(postsByMonth) {
+      try {
+        localStorage.setItem('blogPostsCache', JSON.stringify({
+          posts: postsByMonth,
+          timestamp: Date.now()
+        }));
+      } catch (e) {
+        console.error('キャッシュ保存エラー:', e);
+      }
+    }
+
+    // 記事を読み込む（改善版リトライ機能付き）
     async function loadPosts(retryCount = 0) {
       const maxRetries = 3;
       const blogPostsContainer = document.getElementById('blogPosts');
+      // 指数バックオフ: 1秒 → 3秒 → 5秒
+      const retryDelays = [1000, 3000, 5000];
 
       try {
+        // タイムアウト付きでFirestoreから取得（10秒）
         const postsQuery = query(collection(db, 'posts'), orderBy('date', 'desc'));
-        const querySnapshot = await getDocs(postsQuery);
+        const querySnapshot = await withTimeout(getDocs(postsQuery), 10000);
 
         // 月ごとにグループ化
         const postsByMonth = {};
@@ -156,64 +196,110 @@
           postsByMonth[month].push(data);
         });
 
-        // HTMLを生成
-        let html = '';
+        // キャッシュに保存
+        saveToCache(postsByMonth);
 
-        // 月ごとにセクションを作成
-        Object.keys(postsByMonth).sort().reverse().forEach(month => {
-          const monthName = convertMonthName(month);
-          const monthId = month.replace('.', '-');
-
-          html += `
-            <section id="${monthId}" class="blog-section">
-              <h2 class="section-title">${monthName}</h2>
-          `;
-
-          // その月の記事を追加
-          postsByMonth[month].forEach(post => {
-            html += `
-              <article class="blog-post">
-                <time class="post-date">${post.date}</time>
-                <h3>${post.title}</h3>
-            `;
-
-            // 画像がある場合
-            if (post.image) {
-              html += `<img src="${post.image}" alt="${post.title}" style="max-width: 100%; height: auto; border-radius: 8px; margin: 15px 0;">`;
-            }
-
-            // 段落を追加
-            post.paragraphs.forEach(paragraph => {
-              html += `<p>${paragraph}</p>`;
-            });
-
-            html += `</article>`;
-          });
-
-          html += `</section>`;
-        });
-
-        blogPostsContainer.innerHTML = html;
-
-        // サイドバーのナビゲーションを更新
-        updateNavigation(Object.keys(postsByMonth).sort().reverse());
+        // HTMLを生成して表示
+        renderPosts(postsByMonth);
 
       } catch (error) {
         console.error('記事の読み込みエラー:', error);
 
+        // キャッシュから読み込みを試行
+        const cachedPosts = loadFromCache();
+        if (cachedPosts && retryCount === 0) {
+          console.log('キャッシュからデータを表示します');
+          renderPosts(cachedPosts);
+          blogPostsContainer.insertAdjacentHTML('afterbegin',
+            '<div id="cacheWarning" style="background: #fff3cd; padding: 15px; margin-bottom: 20px; border-radius: 5px; text-align: center; color: #856404;">' +
+            '<p style="margin: 0 0 10px 0;">キャッシュから読み込みました。最新データの取得に再試行中...</p>' +
+            '<button onclick="retryLoadPosts()" style="padding: 8px 16px; background: #856404; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 14px;">今すぐ再読み込み</button>' +
+            '</div>'
+          );
+          // バックグラウンドで再試行
+          setTimeout(() => loadPosts(retryCount + 1), retryDelays[retryCount] || 5000);
+          return;
+        }
+
         // リトライ
         if (retryCount < maxRetries) {
-          console.log(`リトライ中... (${retryCount + 1}/${maxRetries})`);
-          blogPostsContainer.innerHTML = `<p style="text-align: center; padding: 50px; color: #888;">読み込み中... (再試行 ${retryCount + 1}/${maxRetries})</p>`;
-          setTimeout(() => loadPosts(retryCount + 1), 1500);
-        } else {
+          const delay = retryDelays[retryCount] || 5000;
+          console.log(`リトライ中... (${retryCount + 1}/${maxRetries}) - ${delay}ms後`);
           blogPostsContainer.innerHTML = `
             <div style="text-align: center; padding: 50px;">
-              <p style="margin-bottom: 15px;">記事の読み込みに失敗しました。</p>
-              <button onclick="location.reload()" style="padding: 10px 20px; background: #667eea; color: white; border: none; border-radius: 5px; cursor: pointer;">再読み込み</button>
+              <p style="color: #888; margin-bottom: 15px;">読み込み中... (再試行 ${retryCount + 1}/${maxRetries})</p>
+              <button onclick="retryLoadPosts()" style="padding: 10px 20px; background: #667eea; color: white; border: none; border-radius: 5px; cursor: pointer;">今すぐ再読み込み</button>
             </div>`;
+          setTimeout(() => loadPosts(retryCount + 1), delay);
+        } else {
+          // 全てのリトライが失敗した場合、キャッシュを最後の手段として試す
+          const cachedPosts = loadFromCache();
+          if (cachedPosts) {
+            console.log('全てのリトライが失敗。キャッシュデータを表示します');
+            renderPosts(cachedPosts);
+            blogPostsContainer.insertAdjacentHTML('afterbegin',
+              '<div style="background: #f8d7da; padding: 15px; margin-bottom: 20px; border-radius: 5px; text-align: center; color: #721c24;">' +
+              '<p style="margin: 0 0 10px 0;">最新データの取得に失敗しました。キャッシュから読み込んでいます。</p>' +
+              '<button onclick="retryLoadPosts()" style="padding: 8px 16px; background: #721c24; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 14px;">再読み込み</button>' +
+              '</div>'
+            );
+          } else {
+            blogPostsContainer.innerHTML = `
+              <div style="text-align: center; padding: 50px;">
+                <p style="margin-bottom: 15px; color: #dc3545;">記事の読み込みに失敗しました。</p>
+                <p style="margin-bottom: 15px; color: #666; font-size: 14px;">エラー: ${error.message}</p>
+                <button onclick="retryLoadPosts()" style="padding: 10px 20px; background: #667eea; color: white; border: none; border-radius: 5px; cursor: pointer;">再読み込み</button>
+              </div>`;
+          }
         }
       }
+    }
+
+    // 記事をHTMLに変換して表示
+    function renderPosts(postsByMonth) {
+      const blogPostsContainer = document.getElementById('blogPosts');
+
+      // HTMLを生成
+      let html = '';
+
+      // 月ごとにセクションを作成
+      Object.keys(postsByMonth).sort().reverse().forEach(month => {
+        const monthName = convertMonthName(month);
+        const monthId = month.replace('.', '-');
+
+        html += `
+          <section id="${monthId}" class="blog-section">
+            <h2 class="section-title">${monthName}</h2>
+        `;
+
+        // その月の記事を追加
+        postsByMonth[month].forEach(post => {
+          html += `
+            <article class="blog-post">
+              <time class="post-date">${post.date}</time>
+              <h3>${post.title}</h3>
+          `;
+
+          // 画像がある場合
+          if (post.image) {
+            html += `<img src="${post.image}" alt="${post.title}" style="max-width: 100%; height: auto; border-radius: 8px; margin: 15px 0;">`;
+          }
+
+          // 段落を追加
+          post.paragraphs.forEach(paragraph => {
+            html += `<p>${paragraph}</p>`;
+          });
+
+          html += `</article>`;
+        });
+
+        html += `</section>`;
+      });
+
+      blogPostsContainer.innerHTML = html;
+
+      // サイドバーのナビゲーションを更新
+      updateNavigation(Object.keys(postsByMonth).sort().reverse());
     }
 
     // 月名を日本語に変換
@@ -251,6 +337,19 @@
         mobileNav.appendChild(mobileLink);
       });
     }
+
+    // 手動で再読み込みする関数
+    window.retryLoadPosts = function() {
+      const blogPostsContainer = document.getElementById('blogPosts');
+      blogPostsContainer.innerHTML = '<p style="text-align: center; padding: 50px; color: #888;">記事を読み込み中...</p>';
+      // 警告メッセージを削除
+      const warning = document.getElementById('cacheWarning');
+      if (warning) {
+        warning.remove();
+      }
+      // 最初からやり直す
+      loadPosts(0);
+    };
 
     // ページ読み込み時に記事を取得
     loadPosts();
