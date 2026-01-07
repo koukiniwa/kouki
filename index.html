@@ -42,7 +42,6 @@
     </div>
 
     <nav class="sidebar-nav">
-      <a href="#intro" class="nav-link">プロフィール</a>
       <a href="#nov-2025" class="nav-link">2025年11月</a>
       <a href="#sep-2025" class="nav-link">2025年9月</a>
       <a href="#aug-2025" class="nav-link">2025年8月</a>
@@ -64,7 +63,6 @@
 
   <!-- モバイルメニュー -->
   <nav class="mobile-nav" id="mobileNav">
-    <a href="#intro" class="nav-link" onclick="closeMobileMenu()">プロフィール</a>
     <a href="#nov-2025" class="nav-link" onclick="closeMobileMenu()">2025年11月</a>
     <a href="#oct-2025" class="nav-link" onclick="closeMobileMenu()">2025年10月</a>
     <a href="#sep-2025" class="nav-link" onclick="closeMobileMenu()">2025年9月</a>
@@ -73,22 +71,59 @@
 
   <!-- メインコンテンツ -->
   <main class="main-content">
-    <!-- プロフィール -->
-    <section id="intro" class="profile-section">
-      <div class="profile-container">
-        <div class="profile-image">
-          <img src="https://lh3.googleusercontent.com/pw/AP1GczMfN9SWUtNZuB4PGdOOE0p0lZxsAQOm_uWBcyXQLFBfH9pF4_pc7Xx7PA1_wTlXwLEo_AiyPBbPRWccRi7LVoTcb9VUi_1vF-3PK1a9WwvbZvZRQNCdrmN8-vmxnossndP-XcojFlRQdB2QpUP5wIna=w1197-h898-s-no-gm?authuser=0" alt="丹羽康揮">
-        </div>
-        <div class="profile-info">
-          <h2>丹羽康揮</h2>
-          <p class="profile-title">20歳男性</p>
-          <a href="aikouki/index.html" class="ai-kouki-link" title="AIこうきと話す">🤖 AIこうきと話す</a>
-          <div class="profile-social">
-            <a href="https://instagram.com/kouki__n" target="_blank" class="profile-social-link" title="Instagram">📷 Instagram</a>
-            <a href="https://note.com/natty_cobra963" target="_blank" class="profile-social-link" title="Note">📝 Note</a>
-            <a href="https://net-city-beta.web.app/html/city.html" target="_blank" class="profile-social-link" title="NetCity Beta">🌐 NetCity Beta</a>
+    <!-- ヒーローセクション -->
+    <section class="hero-section">
+      <div class="hero-image">
+        <img src="https://lh3.googleusercontent.com/pw/AP1GczMfN9SWUtNZuB4PGdOOE0p0lZxsAQOm_uWBcyXQLFBfH9pF4_pc7Xx7PA1_wTlXwLEo_AiyPBbPRWccRi7LVoTcb9VUi_1vF-3PK1a9WwvbZvZRQNCdrmN8-vmxnossndP-XcojFlRQdB2QpUP5wIna=w1197-h898-s-no-gm?authuser=0" alt="丹羽康揮">
+        <div class="hero-overlay"></div>
+      </div>
+      <div class="hero-content">
+        <p class="hero-subtitle">農学、宇宙産業、AI、アプリ開発。20歳が探求する未来の世界。</p>
+        <a href="#blog-posts" class="hero-cta">記事を読む</a>
+      </div>
+    </section>
+
+    <!-- ソーシャルリンク -->
+    <section class="social-links-section">
+      <h2 class="section-header">つながる</h2>
+      <div class="social-cards-grid">
+
+        <a href="https://instagram.com/kouki__n" target="_blank" class="social-card instagram-card">
+          <div class="social-card-icon">📷</div>
+          <div class="social-card-content">
+            <h3>Instagram</h3>
+            <p>日常の写真や旅の記録を投稿しています</p>
           </div>
-        </div>
+          <div class="social-card-arrow">→</div>
+        </a>
+
+        <a href="https://note.com/natty_cobra963" target="_blank" class="social-card note-card">
+          <div class="social-card-icon">📝</div>
+          <div class="social-card-content">
+            <h3>Note</h3>
+            <p>長文記事やエッセイを執筆中</p>
+          </div>
+          <div class="social-card-arrow">→</div>
+        </a>
+
+        <a href="aikouki/index.html" class="social-card ai-card">
+          <div class="social-card-icon">🤖</div>
+          <div class="social-card-content">
+            <h3>AIこうき</h3>
+            <p>私のAIアバターと会話できます</p>
+          </div>
+          <div class="social-card-arrow">→</div>
+        </a>
+
+        <a href="https://net-city-beta.web.app/html/city.html" target="_blank" class="social-card netcity-card">
+          <div class="social-card-icon">🌐</div>
+          <div class="social-card-content">
+            <h3>NetCity Beta</h3>
+            <p>開発中のWebプロジェクト</p>
+          </div>
+          <div class="social-card-arrow">→</div>
+        </a>
+
       </div>
     </section>
 
@@ -100,8 +135,10 @@
     </div>
 
     <!-- 記事一覧（Firestoreから動的に読み込まれます） -->
-    <div id="blogPosts">
-      <p style="text-align: center; padding: 50px; color: #888;">記事を読み込み中...</p>
+    <div id="blog-posts">
+      <div id="blogPosts">
+        <p style="text-align: center; padding: 50px; color: #888;">記事を読み込み中...</p>
+      </div>
     </div>
 
     <!-- フッター -->
@@ -276,21 +313,32 @@
         postsByMonth[month].forEach(post => {
           html += `
             <article class="blog-post">
-              <time class="post-date">${post.date}</time>
-              <h3>${post.title}</h3>
           `;
 
-          // 画像がある場合
+          // 画像がある場合、記事の上部に大きく表示
           if (post.image) {
-            html += `<img src="${post.image}" alt="${post.title}" style="max-width: 100%; height: auto; border-radius: 8px; margin: 15px 0;">`;
+            html += `
+              <div class="post-featured-image">
+                <img src="${post.image}" alt="${post.title}" loading="lazy">
+              </div>
+            `;
           }
+
+          html += `
+              <div class="post-content">
+                <time class="post-date">${post.date}</time>
+                <h3>${post.title}</h3>
+          `;
 
           // 段落を追加
           post.paragraphs.forEach(paragraph => {
             html += `<p>${paragraph}</p>`;
           });
 
-          html += `</article>`;
+          html += `
+              </div>
+            </article>
+          `;
         });
 
         html += `</section>`;
@@ -314,9 +362,9 @@
       const sidebarNav = document.querySelector('.sidebar-nav');
       const mobileNav = document.querySelector('.mobile-nav');
 
-      // プロフィール以外のリンクを削除
-      sidebarNav.querySelectorAll('.nav-link:not([href="#intro"])').forEach(link => link.remove());
-      mobileNav.querySelectorAll('.nav-link:not([href="#intro"])').forEach(link => link.remove());
+      // 既存のリンクを削除
+      sidebarNav.querySelectorAll('.nav-link').forEach(link => link.remove());
+      mobileNav.querySelectorAll('.nav-link').forEach(link => link.remove());
 
       // 新しいリンクを追加
       months.forEach(month => {
