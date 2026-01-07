@@ -88,6 +88,15 @@
       <h2 class="section-header">つながる</h2>
       <div class="social-cards-grid">
 
+        <a href="aikouki/index.html" class="social-card ai-card">
+          <div class="social-card-icon">🤖</div>
+          <div class="social-card-content">
+            <h3>AIこうき</h3>
+            <p>私のAIアバターと会話できます</p>
+          </div>
+          <div class="social-card-arrow">→</div>
+        </a>
+
         <a href="https://instagram.com/kouki__n" target="_blank" class="social-card instagram-card">
           <div class="social-card-icon">📷</div>
           <div class="social-card-content">
@@ -102,15 +111,6 @@
           <div class="social-card-content">
             <h3>Note</h3>
             <p>長文記事やエッセイを執筆中</p>
-          </div>
-          <div class="social-card-arrow">→</div>
-        </a>
-
-        <a href="aikouki/index.html" class="social-card ai-card">
-          <div class="social-card-icon">🤖</div>
-          <div class="social-card-content">
-            <h3>AIこうき</h3>
-            <p>私のAIアバターと会話できます</p>
           </div>
           <div class="social-card-arrow">→</div>
         </a>
@@ -444,8 +444,34 @@
       }
     });
 
-    // アクティブリンクのハイライト
+    // スクロールでヘッダーを隠す
+    let lastScrollTop = 0;
+    const mobileHeader = document.querySelector('.mobile-header');
+    const mobileNav = document.getElementById('mobileNav');
+
     window.addEventListener('scroll', () => {
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+      // スクロール方向を判定
+      if (scrollTop > lastScrollTop && scrollTop > 100) {
+        // 下にスクロール（100px以上スクロールした場合）
+        if (mobileHeader) {
+          mobileHeader.classList.add('hidden');
+          // メニューが開いている場合は閉じる
+          if (mobileNav && mobileNav.classList.contains('active')) {
+            closeMobileMenu();
+          }
+        }
+      } else {
+        // 上にスクロール
+        if (mobileHeader) {
+          mobileHeader.classList.remove('hidden');
+        }
+      }
+
+      lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+
+      // アクティブリンクのハイライト
       const sections = document.querySelectorAll('section[id]');
       const navLinks = document.querySelectorAll('.nav-link');
 
@@ -453,7 +479,7 @@
       sections.forEach(section => {
         const sectionTop = section.offsetTop;
         const sectionHeight = section.clientHeight;
-        if (pageYOffset >= sectionTop - 200) {
+        if (scrollTop >= sectionTop - 200) {
           current = section.getAttribute('id');
         }
       });

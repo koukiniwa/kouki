@@ -196,6 +196,11 @@ body {
   z-index: 999;
   align-items: center;
   justify-content: space-between;
+  transition: transform var(--transition-base);
+}
+
+.mobile-header.hidden {
+  transform: translateY(-100%);
 }
 
 .mobile-header h1 {
@@ -866,37 +871,54 @@ body {
     font-size: var(--font-size-base);
   }
 
-  /* ソーシャルリンク - モバイル */
+  /* ソーシャルリンク - モバイル（2列グリッド） */
   .social-links-section {
     padding: 0 var(--space-2);
-    margin-bottom: var(--space-8);
+    margin-bottom: var(--space-6);
     margin-top: 0;
   }
 
   .section-header {
     font-size: var(--font-size-2xl);
-    margin-bottom: var(--space-4);
+    margin-bottom: var(--space-3);
   }
 
   .social-cards-grid {
-    grid-template-columns: 1fr;
-    gap: var(--space-3);
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-2);
   }
 
   .social-card {
-    padding: var(--space-4);
+    padding: var(--space-3);
+    flex-direction: column;
+    text-align: center;
+    gap: var(--space-2);
   }
 
   .social-card-icon {
-    font-size: 2.5rem;
+    font-size: 2rem;
   }
 
   .social-card-content h3 {
-    font-size: var(--font-size-lg);
+    font-size: var(--font-size-base);
+    margin-bottom: 0.25rem;
   }
 
   .social-card-content p {
-    font-size: var(--font-size-xs);
+    font-size: 0.7rem;
+    line-height: 1.4;
+  }
+
+  .social-card-arrow {
+    display: none;
+  }
+
+  /* AIこうきバッジ - モバイル */
+  .ai-card::after {
+    top: var(--space-1);
+    right: var(--space-1);
+    padding: 0.2rem 0.5rem;
+    font-size: 0.65rem;
   }
 
   .blog-description {
