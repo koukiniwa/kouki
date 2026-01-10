@@ -129,9 +129,30 @@ function analyzeEmotion(text) {
     return 'neutral';
 }
 
-// ページ読み込み時にアバター初期化
+// ページ読み込み時にアバター初期化とイベントリスナー設定
 window.addEventListener('DOMContentLoaded', () => {
     initAvatar();
+
+    // イベントリスナーを設定
+    const sendButton = document.getElementById('sendButton');
+    const userInput = document.getElementById('userInput');
+    const micButton = document.getElementById('micButton');
+
+    if (sendButton) {
+        sendButton.addEventListener('click', sendMessage);
+    }
+
+    if (userInput) {
+        userInput.addEventListener('keypress', (event) => {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        });
+    }
+
+    if (micButton) {
+        micButton.addEventListener('click', toggleVoiceRecognition);
+    }
 });
 
 // ===== 既存のチャット機能 =====
@@ -351,10 +372,4 @@ function addMessageToChat(message, sender) {
     chatMessages.scrollTop = chatMessages.scrollHeight;
 
     return messageDiv;
-}
-
-function handleKeyPress(event) {
-    if (event.key === 'Enter') {
-        sendMessage();
-    }
 }

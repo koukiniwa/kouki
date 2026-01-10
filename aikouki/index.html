@@ -35,16 +35,15 @@
         </div>
 
         <div class="chat-input-area">
-            <button id="micButton" onclick="toggleVoiceRecognition()" class="mic-button" title="音声入力">
+            <button id="micButton" class="mic-button" title="音声入力">
                 🎤
             </button>
             <input
                 type="text"
                 id="userInput"
                 placeholder="何か話しかけてください..."
-                onkeypress="handleKeyPress(event)"
             >
-            <button onclick="sendMessage()">送信</button>
+            <button id="sendButton">送信</button>
         </div>
     </div>
 
