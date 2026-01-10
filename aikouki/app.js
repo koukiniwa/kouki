@@ -10,6 +10,8 @@ let isBlinking = false;
 let isSpeaking = false;
 let blinkTimer = 0;
 let speakTimer = 0;
+let breathTimer = 0;
+let idleTimer = 0;
 
 // VRMアバターの初期化
 async function initAvatar() {
@@ -81,16 +83,16 @@ function adjustArmPose() {
         const leftLowerArm = humanoid.getNormalizedBoneNode('leftLowerArm');
 
         if (leftUpperArm) {
-            // 左腕: Z軸で負の回転（横から下へ）
+            // 左腕: Z軸で負の回転（横から下へ）もっと下げる
             leftUpperArm.rotation.x = 0;
             leftUpperArm.rotation.y = 0;
-            leftUpperArm.rotation.z = -0.8;   // 体の横に沿って下に（負の値）
+            leftUpperArm.rotation.z = -1.2;   // さらに下げる（負の値を増やす）
             console.log('左上腕を調整:', leftUpperArm.rotation);
         }
         if (leftLowerArm) {
             leftLowerArm.rotation.x = 0;
             leftLowerArm.rotation.y = 0;
-            leftLowerArm.rotation.z = 0.1;    // 肘を少し曲げる
+            leftLowerArm.rotation.z = 0.15;   // 肘を少し曲げる
         }
 
         // 右腕を下ろす（左右対称）
@@ -98,16 +100,16 @@ function adjustArmPose() {
         const rightLowerArm = humanoid.getNormalizedBoneNode('rightLowerArm');
 
         if (rightUpperArm) {
-            // 右腕: Z軸で正の回転（横から下へ）
+            // 右腕: Z軸で正の回転（横から下へ）もっと下げる
             rightUpperArm.rotation.x = 0;
             rightUpperArm.rotation.y = 0;
-            rightUpperArm.rotation.z = 0.8;   // 体の横に沿って下に（正の値）
+            rightUpperArm.rotation.z = 1.2;   // さらに下げる（正の値を増やす）
             console.log('右上腕を調整:', rightUpperArm.rotation);
         }
         if (rightLowerArm) {
             rightLowerArm.rotation.x = 0;
             rightLowerArm.rotation.y = 0;
-            rightLowerArm.rotation.z = -0.1;  // 肘を少し曲げる
+            rightLowerArm.rotation.z = -0.15; // 肘を少し曲げる
         }
 
         // すべてのボーンを確認（デバッグ用）
@@ -176,6 +178,58 @@ function stopSpeaking() {
     }
 }
 
+// 呼吸アニメーション
+function updateBreathing(deltaTime) {
+    if (!currentVrm) return;
+
+    breathTimer += deltaTime;
+
+    // ゆっくりとした呼吸（3秒周期）
+    const breathCycle = Math.sin(breathTimer * 2) * 0.01;
+
+    // 胸と spine（背骨）を微妙に上下させる
+    const humanoid = currentVrm.humanoid;
+    if (humanoid) {
+        const spine = humanoid.getNormalizedBoneNode('spine');
+        const chest = humanoid.getNormalizedBoneNode('chest');
+
+        if (spine) {
+            spine.position.y = breathCycle;
+        }
+        if (chest) {
+            chest.position.y = breathCycle * 1.2;
+        }
+    }
+}
+
+// アイドルアニメーション（首の微妙な動き）
+function updateIdle(deltaTime) {
+    if (!currentVrm) return;
+
+    idleTimer += deltaTime;
+
+    const humanoid = currentVrm.humanoid;
+    if (!humanoid) return;
+
+    const neck = humanoid.getNormalizedBoneNode('neck');
+    const head = humanoid.getNormalizedBoneNode('head');
+
+    if (head) {
+        // ゆっくりと首を左右に振る（8秒周期）
+        const headYaw = Math.sin(idleTimer * 0.3) * 0.05;
+        // ゆっくりと首を上下に振る（10秒周期）
+        const headPitch = Math.sin(idleTimer * 0.25) * 0.03;
+
+        head.rotation.y = headYaw;
+        head.rotation.x = headPitch;
+    }
+
+    if (neck && !isSpeaking) {
+        // 首も少し動かす（より微妙に）
+        neck.rotation.y = Math.sin(idleTimer * 0.35) * 0.02;
+    }
+}
+
 // アニメーションループ
 function animate() {
     requestAnimationFrame(animate);
@@ -185,9 +239,11 @@ function animate() {
     if (currentVrm) {
         currentVrm.update(deltaTime);
 
-        // 瞬きとリップシンクのアニメーション
+        // すべてのアニメーションを更新
         updateBlink(deltaTime);
         updateLipSync(deltaTime);
+        updateBreathing(deltaTime);
+        updateIdle(deltaTime);
     }
 
     renderer.render(scene, camera);
