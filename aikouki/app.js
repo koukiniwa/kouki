@@ -261,19 +261,23 @@ function updateHeadTilt(deltaTime) {
 function startRandomGesture() {
     if (isTiltingHead || isSpeaking || !currentVrm || !currentVrm.humanoid) return; // 話している時やすでに動作中はスキップ
 
-    const gestures = ['headTilt', 'armRaise', 'bodyLean'];
+    const gestures = ['headTilt', 'armRaise', 'bodyLean', 'nod', 'lookAround', 'stretch', 'wave'];
     currentGesture = gestures[Math.floor(Math.random() * gestures.length)];
     gestureProgress = 0;
 
     // 方向を決定（左右ランダム）
     gestureDirection = Math.random() > 0.5 ? 1 : -1;
 
-    // armRaiseの場合、どちらの腕を使うか決定
+    const humanoid = currentVrm.humanoid;
+
+    // ジェスチャーごとにターゲットを設定
     if (currentGesture === 'armRaise') {
-        const humanoid = currentVrm.humanoid;
         gestureTarget = Math.random() > 0.5 ?
             humanoid.getNormalizedBoneNode('rightUpperArm') :
             humanoid.getNormalizedBoneNode('leftUpperArm');
+    } else if (currentGesture === 'wave') {
+        // 手を振る：右手を使用
+        gestureTarget = humanoid.getNormalizedBoneNode('rightUpperArm');
     }
 }
 
@@ -323,6 +327,122 @@ function updateRandomGesture(deltaTime) {
                 }
                 currentGesture = null;
                 gestureTarget = null;
+            }
+        } else if (currentGesture === 'nod') {
+            // 頷く（1.5秒）
+            const head = humanoid.getNormalizedBoneNode('head');
+            if (head) {
+                if (gestureProgress < 1.5) {
+                    // 2回頷く
+                    head.rotation.x = -0.2 * Math.sin(gestureProgress * Math.PI * 2 / 1.5);
+                } else {
+                    head.rotation.x = 0;
+                    currentGesture = null;
+                    gestureTarget = null;
+                }
+            }
+        } else if (currentGesture === 'lookAround') {
+            // 周りを見回す（3秒）
+            const head = humanoid.getNormalizedBoneNode('head');
+            if (head) {
+                if (gestureProgress < 3.0) {
+                    // 左→中央→右→中央
+                    const cycle = gestureProgress / 3.0;
+                    if (cycle < 0.25) {
+                        head.rotation.y = -0.4 * (cycle / 0.25);
+                    } else if (cycle < 0.5) {
+                        head.rotation.y = -0.4 * (1 - (cycle - 0.25) / 0.25);
+                    } else if (cycle < 0.75) {
+                        head.rotation.y = 0.4 * ((cycle - 0.5) / 0.25);
+                    } else {
+                        head.rotation.y = 0.4 * (1 - (cycle - 0.75) / 0.25);
+                    }
+                } else {
+                    head.rotation.y = 0;
+                    currentGesture = null;
+                    gestureTarget = null;
+                }
+            }
+        } else if (currentGesture === 'stretch') {
+            // 伸びをする（2.5秒）
+            const leftUpperArm = humanoid.getNormalizedBoneNode('leftUpperArm');
+            const rightUpperArm = humanoid.getNormalizedBoneNode('rightUpperArm');
+            const spine = humanoid.getNormalizedBoneNode('spine');
+
+            if (leftUpperArm && rightUpperArm) {
+                if (gestureProgress < 1.0) {
+                    // 両腕を上げる
+                    const progress = gestureProgress / 1.0;
+                    leftUpperArm.rotation.x = -Math.PI * 0.4 * progress;
+                    rightUpperArm.rotation.x = -Math.PI * 0.4 * progress;
+                    if (spine) {
+                        spine.rotation.x = -0.1 * progress;
+                    }
+                } else if (gestureProgress < 2.0) {
+                    // 伸ばしたまま
+                    leftUpperArm.rotation.x = -Math.PI * 0.4;
+                    rightUpperArm.rotation.x = -Math.PI * 0.4;
+                    if (spine) {
+                        spine.rotation.x = -0.1;
+                    }
+                } else if (gestureProgress < 2.5) {
+                    // 戻す
+                    const progress = (2.5 - gestureProgress) / 0.5;
+                    leftUpperArm.rotation.x = -Math.PI * 0.4 * progress;
+                    rightUpperArm.rotation.x = -Math.PI * 0.4 * progress;
+                    if (spine) {
+                        spine.rotation.x = -0.1 * progress;
+                    }
+                } else {
+                    leftUpperArm.rotation.x = 0;
+                    rightUpperArm.rotation.x = 0;
+                    if (spine) {
+                        spine.rotation.x = 0;
+                    }
+                    currentGesture = null;
+                    gestureTarget = null;
+                }
+            }
+        } else if (currentGesture === 'wave') {
+            // 手を振る（2秒）
+            const rightUpperArm = humanoid.getNormalizedBoneNode('rightUpperArm');
+            const rightLowerArm = humanoid.getNormalizedBoneNode('rightLowerArm');
+            const rightHand = humanoid.getNormalizedBoneNode('rightHand');
+
+            if (rightUpperArm && rightLowerArm) {
+                if (gestureProgress < 0.5) {
+                    // 腕を上げる
+                    const progress = gestureProgress / 0.5;
+                    rightUpperArm.rotation.z = Math.PI * 0.3 * progress;
+                    rightUpperArm.rotation.x = -Math.PI * 0.2 * progress;
+                    rightLowerArm.rotation.y = -Math.PI * 0.3 * progress;
+                } else if (gestureProgress < 1.5) {
+                    // 手を振る（3回）
+                    rightUpperArm.rotation.z = Math.PI * 0.3;
+                    rightUpperArm.rotation.x = -Math.PI * 0.2;
+                    rightLowerArm.rotation.y = -Math.PI * 0.3;
+                    if (rightHand) {
+                        rightHand.rotation.z = 0.3 * Math.sin((gestureProgress - 0.5) * Math.PI * 6);
+                    }
+                } else if (gestureProgress < 2.0) {
+                    // 腕を下ろす
+                    const progress = (2.0 - gestureProgress) / 0.5;
+                    rightUpperArm.rotation.z = Math.PI * 0.3 * progress;
+                    rightUpperArm.rotation.x = -Math.PI * 0.2 * progress;
+                    rightLowerArm.rotation.y = -Math.PI * 0.3 * progress;
+                    if (rightHand) {
+                        rightHand.rotation.z = 0;
+                    }
+                } else {
+                    rightUpperArm.rotation.z = 0;
+                    rightUpperArm.rotation.x = 0;
+                    rightLowerArm.rotation.y = 0;
+                    if (rightHand) {
+                        rightHand.rotation.z = 0;
+                    }
+                    currentGesture = null;
+                    gestureTarget = null;
+                }
             }
         }
     } catch (error) {
