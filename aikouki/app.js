@@ -55,11 +55,10 @@ async function initAvatar() {
         VRMUtils.removeUnnecessaryJoints(vrm.scene);
         scene.add(vrm.scene);
 
-        // 腕を下ろす（自然なポーズに）
-        adjustArmPose();
-
         // 初期表情を設定（ニュートラル）
         setExpression('neutral');
+
+        // 腕のポーズはupdateIdle関数で自動的に設定されます
 
         console.log('VRMアバター読み込み完了');
     } catch (error) {
@@ -68,56 +67,6 @@ async function initAvatar() {
 
     // アニメーションループ
     animate();
-}
-
-// 腕を下ろす関数
-function adjustArmPose() {
-    if (!currentVrm) return;
-
-    const humanoid = currentVrm.humanoid;
-    if (!humanoid) return;
-
-    try {
-        // 腕を体の横に沿って下に下ろす
-        const leftUpperArm = humanoid.getNormalizedBoneNode('leftUpperArm');
-        const leftLowerArm = humanoid.getNormalizedBoneNode('leftLowerArm');
-
-        if (leftUpperArm) {
-            // 左腕: Z軸で負の回転（横から下へ）もっと下げる
-            leftUpperArm.rotation.x = 0;
-            leftUpperArm.rotation.y = 0;
-            leftUpperArm.rotation.z = -1.2;   // さらに下げる（負の値を増やす）
-            console.log('左上腕を調整:', leftUpperArm.rotation);
-        }
-        if (leftLowerArm) {
-            leftLowerArm.rotation.x = 0;
-            leftLowerArm.rotation.y = 0;
-            leftLowerArm.rotation.z = 0.15;   // 肘を少し曲げる
-        }
-
-        // 右腕を下ろす（左右対称）
-        const rightUpperArm = humanoid.getNormalizedBoneNode('rightUpperArm');
-        const rightLowerArm = humanoid.getNormalizedBoneNode('rightLowerArm');
-
-        if (rightUpperArm) {
-            // 右腕: Z軸で正の回転（横から下へ）もっと下げる
-            rightUpperArm.rotation.x = 0;
-            rightUpperArm.rotation.y = 0;
-            rightUpperArm.rotation.z = 1.2;   // さらに下げる（正の値を増やす）
-            console.log('右上腕を調整:', rightUpperArm.rotation);
-        }
-        if (rightLowerArm) {
-            rightLowerArm.rotation.x = 0;
-            rightLowerArm.rotation.y = 0;
-            rightLowerArm.rotation.z = -0.15; // 肘を少し曲げる
-        }
-
-        // すべてのボーンを確認（デバッグ用）
-        console.log('利用可能なボーン:', Object.keys(humanoid.normalizedHumanBones || {}));
-        console.log('腕のポーズを調整しました');
-    } catch (error) {
-        console.log('腕のポーズ調整エラー:', error);
-    }
 }
 
 // 瞬きアニメーション
@@ -178,22 +127,29 @@ function stopSpeaking() {
     }
 }
 
-// 呼吸アニメーション
+// 体の揺れアニメーション（より自然に）
 function updateBreathing(deltaTime) {
     if (!currentVrm) return;
 
     breathTimer += deltaTime;
 
-    // ゆっくりとした呼吸（3秒周期）
-    const breathCycle = Math.sin(breathTimer * 2) * 0.02; // 振幅を増やす
+    // ゆっくりとした左右の揺れ（4秒周期）
+    const swayCycle = Math.sin(breathTimer * 1.5) * 0.015;
 
-    // VRMモデル全体を微妙に上下させる（呼吸）
+    // 前後の微妙な揺れ（5秒周期）
+    const forwardCycle = Math.sin(breathTimer * 1.2) * 0.01;
+
+    // VRMモデル全体を左右に揺らす
     if (currentVrm.scene) {
-        currentVrm.scene.position.y = breathCycle;
+        currentVrm.scene.position.x = swayCycle;
+        currentVrm.scene.position.z = forwardCycle;
+
+        // 体も少し回転させる
+        currentVrm.scene.rotation.y = swayCycle * 0.5;
     }
 }
 
-// アイドルアニメーション（首の微妙な動き）
+// アイドルアニメーション（首と腕の微妙な動き）
 function updateIdle(deltaTime) {
     if (!currentVrm || !currentVrm.humanoid) return;
 
@@ -206,17 +162,40 @@ function updateIdle(deltaTime) {
 
         if (head) {
             // ゆっくりと首を左右に振る（6秒周期）
-            const headYaw = Math.sin(idleTimer * 0.5) * 0.1;
+            const headYaw = Math.sin(idleTimer * 0.5) * 0.08;
             // ゆっくりと首を上下に振る（8秒周期）
-            const headPitch = Math.sin(idleTimer * 0.4) * 0.05;
+            const headPitch = Math.sin(idleTimer * 0.4) * 0.04;
 
             head.rotation.y = headYaw;
             head.rotation.x = headPitch;
-
-            console.log('頭を動かしています:', head.rotation.y, head.rotation.x);
-        } else {
-            console.log('headボーンが見つかりません');
         }
+
+        // 腕の自然な揺れ
+        const leftUpperArm = humanoid.getNormalizedBoneNode('leftUpperArm');
+        const rightUpperArm = humanoid.getNormalizedBoneNode('rightUpperArm');
+        const leftLowerArm = humanoid.getNormalizedBoneNode('leftLowerArm');
+        const rightLowerArm = humanoid.getNormalizedBoneNode('rightLowerArm');
+
+        // 左腕の微妙な揺れ（7秒周期）
+        const leftArmSway = Math.sin(idleTimer * 0.9) * 0.03;
+        if (leftUpperArm) {
+            leftUpperArm.rotation.x = leftArmSway;
+            leftUpperArm.rotation.z = -1.2 + leftArmSway * 0.5; // 基本ポーズ + 揺れ
+        }
+        if (leftLowerArm) {
+            leftLowerArm.rotation.z = 0.15 + Math.sin(idleTimer * 0.8) * 0.02;
+        }
+
+        // 右腕の微妙な揺れ（8秒周期、左腕とずらす）
+        const rightArmSway = Math.sin(idleTimer * 0.85 + 1.5) * 0.03;
+        if (rightUpperArm) {
+            rightUpperArm.rotation.x = rightArmSway;
+            rightUpperArm.rotation.z = 1.2 + rightArmSway * 0.5; // 基本ポーズ + 揺れ
+        }
+        if (rightLowerArm) {
+            rightLowerArm.rotation.z = -0.15 + Math.sin(idleTimer * 0.75 + 1.0) * 0.02;
+        }
+
     } catch (error) {
         console.log('アイドルアニメーションエラー:', error);
     }
@@ -238,15 +217,7 @@ function animate() {
         updateBreathing(deltaTime);
         updateIdle(deltaTime);
 
-        // 100フレームごとにログ出力（デバッグ用）
-        frameCount++;
-        if (frameCount % 100 === 0) {
-            console.log('アニメーション実行中:', {
-                breath: breathTimer,
-                idle: idleTimer,
-                position: currentVrm.scene.position.y
-            });
-        }
+        // デバッグログは削除（動作確認後）
     }
 
     renderer.render(scene, camera);
