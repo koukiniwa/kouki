@@ -37,10 +37,10 @@ async function initAvatar() {
     // シーン作成
     scene = new THREE.Scene();
 
-    // カメラ設定（全身が見えるように）
-    camera = new THREE.PerspectiveCamera(35, canvasWidth / canvasHeight, 0.1, 20);
-    camera.position.set(0, 1.2, 2.5);
-    camera.lookAt(0, 1.2, 0);
+    // カメラ設定（足まで見えるように）
+    camera = new THREE.PerspectiveCamera(40, canvasWidth / canvasHeight, 0.1, 20);
+    camera.position.set(0, 0.9, 3.2);
+    camera.lookAt(0, 0.9, 0);
 
     // ライト設定
     const light = new THREE.DirectionalLight(0xffffff, 1.5);
