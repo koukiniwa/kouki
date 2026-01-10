@@ -89,8 +89,8 @@ body {
    アバターコンテナ
    ============================================ */
 .avatar-container {
-  width: 400px;
-  height: 500px;
+  width: 600px;
+  height: 700px;
   background: var(--color-surface);
   border-radius: var(--radius-2xl);
   box-shadow: var(--shadow-xl);

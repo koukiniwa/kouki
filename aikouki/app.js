@@ -17,20 +17,24 @@ let idleTimer = 0;
 async function initAvatar() {
     const canvas = document.getElementById('avatar-canvas');
 
+    // キャンバスサイズを取得（レスポンシブ対応）
+    const canvasWidth = canvas.clientWidth || 600;
+    const canvasHeight = canvas.clientHeight || 700;
+
     // レンダラー設定
     renderer = new THREE.WebGLRenderer({
         canvas: canvas,
         alpha: true,
         antialias: true
     });
-    renderer.setSize(400, 500);
+    renderer.setSize(canvasWidth, canvasHeight);
     renderer.setPixelRatio(window.devicePixelRatio);
 
     // シーン作成
     scene = new THREE.Scene();
 
     // カメラ設定（腰より上が見えるように調整）
-    camera = new THREE.PerspectiveCamera(35, 400 / 500, 0.1, 20);
+    camera = new THREE.PerspectiveCamera(35, canvasWidth / canvasHeight, 0.1, 20);
     camera.position.set(0, 1.0, 1.5);  // より近く、低めに
     camera.lookAt(0, 1.0, 0);
 
