@@ -80,17 +80,22 @@ body {
   justify-content: center;
   align-items: center;
   gap: var(--space-4);
-  padding: var(--space-3);
+  padding: var(--space-4);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  max-width: 100vw;
+  overflow-x: hidden;
 }
 
 /* ============================================
    アバターコンテナ
    ============================================ */
 .avatar-container {
-  width: 600px;
-  height: 700px;
+  width: 45vw;
+  max-width: 700px;
+  min-width: 500px;
+  height: 85vh;
+  max-height: 900px;
   background: var(--color-surface);
   border-radius: var(--radius-2xl);
   box-shadow: var(--shadow-xl);
@@ -112,9 +117,11 @@ body {
    チャットコンテナ
    ============================================ */
 .chat-container {
-  width: 100%;
-  max-width: 600px;
-  height: 80vh;
+  width: 45vw;
+  max-width: 700px;
+  min-width: 500px;
+  height: 85vh;
+  max-height: 900px;
   background: var(--color-surface);
   border-radius: var(--radius-2xl);
   box-shadow: var(--shadow-xl);
@@ -449,14 +456,20 @@ button:disabled {
 
   .avatar-container {
     width: 100%;
-    height: 35vh;
+    min-width: 100%;
+    max-width: 100%;
+    height: 40vh;
+    max-height: 40vh;
     border-radius: 0;
     border-bottom: 1px solid rgba(255, 255, 255, 0.2);
   }
 
   .chat-container {
+    width: 100%;
+    min-width: 100%;
     max-width: 100%;
-    height: 65vh;
+    height: 60vh;
+    max-height: 60vh;
     border-radius: 0;
   }
 
