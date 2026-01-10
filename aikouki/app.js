@@ -67,6 +67,76 @@ async function initAvatar() {
         VRMUtils.removeUnnecessaryJoints(vrm.scene);
         scene.add(vrm.scene);
 
+        // 肌の色をきれいな肌色に調整（テクスチャベース）
+        vrm.scene.traverse((object) => {
+            if (object.isMesh && object.material) {
+                const materials = Array.isArray(object.material) ? object.material : [object.material];
+                materials.forEach((material) => {
+                    console.log('マテリアル:', material.name, 'タイプ:', material.type);
+
+                    // テクスチャがある場合、キャンバスできれいな肌色に調整
+                    if (material.map && material.map.image) {
+                        const texture = material.map;
+                        const image = texture.image;
+
+                        // 画像が完全に読み込まれているか確認
+                        if (!image.complete || image.width === 0) {
+                            console.log('画像が未ロード:', material.name);
+                            return;
+                        }
+
+                        try {
+                            // キャンバスを作成してテクスチャを調整
+                            const canvas = document.createElement('canvas');
+                            canvas.width = image.width;
+                            canvas.height = image.height;
+                            const ctx = canvas.getContext('2d');
+
+                            // 画像を描画
+                            ctx.drawImage(image, 0, 0);
+
+                            // ピクセルデータを取得
+                            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                            const data = imageData.data;
+
+                            // 各ピクセルをきれいな肌色に調整
+                            for (let i = 0; i < data.length; i += 4) {
+                                // 赤みを保ちながら明るくする（健康的な肌色）
+                                // R（赤）は強めに明るく
+                                data[i] = Math.min(data[i] * 1.3 + 50, 255);
+                                // G（緑）は中程度に明るく
+                                data[i + 1] = Math.min(data[i + 1] * 1.2 + 40, 255);
+                                // B（青）は控えめに（青白さを防ぐ）
+                                data[i + 2] = Math.min(data[i + 2] * 1.1 + 30, 255);
+                                // Alpha（透明度）は変更しない
+                            }
+
+                            // 明るくした画像データを戻す
+                            ctx.putImageData(imageData, 0, 0);
+
+                            // 新しいテクスチャとして設定
+                            const newTexture = new THREE.CanvasTexture(canvas);
+                            newTexture.colorSpace = texture.colorSpace;
+                            newTexture.flipY = texture.flipY;
+                            material.map = newTexture;
+                            material.needsUpdate = true;
+
+                            console.log('✅ テクスチャをきれいな肌色に調整:', material.name);
+                        } catch (error) {
+                            console.error('テクスチャ調整エラー:', material.name, error);
+                        }
+                    }
+
+                    // 追加で暖色系の発光色を設定（健康的な肌の色）
+                    if (material.emissive) {
+                        material.emissive.setRGB(0.2, 0.15, 0.1); // ピーチ系の色
+                        material.emissiveIntensity = 0.8;
+                        material.needsUpdate = true;
+                    }
+                });
+            }
+        });
+
         // 初期表情を設定（ニュートラル）
         setExpression('neutral');
 
