@@ -79,9 +79,33 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+  gap: var(--space-4);
   padding: var(--space-3);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* ============================================
+   アバターコンテナ
+   ============================================ */
+.avatar-container {
+  width: 400px;
+  height: 500px;
+  background: var(--color-surface);
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-xl);
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  animation: fadeIn 0.5s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#avatar-canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
 }
 
 /* ============================================
@@ -437,11 +461,20 @@ button:disabled {
   body {
     padding: 0;
     align-items: stretch;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .avatar-container {
+    width: 100%;
+    height: 35vh;
+    border-radius: 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
   }
 
   .chat-container {
     max-width: 100%;
-    height: 100vh;
+    height: 65vh;
     border-radius: 0;
   }
 

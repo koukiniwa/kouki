@@ -1,3 +1,140 @@
+// ===== 3Dアバター関連 =====
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { VRMLoaderPlugin, VRMUtils } from '@pixiv/three-vrm';
+
+// グローバル変数
+let scene, camera, renderer, vrm, currentVrm;
+let clock = new THREE.Clock();
+
+// VRMアバターの初期化
+async function initAvatar() {
+    const canvas = document.getElementById('avatar-canvas');
+
+    // レンダラー設定
+    renderer = new THREE.WebGLRenderer({
+        canvas: canvas,
+        alpha: true,
+        antialias: true
+    });
+    renderer.setSize(400, 500);
+    renderer.setPixelRatio(window.devicePixelRatio);
+
+    // シーン作成
+    scene = new THREE.Scene();
+
+    // カメラ設定
+    camera = new THREE.PerspectiveCamera(30, 400 / 500, 0.1, 20);
+    camera.position.set(0, 1.3, 2);
+    camera.lookAt(0, 1.3, 0);
+
+    // ライト設定
+    const light = new THREE.DirectionalLight(0xffffff, 1.5);
+    light.position.set(1, 1, 1).normalize();
+    scene.add(light);
+
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+    scene.add(ambientLight);
+
+    // VRMモデル読み込み
+    const loader = new GLTFLoader();
+    loader.register((parser) => new VRMLoaderPlugin(parser));
+
+    try {
+        const gltf = await loader.loadAsync('コウキ.vrm');
+        vrm = gltf.userData.vrm;
+        currentVrm = vrm;
+
+        // VRMモデルをシーンに追加
+        VRMUtils.removeUnnecessaryJoints(vrm.scene);
+        scene.add(vrm.scene);
+
+        // 初期表情を設定（ニュートラル）
+        setExpression('neutral');
+
+        console.log('VRMアバター読み込み完了');
+    } catch (error) {
+        console.error('VRMアバター読み込みエラー:', error);
+    }
+
+    // アニメーションループ
+    animate();
+}
+
+// アニメーションループ
+function animate() {
+    requestAnimationFrame(animate);
+
+    const deltaTime = clock.getDelta();
+
+    if (currentVrm) {
+        currentVrm.update(deltaTime);
+    }
+
+    renderer.render(scene, camera);
+}
+
+// 表情を変更する関数
+function setExpression(expressionName) {
+    if (!currentVrm) return;
+
+    const expressionManager = currentVrm.expressionManager;
+    if (!expressionManager) return;
+
+    // 全ての表情をリセット
+    expressionManager.expressions.forEach(expression => {
+        expressionManager.setValue(expression.expressionName, 0);
+    });
+
+    // 表情マッピング（VRMの標準表情名）
+    const expressionMap = {
+        'neutral': 'neutral',
+        'happy': 'happy',
+        'sad': 'sad',
+        'angry': 'angry',
+        'surprised': 'surprised',
+        'relaxed': 'relaxed'
+    };
+
+    const vrmExpressionName = expressionMap[expressionName] || 'neutral';
+
+    // 指定された表情を設定
+    try {
+        expressionManager.setValue(vrmExpressionName, 1.0);
+        console.log(`表情変更: ${expressionName}`);
+    } catch (error) {
+        console.log('表情設定エラー:', error);
+    }
+}
+
+// 感情を分析する関数
+function analyzeEmotion(text) {
+    // 簡易的な感情分析（キーワードベース）
+    const emotions = {
+        happy: ['嬉しい', '楽しい', '最高', 'よかった', 'ありがとう', 'わーい', 'やった', '！'],
+        sad: ['悲しい', '辛い', 'しんどい', '残念', '寂しい'],
+        angry: ['怒', 'むかつく', 'イライラ'],
+        surprised: ['まじか', 'えっ', '驚', 'すごい', 'マジ'],
+        relaxed: ['まぁ', 'ねー', 'かも', 'だろうね']
+    };
+
+    for (const [emotion, keywords] of Object.entries(emotions)) {
+        for (const keyword of keywords) {
+            if (text.includes(keyword)) {
+                return emotion;
+            }
+        }
+    }
+
+    return 'neutral';
+}
+
+// ページ読み込み時にアバター初期化
+window.addEventListener('DOMContentLoaded', () => {
+    initAvatar();
+});
+
+// ===== 既存のチャット機能 =====
 // バックエンド API エンドポイント
 const API_ENDPOINT = 'https://ai-kouki-backend-610abb7fb0bc.herokuapp.com/api/chat';
 
@@ -163,13 +300,22 @@ async function sendMessage() {
         }
 
         const data = await response.json();
-        
+
         // ローディングを削除
         loadingDiv.remove();
-        
+
         // AIの返答を表示（音声ボタン付き）
         addMessageToChat(data.reply, 'ai');
         conversationHistory.push({ role: 'assistant', content: data.reply });
+
+        // 感情分析して表情を変更
+        const emotion = analyzeEmotion(data.reply);
+        setExpression(emotion);
+
+        // 3秒後にニュートラルに戻す
+        setTimeout(() => {
+            setExpression('neutral');
+        }, 3000);
 
     } catch (error) {
         console.error('エラー:', error);

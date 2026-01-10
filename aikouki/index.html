@@ -5,8 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AIこうき と話そう</title>
     <link rel="stylesheet" href="style.css">
+    <!-- Three.js -->
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/",
+            "@pixiv/three-vrm": "https://cdn.jsdelivr.net/npm/@pixiv/three-vrm@2.1.0/lib/three-vrm.module.js"
+        }
+    }
+    </script>
 </head>
 <body>
+    <div class="avatar-container">
+        <canvas id="avatar-canvas"></canvas>
+    </div>
+
     <div class="chat-container">
         <div class="chat-header">
             <a href="../" class="back-link">← ブログに戻る</a>
@@ -34,6 +48,6 @@
         </div>
     </div>
 
-    <script src="app.js"></script>
+    <script src="app.js" type="module"></script>
 </body>
 </html>
