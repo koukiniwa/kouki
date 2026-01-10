@@ -46,16 +46,16 @@ async function initAvatar() {
     camera.position.set(0, 0.9, 3.2);
     camera.lookAt(0, 0.9, 0);
 
-    // ライト設定（明るくして肌を白く見せる）
-    const light = new THREE.DirectionalLight(0xfff5f0, 2.5); // 暖色系で明るく
+    // ライト設定（自然な肌色）
+    const light = new THREE.DirectionalLight(0xfff5ed, 1.8); // 暖色系で程よい明るさ
     light.position.set(1, 1, 1).normalize();
     scene.add(light);
 
-    const ambientLight = new THREE.AmbientLight(0xfff8f5, 1.2); // 環境光も明るく
+    const ambientLight = new THREE.AmbientLight(0xfff0e8, 0.9); // 環境光を少し抑える
     scene.add(ambientLight);
 
     // 補助光を追加（顔を明るく）
-    const fillLight = new THREE.DirectionalLight(0xffffff, 1.0);
+    const fillLight = new THREE.DirectionalLight(0xffeedd, 0.6);
     fillLight.position.set(-1, 0.5, 1).normalize();
     scene.add(fillLight);
 
