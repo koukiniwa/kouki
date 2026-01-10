@@ -6,6 +6,10 @@ import { VRMLoaderPlugin, VRMUtils } from '@pixiv/three-vrm';
 // グローバル変数
 let scene, camera, renderer, vrm, currentVrm;
 let clock = new THREE.Clock();
+let isBlinking = false;
+let isSpeaking = false;
+let blinkTimer = 0;
+let speakTimer = 0;
 
 // VRMアバターの初期化
 async function initAvatar() {
@@ -49,6 +53,9 @@ async function initAvatar() {
         VRMUtils.removeUnnecessaryJoints(vrm.scene);
         scene.add(vrm.scene);
 
+        // 腕を下ろす（自然なポーズに）
+        adjustArmPose();
+
         // 初期表情を設定（ニュートラル）
         setExpression('neutral');
 
@@ -61,6 +68,100 @@ async function initAvatar() {
     animate();
 }
 
+// 腕を下ろす関数
+function adjustArmPose() {
+    if (!currentVrm) return;
+
+    const humanoid = currentVrm.humanoid;
+    if (!humanoid) return;
+
+    try {
+        // 左腕を下ろす
+        const leftUpperArm = humanoid.getNormalizedBoneNode('leftUpperArm');
+        const leftLowerArm = humanoid.getNormalizedBoneNode('leftLowerArm');
+
+        if (leftUpperArm) {
+            leftUpperArm.rotation.z = 0.3; // 腕を下に
+        }
+        if (leftLowerArm) {
+            leftLowerArm.rotation.z = -0.1; // 肘を少し曲げる
+        }
+
+        // 右腕を下ろす
+        const rightUpperArm = humanoid.getNormalizedBoneNode('rightUpperArm');
+        const rightLowerArm = humanoid.getNormalizedBoneNode('rightLowerArm');
+
+        if (rightUpperArm) {
+            rightUpperArm.rotation.z = -0.3; // 腕を下に
+        }
+        if (rightLowerArm) {
+            rightLowerArm.rotation.z = 0.1; // 肘を少し曲げる
+        }
+
+        console.log('腕のポーズを調整しました');
+    } catch (error) {
+        console.log('腕のポーズ調整エラー:', error);
+    }
+}
+
+// 瞬きアニメーション
+function updateBlink(deltaTime) {
+    if (!currentVrm || !currentVrm.expressionManager) return;
+
+    blinkTimer += deltaTime;
+
+    // 3-5秒ごとに瞬き
+    if (blinkTimer > 3 + Math.random() * 2) {
+        if (!isBlinking) {
+            isBlinking = true;
+            currentVrm.expressionManager.setValue('blink', 1.0);
+
+            setTimeout(() => {
+                if (currentVrm && currentVrm.expressionManager) {
+                    currentVrm.expressionManager.setValue('blink', 0);
+                    isBlinking = false;
+                }
+            }, 150);
+
+            blinkTimer = 0;
+        }
+    }
+}
+
+// リップシンク（口パク）アニメーション
+function updateLipSync(deltaTime) {
+    if (!currentVrm || !currentVrm.expressionManager || !isSpeaking) return;
+
+    speakTimer += deltaTime;
+
+    // 口の開閉をアニメーション（波のように）
+    const mouthValue = Math.abs(Math.sin(speakTimer * 10)) * 0.6;
+
+    try {
+        currentVrm.expressionManager.setValue('aa', mouthValue);
+    } catch (error) {
+        // aa表情がない場合は無視
+    }
+}
+
+// 話し始める
+function startSpeaking() {
+    isSpeaking = true;
+    speakTimer = 0;
+}
+
+// 話し終わる
+function stopSpeaking() {
+    isSpeaking = false;
+    if (currentVrm && currentVrm.expressionManager) {
+        try {
+            currentVrm.expressionManager.setValue('aa', 0);
+        } catch (error) {
+            // 無視
+        }
+    }
+}
+
 // アニメーションループ
 function animate() {
     requestAnimationFrame(animate);
@@ -69,6 +170,10 @@ function animate() {
 
     if (currentVrm) {
         currentVrm.update(deltaTime);
+
+        // 瞬きとリップシンクのアニメーション
+        updateBlink(deltaTime);
+        updateLipSync(deltaTime);
     }
 
     renderer.render(scene, camera);
@@ -261,8 +366,14 @@ async function playVoice(text, button) {
         const audioUrl = URL.createObjectURL(audioBlob);
         const audio = new Audio(audioUrl);
 
-        // 再生終了時にボタンを元に戻す
+        // 再生開始時にリップシンク開始
+        audio.onplay = () => {
+            startSpeaking();
+        };
+
+        // 再生終了時にボタンを元に戻す＆リップシンク停止
         audio.onended = () => {
+            stopSpeaking();
             if (button) {
                 button.disabled = false;
                 button.textContent = '🔊';
@@ -332,6 +443,13 @@ async function sendMessage() {
         // 感情分析して表情を変更
         const emotion = analyzeEmotion(data.reply);
         setExpression(emotion);
+
+        // 返答時に少しリップシンクを動かす（会話している感じ）
+        startSpeaking();
+        const speakDuration = Math.min(data.reply.length * 100, 3000); // 文字数に応じて調整、最大3秒
+        setTimeout(() => {
+            stopSpeaking();
+        }, speakDuration);
 
         // 3秒後にニュートラルに戻す
         setTimeout(() => {
