@@ -13,6 +13,9 @@ let speakTimer = 0;
 let breathTimer = 0;
 let idleTimer = 0;
 let voiceEnabled = true; // 音声のオン/オフ（デフォルトはオン）
+let isWaving = false; // 手を振っているかどうか
+let waveTimer = 0;
+let hasGreeted = false; // 初回挨拶済みかどうか
 
 // VRMアバターの初期化
 async function initAvatar() {
@@ -64,6 +67,11 @@ async function initAvatar() {
         setExpression('neutral');
 
         console.log('VRMアバター読み込み完了');
+
+        // 初回挨拶（1秒後に実行）
+        setTimeout(() => {
+            playGreeting();
+        }, 1000);
     } catch (error) {
         console.error('VRMアバター読み込みエラー:', error);
     }
@@ -200,6 +208,48 @@ function updateIdle(deltaTime) {
     }
 }
 
+// 手を振るアニメーション
+function updateWave(deltaTime) {
+    if (!currentVrm || !currentVrm.humanoid || !isWaving) return;
+
+    waveTimer += deltaTime;
+    const humanoid = currentVrm.humanoid;
+
+    try {
+        const rightUpperArm = humanoid.getNormalizedBoneNode('rightUpperArm');
+        const rightLowerArm = humanoid.getNormalizedBoneNode('rightLowerArm');
+        const rightHand = humanoid.getNormalizedBoneNode('rightHand');
+
+        if (rightUpperArm) {
+            // 腕を上げる（Z軸回転で腕を上げる）
+            rightUpperArm.rotation.z = 2.5;
+            // 肩から前方に出す
+            rightUpperArm.rotation.x = -0.3;
+            // 手を振る動き（左右に振る）
+            rightUpperArm.rotation.y = Math.sin(waveTimer * 8) * 0.4;
+        }
+
+        if (rightLowerArm) {
+            // 肘を少し曲げる
+            rightLowerArm.rotation.z = -0.5;
+        }
+
+        if (rightHand) {
+            // 手首を少し動かす
+            rightHand.rotation.z = Math.sin(waveTimer * 8) * 0.2;
+        }
+
+        // 3秒後に手を振るのを停止
+        if (waveTimer > 3) {
+            isWaving = false;
+            waveTimer = 0;
+        }
+
+    } catch (error) {
+        console.log('手を振るアニメーションエラー:', error);
+    }
+}
+
 // アニメーションループ
 function animate() {
     requestAnimationFrame(animate);
@@ -211,7 +261,13 @@ function animate() {
         updateBlink(deltaTime);
         updateLipSync(deltaTime);
         updateBreathing(deltaTime);
-        updateIdle(deltaTime);
+
+        // 手を振っているときはアイドルアニメーションをスキップ
+        if (isWaving) {
+            updateWave(deltaTime);
+        } else {
+            updateIdle(deltaTime);
+        }
     }
 
     renderer.render(scene, camera);
@@ -379,6 +435,40 @@ async function playVoice(text) {
     }
 }
 
+// 初回挨拶を実行する関数
+async function playGreeting() {
+    if (hasGreeted) return;
+    hasGreeted = true;
+
+    const greetingMessage = 'やー、こんにちは！何か話しかけてください。';
+
+    // 表情を笑顔に
+    setExpression('happy');
+
+    // 手を振るアニメーション開始
+    isWaving = true;
+    waveTimer = 0;
+
+    // 音声オン/オフで処理を分岐
+    if (voiceEnabled) {
+        // 音声オン：音声再生
+        await playVoice(greetingMessage);
+    } else {
+        // 音声オフ：吹き出し表示
+        showSpeechBubble(greetingMessage);
+        // 吹き出し表示中も軽くリップシンク
+        startSpeaking();
+        setTimeout(() => {
+            stopSpeaking();
+        }, 3000);
+    }
+
+    // 3秒後にニュートラルに戻す
+    setTimeout(() => {
+        setExpression('neutral');
+    }, 3000);
+}
+
 // 吹き出しを表示する関数
 function showSpeechBubble(text) {
     const bubble = document.getElementById('speechBubble');
@@ -489,7 +579,6 @@ window.addEventListener('DOMContentLoaded', () => {
     const savedVoice = localStorage.getItem('voiceEnabled');
     if (savedVoice === 'false') {
         voiceEnabled = false;
-        showSpeechBubble('あ、どうも。何か話しかけてください。');
     }
 
     // 音声トグルボタンの初期状態を設定
@@ -523,10 +612,8 @@ window.addEventListener('DOMContentLoaded', () => {
             localStorage.setItem('voiceEnabled', voiceEnabled.toString());
             updateVoiceButton();
 
-            // 音声オフにした場合、吹き出しを表示
-            if (!voiceEnabled) {
-                showSpeechBubble('あ、どうも。何か話しかけてください。');
-            } else {
+            // 音声オンにした場合、吹き出しを非表示
+            if (voiceEnabled) {
                 hideSpeechBubble();
             }
         });
