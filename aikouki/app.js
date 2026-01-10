@@ -185,52 +185,45 @@ function updateBreathing(deltaTime) {
     breathTimer += deltaTime;
 
     // ゆっくりとした呼吸（3秒周期）
-    const breathCycle = Math.sin(breathTimer * 2) * 0.01;
+    const breathCycle = Math.sin(breathTimer * 2) * 0.02; // 振幅を増やす
 
-    // 胸と spine（背骨）を微妙に上下させる
-    const humanoid = currentVrm.humanoid;
-    if (humanoid) {
-        const spine = humanoid.getNormalizedBoneNode('spine');
-        const chest = humanoid.getNormalizedBoneNode('chest');
-
-        if (spine) {
-            spine.position.y = breathCycle;
-        }
-        if (chest) {
-            chest.position.y = breathCycle * 1.2;
-        }
+    // VRMモデル全体を微妙に上下させる（呼吸）
+    if (currentVrm.scene) {
+        currentVrm.scene.position.y = breathCycle;
     }
 }
 
 // アイドルアニメーション（首の微妙な動き）
 function updateIdle(deltaTime) {
-    if (!currentVrm) return;
+    if (!currentVrm || !currentVrm.humanoid) return;
 
     idleTimer += deltaTime;
 
     const humanoid = currentVrm.humanoid;
-    if (!humanoid) return;
 
-    const neck = humanoid.getNormalizedBoneNode('neck');
-    const head = humanoid.getNormalizedBoneNode('head');
+    try {
+        const head = humanoid.getNormalizedBoneNode('head');
 
-    if (head) {
-        // ゆっくりと首を左右に振る（8秒周期）
-        const headYaw = Math.sin(idleTimer * 0.3) * 0.05;
-        // ゆっくりと首を上下に振る（10秒周期）
-        const headPitch = Math.sin(idleTimer * 0.25) * 0.03;
+        if (head) {
+            // ゆっくりと首を左右に振る（6秒周期）
+            const headYaw = Math.sin(idleTimer * 0.5) * 0.1;
+            // ゆっくりと首を上下に振る（8秒周期）
+            const headPitch = Math.sin(idleTimer * 0.4) * 0.05;
 
-        head.rotation.y = headYaw;
-        head.rotation.x = headPitch;
-    }
+            head.rotation.y = headYaw;
+            head.rotation.x = headPitch;
 
-    if (neck && !isSpeaking) {
-        // 首も少し動かす（より微妙に）
-        neck.rotation.y = Math.sin(idleTimer * 0.35) * 0.02;
+            console.log('頭を動かしています:', head.rotation.y, head.rotation.x);
+        } else {
+            console.log('headボーンが見つかりません');
+        }
+    } catch (error) {
+        console.log('アイドルアニメーションエラー:', error);
     }
 }
 
 // アニメーションループ
+let frameCount = 0;
 function animate() {
     requestAnimationFrame(animate);
 
@@ -244,6 +237,16 @@ function animate() {
         updateLipSync(deltaTime);
         updateBreathing(deltaTime);
         updateIdle(deltaTime);
+
+        // 100フレームごとにログ出力（デバッグ用）
+        frameCount++;
+        if (frameCount % 100 === 0) {
+            console.log('アニメーション実行中:', {
+                breath: breathTimer,
+                idle: idleTimer,
+                position: currentVrm.scene.position.y
+            });
+        }
     }
 
     renderer.render(scene, camera);
