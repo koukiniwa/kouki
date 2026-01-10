@@ -76,28 +76,41 @@ function adjustArmPose() {
     if (!humanoid) return;
 
     try {
-        // 左腕を下ろす
+        // 左腕を下ろす（複数の軸で調整）
         const leftUpperArm = humanoid.getNormalizedBoneNode('leftUpperArm');
         const leftLowerArm = humanoid.getNormalizedBoneNode('leftLowerArm');
 
         if (leftUpperArm) {
-            leftUpperArm.rotation.z = 0.3; // 腕を下に
+            // X軸（前後）、Y軸（左右）、Z軸（回転）を組み合わせる
+            leftUpperArm.rotation.x = 0;      // 前後
+            leftUpperArm.rotation.y = 0;      // 左右
+            leftUpperArm.rotation.z = 0.5;    // 下に下ろす
+            console.log('左上腕を調整:', leftUpperArm.rotation);
         }
         if (leftLowerArm) {
-            leftLowerArm.rotation.z = -0.1; // 肘を少し曲げる
+            leftLowerArm.rotation.x = 0;
+            leftLowerArm.rotation.y = 0;
+            leftLowerArm.rotation.z = -0.2;   // 肘を少し曲げる
         }
 
-        // 右腕を下ろす
+        // 右腕を下ろす（左右対称）
         const rightUpperArm = humanoid.getNormalizedBoneNode('rightUpperArm');
         const rightLowerArm = humanoid.getNormalizedBoneNode('rightLowerArm');
 
         if (rightUpperArm) {
-            rightUpperArm.rotation.z = -0.3; // 腕を下に
+            rightUpperArm.rotation.x = 0;
+            rightUpperArm.rotation.y = 0;
+            rightUpperArm.rotation.z = -0.5;  // 下に下ろす（左腕と逆）
+            console.log('右上腕を調整:', rightUpperArm.rotation);
         }
         if (rightLowerArm) {
-            rightLowerArm.rotation.z = 0.1; // 肘を少し曲げる
+            rightLowerArm.rotation.x = 0;
+            rightLowerArm.rotation.y = 0;
+            rightLowerArm.rotation.z = 0.2;   // 肘を少し曲げる
         }
 
+        // すべてのボーンを確認（デバッグ用）
+        console.log('利用可能なボーン:', Object.keys(humanoid.normalizedHumanBones || {}));
         console.log('腕のポーズを調整しました');
     } catch (error) {
         console.log('腕のポーズ調整エラー:', error);
