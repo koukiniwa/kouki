@@ -22,6 +22,11 @@ let currentGesture = null; // 現在実行中のジェスチャー
 let gestureProgress = 0; // ジェスチャーの進行度
 let gestureDirection = 1; // ジェスチャーの方向（1 or -1）
 let gestureTarget = null; // ジェスチャーのターゲット（腕など）
+let mouseX = 0; // マウスX座標（-1 to 1）
+let mouseY = 0; // マウスY座標（-1 to 1）
+let expressionTimer = 0; // 表情変化タイマー
+let nextExpressionTime = 5 + Math.random() * 5; // 次の表情変化までの時間（5-10秒）
+let currentEmotion = 'neutral'; // 現在の感情
 
 // VRMアバターの初期化
 async function initAvatar() {
@@ -172,6 +177,85 @@ function updateBreathing(deltaTime) {
         currentVrm.scene.position.x = swayCycle;
         currentVrm.scene.position.z = forwardCycle;
         currentVrm.scene.rotation.y = swayCycle * 0.5;
+    }
+}
+
+// イージング関数（滑らかな動き）
+function easeOutCubic(t) {
+    return 1 - Math.pow(1 - t, 3);
+}
+
+function easeInOutQuad(t) {
+    return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+}
+
+// 視線追従（マウスカーソルを目で追う）
+function updateEyeTracking(deltaTime) {
+    if (!currentVrm || !currentVrm.humanoid) return;
+
+    const humanoid = currentVrm.humanoid;
+    const leftEye = humanoid.getNormalizedBoneNode('leftEye');
+    const rightEye = humanoid.getNormalizedBoneNode('rightEye');
+
+    if (leftEye && rightEye) {
+        // マウス位置に基づいて目の向きを計算
+        const targetX = mouseX * 0.3; // 左右の動き（制限）
+        const targetY = -mouseY * 0.2; // 上下の動き（制限）
+
+        // スムーズに移行
+        leftEye.rotation.y = THREE.MathUtils.lerp(leftEye.rotation.y, targetX, 0.1);
+        leftEye.rotation.x = THREE.MathUtils.lerp(leftEye.rotation.x, targetY, 0.1);
+        rightEye.rotation.y = THREE.MathUtils.lerp(rightEye.rotation.y, targetX, 0.1);
+        rightEye.rotation.x = THREE.MathUtils.lerp(rightEye.rotation.x, targetY, 0.1);
+    }
+}
+
+// 待機時の表情変化
+function updateIdleExpression(deltaTime) {
+    if (!currentVrm || !currentVrm.expressionManager || isSpeaking) return;
+
+    expressionTimer += deltaTime;
+
+    if (expressionTimer >= nextExpressionTime) {
+        // ランダムで表情を変化
+        const idleExpressions = ['neutral', 'happy', 'relaxed'];
+        const randomExpression = idleExpressions[Math.floor(Math.random() * idleExpressions.length)];
+
+        // 現在の表情と違う場合のみ変更
+        if (randomExpression !== currentEmotion) {
+            setExpression(randomExpression);
+            currentEmotion = randomExpression;
+        }
+
+        expressionTimer = 0;
+        nextExpressionTime = 5 + Math.random() * 5; // 次は5-10秒後
+    }
+}
+
+// 感情に応じた動作を実行
+function playEmotionalGesture(emotion) {
+    if (!currentVrm || !currentVrm.humanoid || currentGesture) return;
+
+    // 感情に応じたジェスチャーを選択
+    if (emotion === 'happy') {
+        // 嬉しい時：飛び跳ねる or 手を振る
+        const happyGestures = ['jump', 'wave'];
+        currentGesture = happyGestures[Math.floor(Math.random() * happyGestures.length)];
+    } else if (emotion === 'sad') {
+        // 悲しい時：肩を落とす
+        currentGesture = 'shoulderDrop';
+    } else if (emotion === 'surprised') {
+        // 驚いた時：後ろに反る
+        currentGesture = 'stepBack';
+    }
+
+    if (currentGesture) {
+        gestureProgress = 0;
+        const humanoid = currentVrm.humanoid;
+
+        if (currentGesture === 'wave') {
+            gestureTarget = humanoid.getNormalizedBoneNode('rightUpperArm');
+        }
     }
 }
 
@@ -444,6 +528,68 @@ function updateRandomGesture(deltaTime) {
                     gestureTarget = null;
                 }
             }
+        } else if (currentGesture === 'jump') {
+            // 飛び跳ねる（1.5秒）- イージング適用
+            if (currentVrm.scene) {
+                if (gestureProgress < 1.5) {
+                    const cycle = (gestureProgress / 1.5) * Math.PI;
+                    const jumpHeight = Math.sin(cycle) * 0.15; // イージングを適用した高さ
+                    currentVrm.scene.position.y = jumpHeight;
+                } else {
+                    currentVrm.scene.position.y = 0;
+                    currentGesture = null;
+                    gestureTarget = null;
+                }
+            }
+        } else if (currentGesture === 'shoulderDrop') {
+            // 肩を落とす（2秒）- イージング適用
+            const leftUpperArm = humanoid.getNormalizedBoneNode('leftUpperArm');
+            const rightUpperArm = humanoid.getNormalizedBoneNode('rightUpperArm');
+            const head = humanoid.getNormalizedBoneNode('head');
+
+            if (leftUpperArm && rightUpperArm) {
+                if (gestureProgress < 1.0) {
+                    const progress = easeOutCubic(gestureProgress / 1.0);
+                    leftUpperArm.rotation.x = 0.3 * progress;
+                    rightUpperArm.rotation.x = 0.3 * progress;
+                    if (head) {
+                        head.rotation.x = 0.2 * progress;
+                    }
+                } else if (gestureProgress < 2.0) {
+                    const progress = easeInOutQuad((2.0 - gestureProgress) / 1.0);
+                    leftUpperArm.rotation.x = 0.3 * progress;
+                    rightUpperArm.rotation.x = 0.3 * progress;
+                    if (head) {
+                        head.rotation.x = 0.2 * progress;
+                    }
+                } else {
+                    leftUpperArm.rotation.x = 0;
+                    rightUpperArm.rotation.x = 0;
+                    if (head) {
+                        head.rotation.x = 0;
+                    }
+                    currentGesture = null;
+                    gestureTarget = null;
+                }
+            }
+        } else if (currentGesture === 'stepBack') {
+            // 後ろに反る（1.5秒）- イージング適用
+            if (currentVrm.scene) {
+                if (gestureProgress < 0.5) {
+                    const progress = easeOutCubic(gestureProgress / 0.5);
+                    currentVrm.scene.position.z = -0.1 * progress;
+                    currentVrm.scene.rotation.x = 0.1 * progress;
+                } else if (gestureProgress < 1.5) {
+                    const progress = easeInOutQuad((1.5 - gestureProgress) / 1.0);
+                    currentVrm.scene.position.z = -0.1 * progress;
+                    currentVrm.scene.rotation.x = 0.1 * progress;
+                } else {
+                    currentVrm.scene.position.z = 0;
+                    currentVrm.scene.rotation.x = 0;
+                    currentGesture = null;
+                    gestureTarget = null;
+                }
+            }
         }
     } catch (error) {
         console.log('ランダムジェスチャーエラー:', error);
@@ -481,6 +627,8 @@ function animate() {
         updateBlink(deltaTime);
         updateLipSync(deltaTime);
         updateBreathing(deltaTime);
+        updateEyeTracking(deltaTime); // 視線追従
+        updateIdleExpression(deltaTime); // 待機時の表情変化
 
         // 首を傾げているときはアイドルアニメーションの頭の動きをスキップ
         if (isTiltingHead) {
@@ -750,6 +898,10 @@ async function sendMessage() {
         // 感情分析して表情を変更
         const emotion = analyzeEmotion(data.reply);
         setExpression(emotion);
+        currentEmotion = emotion; // 現在の感情を保存
+
+        // 感情に応じた動作を実行
+        playEmotionalGesture(emotion);
 
         // 音声オン/オフで処理を分岐
         if (voiceEnabled) {
@@ -843,4 +995,11 @@ window.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+
+    // マウスムーブイベント（視線追従）
+    window.addEventListener('mousemove', (event) => {
+        // マウス座標を-1から1の範囲に正規化
+        mouseX = (event.clientX / window.innerWidth) * 2 - 1;
+        mouseY = (event.clientY / window.innerHeight) * 2 - 1;
+    });
 });
