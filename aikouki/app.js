@@ -13,8 +13,8 @@ let speakTimer = 0;
 let breathTimer = 0;
 let idleTimer = 0;
 let voiceEnabled = true; // 音声のオン/オフ（デフォルトはオン）
-let isWaving = false; // 手を振っているかどうか
-let waveTimer = 0;
+let isTiltingHead = false; // 首を傾げているかどうか
+let tiltTimer = 0;
 let hasGreeted = false; // 初回挨拶済みかどうか
 
 // VRMアバターの初期化
@@ -208,51 +208,38 @@ function updateIdle(deltaTime) {
     }
 }
 
-// 手を振るアニメーション
-function updateWave(deltaTime) {
-    if (!currentVrm || !currentVrm.humanoid || !isWaving) return;
+// 首を傾げるアニメーション
+function updateHeadTilt(deltaTime) {
+    if (!currentVrm || !currentVrm.humanoid || !isTiltingHead) return;
 
-    waveTimer += deltaTime;
+    tiltTimer += deltaTime;
     const humanoid = currentVrm.humanoid;
 
     try {
-        const rightUpperArm = humanoid.getNormalizedBoneNode('rightUpperArm');
-        const rightLowerArm = humanoid.getNormalizedBoneNode('rightLowerArm');
-        const rightHand = humanoid.getNormalizedBoneNode('rightHand');
+        const head = humanoid.getNormalizedBoneNode('head');
 
-        // 手を振る動きのサイクル
-        const waveCycle = Math.sin(waveTimer * 5) * 0.6; // ゆっくりと大きく振る
-
-        if (rightUpperArm) {
-            // 腕を横から上に上げる（Z軸で上げる + 少し外側に）
-            rightUpperArm.rotation.z = 2.0 + waveCycle * 0.3; // 基本は2.0ラジアン（約115度）
-            // 前方に出す
-            rightUpperArm.rotation.x = -0.5;
-            // 左右に振る動き（Y軸回転）
-            rightUpperArm.rotation.y = waveCycle;
-        }
-
-        if (rightLowerArm) {
-            // 肘を軽く曲げる（手を振りやすくする）
-            rightLowerArm.rotation.z = -0.8;
-            // 肘も少し動かす
-            rightLowerArm.rotation.x = waveCycle * 0.2;
-        }
-
-        if (rightHand) {
-            // 手首を振る動きに合わせて動かす
-            rightHand.rotation.z = waveCycle * 0.3;
-            rightHand.rotation.y = waveCycle * 0.2;
-        }
-
-        // 3秒後に手を振るのを停止
-        if (waveTimer > 3.5) {
-            isWaving = false;
-            waveTimer = 0;
+        if (head) {
+            // 首を左右に傾げる動き
+            // 0秒: 右に傾げる → 1秒: まっすぐ → 2秒: 左に傾げる → 3秒: まっすぐ
+            if (tiltTimer < 1) {
+                // 右に傾げる
+                head.rotation.z = -0.35 * (1 - Math.abs(1 - tiltTimer * 2));
+            } else if (tiltTimer < 2) {
+                // 左に傾げる
+                head.rotation.z = 0.35 * (1 - Math.abs(1 - (tiltTimer - 1) * 2));
+            } else if (tiltTimer < 3) {
+                // まっすぐに戻る
+                head.rotation.z = -0.35 * (tiltTimer - 2);
+            } else {
+                // 3秒後に停止
+                isTiltingHead = false;
+                tiltTimer = 0;
+                head.rotation.z = 0;
+            }
         }
 
     } catch (error) {
-        console.log('手を振るアニメーションエラー:', error);
+        console.log('首を傾げるアニメーションエラー:', error);
     }
 }
 
@@ -268,9 +255,9 @@ function animate() {
         updateLipSync(deltaTime);
         updateBreathing(deltaTime);
 
-        // 手を振っているときはアイドルアニメーションをスキップ
-        if (isWaving) {
-            updateWave(deltaTime);
+        // 首を傾げているときはアイドルアニメーションの頭の動きをスキップ
+        if (isTiltingHead) {
+            updateHeadTilt(deltaTime);
         } else {
             updateIdle(deltaTime);
         }
@@ -451,9 +438,9 @@ async function playGreeting() {
     // 表情を笑顔に
     setExpression('happy');
 
-    // 手を振るアニメーション開始
-    isWaving = true;
-    waveTimer = 0;
+    // 首を傾げるアニメーション開始
+    isTiltingHead = true;
+    tiltTimer = 0;
 
     // 初回は吹き出しで表示（自動再生ポリシー回避）
     showSpeechBubble(greetingMessage);
@@ -464,7 +451,7 @@ async function playGreeting() {
         stopSpeaking();
     }, 3000);
 
-    // 3秒後にニュートラルに戻す
+    // 3.5秒後にニュートラルに戻す
     setTimeout(() => {
         setExpression('neutral');
         // 吹き出しも非表示（音声オンの場合のみ）
