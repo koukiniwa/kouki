@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>AIこうき と話そう</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="/aikouki/style.css">
     <!-- Three.js -->
     <script type="importmap">
     {
@@ -17,34 +17,37 @@
     </script>
 </head>
 <body>
-    <div class="avatar-container">
+    <!-- 音声トグルボタン -->
+    <button id="voiceToggle" class="voice-toggle-btn" title="音声のオン/オフ">
+        🔊
+    </button>
+
+    <!-- 戻るリンク -->
+    <a href="../" class="back-link-fixed">← ブログに戻る</a>
+
+    <!-- アバター表示エリア -->
+    <div class="avatar-main">
         <canvas id="avatar-canvas"></canvas>
-    </div>
 
-    <div class="chat-container">
-        <div class="chat-header-minimal">
-            <a href="../" class="back-link">← ブログに戻る</a>
-        </div>
-
-        <div class="chat-messages" id="chatMessages">
-            <div class="message ai-message">
-                <p>あ、どうも。何か話しかけてください。</p>
-            </div>
-        </div>
-
-        <div class="chat-input-area">
-            <button id="micButton" class="mic-button" title="音声入力">
-                🎤
-            </button>
-            <input
-                type="text"
-                id="userInput"
-                placeholder="何か話しかけてください..."
-            >
-            <button id="sendButton">送信</button>
+        <!-- 吹き出し（音声オフ時のみ表示） -->
+        <div id="speechBubble" class="speech-bubble hidden">
+            <p id="bubbleText">あ、どうも。何か話しかけてください。</p>
         </div>
     </div>
 
-    <script src="app.js" type="module"></script>
+    <!-- チャット入力エリア（下部固定） -->
+    <div class="chat-input-fixed">
+        <button id="micButton" class="mic-btn" title="音声入力">
+            🎤
+        </button>
+        <input
+            type="text"
+            id="userInput"
+            placeholder="メッセージを入力..."
+        >
+        <button id="sendButton" class="send-btn">送信</button>
+    </div>
+
+    <script src="/aikouki/app.js" type="module">
 </body>
 </html>

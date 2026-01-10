@@ -12,14 +12,15 @@ let blinkTimer = 0;
 let speakTimer = 0;
 let breathTimer = 0;
 let idleTimer = 0;
+let voiceEnabled = true; // 音声のオン/オフ（デフォルトはオン）
 
 // VRMアバターの初期化
 async function initAvatar() {
     const canvas = document.getElementById('avatar-canvas');
 
     // キャンバスサイズを取得（レスポンシブ対応）
-    const canvasWidth = canvas.clientWidth || 600;
-    const canvasHeight = canvas.clientHeight || 700;
+    const canvasWidth = canvas.clientWidth || window.innerWidth;
+    const canvasHeight = canvas.clientHeight || window.innerHeight;
 
     // レンダラー設定
     renderer = new THREE.WebGLRenderer({
@@ -33,10 +34,10 @@ async function initAvatar() {
     // シーン作成
     scene = new THREE.Scene();
 
-    // カメラ設定（頭のてっぺんから腰まで見えるように調整）
-    camera = new THREE.PerspectiveCamera(40, canvasWidth / canvasHeight, 0.1, 20);
-    camera.position.set(0, 1.15, 2.0);  // 少し引いて、やや高めに
-    camera.lookAt(0, 1.15, 0);
+    // カメラ設定（全身が見えるように）
+    camera = new THREE.PerspectiveCamera(35, canvasWidth / canvasHeight, 0.1, 20);
+    camera.position.set(0, 1.2, 2.5);
+    camera.lookAt(0, 1.2, 0);
 
     // ライト設定
     const light = new THREE.DirectionalLight(0xffffff, 1.5);
@@ -51,7 +52,7 @@ async function initAvatar() {
     loader.register((parser) => new VRMLoaderPlugin(parser));
 
     try {
-        const gltf = await loader.loadAsync('コウキ.vrm');
+        const gltf = await loader.loadAsync('/aikouki/コウキ.vrm');
         vrm = gltf.userData.vrm;
         currentVrm = vrm;
 
@@ -62,8 +63,6 @@ async function initAvatar() {
         // 初期表情を設定（ニュートラル）
         setExpression('neutral');
 
-        // 腕のポーズはupdateIdle関数で自動的に設定されます
-
         console.log('VRMアバター読み込み完了');
     } catch (error) {
         console.error('VRMアバター読み込みエラー:', error);
@@ -71,6 +70,16 @@ async function initAvatar() {
 
     // アニメーションループ
     animate();
+
+    // ウィンドウリサイズ対応
+    window.addEventListener('resize', () => {
+        const width = canvas.clientWidth || window.innerWidth;
+        const height = canvas.clientHeight || window.innerHeight;
+
+        camera.aspect = width / height;
+        camera.updateProjectionMatrix();
+        renderer.setSize(width, height);
+    });
 }
 
 // 瞬きアニメーション
@@ -79,7 +88,6 @@ function updateBlink(deltaTime) {
 
     blinkTimer += deltaTime;
 
-    // 3-5秒ごとに瞬き
     if (blinkTimer > 3 + Math.random() * 2) {
         if (!isBlinking) {
             isBlinking = true;
@@ -102,8 +110,6 @@ function updateLipSync(deltaTime) {
     if (!currentVrm || !currentVrm.expressionManager || !isSpeaking) return;
 
     speakTimer += deltaTime;
-
-    // 口の開閉をアニメーション（波のように）
     const mouthValue = Math.abs(Math.sin(speakTimer * 10)) * 0.6;
 
     try {
@@ -131,24 +137,18 @@ function stopSpeaking() {
     }
 }
 
-// 体の揺れアニメーション（より自然に）
+// 体の揺れアニメーション
 function updateBreathing(deltaTime) {
     if (!currentVrm) return;
 
     breathTimer += deltaTime;
 
-    // ゆっくりとした左右の揺れ（4秒周期）
     const swayCycle = Math.sin(breathTimer * 1.5) * 0.015;
-
-    // 前後の微妙な揺れ（5秒周期）
     const forwardCycle = Math.sin(breathTimer * 1.2) * 0.01;
 
-    // VRMモデル全体を左右に揺らす
     if (currentVrm.scene) {
         currentVrm.scene.position.x = swayCycle;
         currentVrm.scene.position.z = forwardCycle;
-
-        // 体も少し回転させる
         currentVrm.scene.rotation.y = swayCycle * 0.5;
     }
 }
@@ -158,16 +158,13 @@ function updateIdle(deltaTime) {
     if (!currentVrm || !currentVrm.humanoid) return;
 
     idleTimer += deltaTime;
-
     const humanoid = currentVrm.humanoid;
 
     try {
         const head = humanoid.getNormalizedBoneNode('head');
 
         if (head) {
-            // ゆっくりと首を左右に振る（6秒周期）
             const headYaw = Math.sin(idleTimer * 0.5) * 0.08;
-            // ゆっくりと首を上下に振る（8秒周期）
             const headPitch = Math.sin(idleTimer * 0.4) * 0.04;
 
             head.rotation.y = headYaw;
@@ -180,21 +177,19 @@ function updateIdle(deltaTime) {
         const leftLowerArm = humanoid.getNormalizedBoneNode('leftLowerArm');
         const rightLowerArm = humanoid.getNormalizedBoneNode('rightLowerArm');
 
-        // 左腕の微妙な揺れ（7秒周期）
         const leftArmSway = Math.sin(idleTimer * 0.9) * 0.03;
         if (leftUpperArm) {
             leftUpperArm.rotation.x = leftArmSway;
-            leftUpperArm.rotation.z = -1.2 + leftArmSway * 0.5; // 基本ポーズ + 揺れ
+            leftUpperArm.rotation.z = -1.2 + leftArmSway * 0.5;
         }
         if (leftLowerArm) {
             leftLowerArm.rotation.z = 0.15 + Math.sin(idleTimer * 0.8) * 0.02;
         }
 
-        // 右腕の微妙な揺れ（8秒周期、左腕とずらす）
         const rightArmSway = Math.sin(idleTimer * 0.85 + 1.5) * 0.03;
         if (rightUpperArm) {
             rightUpperArm.rotation.x = rightArmSway;
-            rightUpperArm.rotation.z = 1.2 + rightArmSway * 0.5; // 基本ポーズ + 揺れ
+            rightUpperArm.rotation.z = 1.2 + rightArmSway * 0.5;
         }
         if (rightLowerArm) {
             rightLowerArm.rotation.z = -0.15 + Math.sin(idleTimer * 0.75 + 1.0) * 0.02;
@@ -206,7 +201,6 @@ function updateIdle(deltaTime) {
 }
 
 // アニメーションループ
-let frameCount = 0;
 function animate() {
     requestAnimationFrame(animate);
 
@@ -214,14 +208,10 @@ function animate() {
 
     if (currentVrm) {
         currentVrm.update(deltaTime);
-
-        // すべてのアニメーションを更新
         updateBlink(deltaTime);
         updateLipSync(deltaTime);
         updateBreathing(deltaTime);
         updateIdle(deltaTime);
-
-        // デバッグログは削除（動作確認後）
     }
 
     renderer.render(scene, camera);
@@ -239,7 +229,7 @@ function setExpression(expressionName) {
         expressionManager.setValue(expression.expressionName, 0);
     });
 
-    // 表情マッピング（VRMの標準表情名）
+    // 表情マッピング
     const expressionMap = {
         'neutral': 'neutral',
         'happy': 'happy',
@@ -251,7 +241,6 @@ function setExpression(expressionName) {
 
     const vrmExpressionName = expressionMap[expressionName] || 'neutral';
 
-    // 指定された表情を設定
     try {
         expressionManager.setValue(vrmExpressionName, 1.0);
         console.log(`表情変更: ${expressionName}`);
@@ -262,7 +251,6 @@ function setExpression(expressionName) {
 
 // 感情を分析する関数
 function analyzeEmotion(text) {
-    // 簡易的な感情分析（キーワードベース）
     const emotions = {
         happy: ['嬉しい', '楽しい', '最高', 'よかった', 'ありがとう', 'わーい', 'やった', '！'],
         sad: ['悲しい', '辛い', 'しんどい', '残念', '寂しい'],
@@ -282,40 +270,9 @@ function analyzeEmotion(text) {
     return 'neutral';
 }
 
-// ページ読み込み時にアバター初期化とイベントリスナー設定
-window.addEventListener('DOMContentLoaded', () => {
-    initAvatar();
-
-    // イベントリスナーを設定
-    const sendButton = document.getElementById('sendButton');
-    const userInput = document.getElementById('userInput');
-    const micButton = document.getElementById('micButton');
-
-    if (sendButton) {
-        sendButton.addEventListener('click', sendMessage);
-    }
-
-    if (userInput) {
-        userInput.addEventListener('keypress', (event) => {
-            if (event.key === 'Enter') {
-                sendMessage();
-            }
-        });
-    }
-
-    if (micButton) {
-        micButton.addEventListener('click', toggleVoiceRecognition);
-    }
-});
-
 // ===== 既存のチャット機能 =====
-// バックエンド API エンドポイント
 const API_ENDPOINT = 'https://ai-kouki-backend-610abb7fb0bc.herokuapp.com/api/chat';
-
-// 会話履歴
 let conversationHistory = [];
-
-// 音声認識の設定
 let recognition = null;
 let isListening = false;
 
@@ -336,9 +293,6 @@ if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
     recognition.onerror = (event) => {
         console.error('音声認識エラー:', event.error);
         stopListening();
-        if (event.error === 'no-speech') {
-            addMessageToChat('音声が聞こえませんでした。もう一度試してください。', 'ai');
-        }
     };
 
     recognition.onend = () => {
@@ -349,7 +303,7 @@ if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
 // 音声認識の開始/停止
 function toggleVoiceRecognition() {
     if (!recognition) {
-        alert('お使いのブラウザは音声認識に対応していません。Chrome または Edge をお使いください。');
+        alert('お使いのブラウザは音声認識に対応していません。');
         return;
     }
 
@@ -389,17 +343,11 @@ function stopListening() {
     micButton.textContent = '🎤';
 }
 
-// 音声再生機能（バックエンドAPIを使用）
-async function playVoice(text, button) {
+// 音声再生機能
+async function playVoice(text) {
     const TTS_ENDPOINT = 'https://ai-kouki-backend-610abb7fb0bc.herokuapp.com/api/tts';
 
     try {
-        // ボタンの状態を変更（ローディング表示）
-        if (button) {
-            button.disabled = true;
-            button.textContent = '⏳';
-        }
-
         const response = await fetch(TTS_ENDPOINT, {
             method: 'POST',
             headers: {
@@ -419,48 +367,48 @@ async function playVoice(text, button) {
             startSpeaking();
         };
 
-        // 再生終了時にボタンを元に戻す＆リップシンク停止
+        // 再生終了時にリップシンク停止
         audio.onended = () => {
             stopSpeaking();
-            if (button) {
-                button.disabled = false;
-                button.textContent = '🔊';
-            }
         };
 
         await audio.play();
 
-        // 再生中はボタンを停止アイコンに
-        if (button) {
-            button.textContent = '▶️';
-        }
     } catch (error) {
         console.error('音声再生エラー:', error);
-        if (button) {
-            button.disabled = false;
-            button.textContent = '🔊';
-        }
-        alert('音声再生に失敗しました');
     }
 }
 
+// 吹き出しを表示する関数
+function showSpeechBubble(text) {
+    const bubble = document.getElementById('speechBubble');
+    const bubbleText = document.getElementById('bubbleText');
+
+    bubbleText.textContent = text;
+    bubble.classList.remove('hidden');
+}
+
+// 吹き出しを非表示にする関数
+function hideSpeechBubble() {
+    const bubble = document.getElementById('speechBubble');
+    bubble.classList.add('hidden');
+}
+
+// メッセージ送信
 async function sendMessage() {
     const userInput = document.getElementById('userInput');
     const message = userInput.value.trim();
 
     if (!message) return;
 
-    // ユーザーメッセージを表示
-    addMessageToChat(message, 'user');
+    // 会話履歴に追加
     conversationHistory.push({ role: 'user', content: message });
     userInput.value = '';
 
-    // ローディング表示
-    const loadingDiv = document.createElement('div');
-    loadingDiv.className = 'message ai-message';
-    loadingDiv.innerHTML = '<p>考え中...</p>';
-    document.getElementById('chatMessages').appendChild(loadingDiv);
-    document.getElementById('chatMessages').scrollTop = document.getElementById('chatMessages').scrollHeight;
+    // 音声オフの場合、ローディング表示
+    if (!voiceEnabled) {
+        showSpeechBubble('考え中...');
+    }
 
     try {
         // バックエンド API に送信
@@ -481,23 +429,28 @@ async function sendMessage() {
 
         const data = await response.json();
 
-        // ローディングを削除
-        loadingDiv.remove();
-
-        // AIの返答を表示（音声ボタン付き）
-        addMessageToChat(data.reply, 'ai');
+        // 会話履歴に追加
         conversationHistory.push({ role: 'assistant', content: data.reply });
 
         // 感情分析して表情を変更
         const emotion = analyzeEmotion(data.reply);
         setExpression(emotion);
 
-        // 返答時に少しリップシンクを動かす（会話している感じ）
-        startSpeaking();
-        const speakDuration = Math.min(data.reply.length * 100, 3000); // 文字数に応じて調整、最大3秒
-        setTimeout(() => {
-            stopSpeaking();
-        }, speakDuration);
+        // 音声オン/オフで処理を分岐
+        if (voiceEnabled) {
+            // 音声オン：音声再生のみ（吹き出し非表示）
+            hideSpeechBubble();
+            await playVoice(data.reply);
+        } else {
+            // 音声オフ：吹き出しで表示（音声なし）
+            showSpeechBubble(data.reply);
+            // 吹き出し表示中も軽くリップシンク
+            startSpeaking();
+            const speakDuration = Math.min(data.reply.length * 100, 3000);
+            setTimeout(() => {
+                stopSpeaking();
+            }, speakDuration);
+        }
 
         // 3秒後にニュートラルに戻す
         setTimeout(() => {
@@ -506,36 +459,76 @@ async function sendMessage() {
 
     } catch (error) {
         console.error('エラー:', error);
-        loadingDiv.remove();
-        addMessageToChat('申し訳ない。何かエラーが起きた。', 'ai');
+        if (!voiceEnabled) {
+            showSpeechBubble('申し訳ない。何かエラーが起きた。');
+        }
     }
 }
 
-function addMessageToChat(message, sender) {
-    const chatMessages = document.getElementById('chatMessages');
-    const messageDiv = document.createElement('div');
-    messageDiv.className = `message ${sender}-message`;
+// 音声トグルボタンの表示を更新
+function updateVoiceButton() {
+    const voiceToggle = document.getElementById('voiceToggle');
+    if (voiceToggle) {
+        if (voiceEnabled) {
+            voiceToggle.textContent = '🔊';
+            voiceToggle.classList.remove('voice-off');
+            voiceToggle.title = '音声: オン';
+        } else {
+            voiceToggle.textContent = '🔇';
+            voiceToggle.classList.add('voice-off');
+            voiceToggle.title = '音声: オフ';
+        }
+    }
+}
 
-    const p = document.createElement('p');
-    p.textContent = message;
-    messageDiv.appendChild(p);
+// ページ読み込み時にアバター初期化とイベントリスナー設定
+window.addEventListener('DOMContentLoaded', () => {
+    initAvatar();
 
-    // AIメッセージの場合は音声再生ボタンを追加
-    if (sender === 'ai') {
-        const voiceButton = document.createElement('button');
-        voiceButton.className = 'voice-button';
-        voiceButton.textContent = '🔊';
-        voiceButton.title = '音声で聞く';
-        voiceButton.onclick = function() {
-            playVoice(message, voiceButton);
-        };
-        messageDiv.appendChild(voiceButton);
+    // localStorageから音声設定を読み込み
+    const savedVoice = localStorage.getItem('voiceEnabled');
+    if (savedVoice === 'false') {
+        voiceEnabled = false;
+        showSpeechBubble('あ、どうも。何か話しかけてください。');
     }
 
-    chatMessages.appendChild(messageDiv);
+    // 音声トグルボタンの初期状態を設定
+    updateVoiceButton();
 
-    // 下にスクロール
-    chatMessages.scrollTop = chatMessages.scrollHeight;
+    // イベントリスナーを設定
+    const sendButton = document.getElementById('sendButton');
+    const userInput = document.getElementById('userInput');
+    const micButton = document.getElementById('micButton');
+    const voiceToggle = document.getElementById('voiceToggle');
 
-    return messageDiv;
-}
+    if (sendButton) {
+        sendButton.addEventListener('click', sendMessage);
+    }
+
+    if (userInput) {
+        userInput.addEventListener('keypress', (event) => {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        });
+    }
+
+    if (micButton) {
+        micButton.addEventListener('click', toggleVoiceRecognition);
+    }
+
+    if (voiceToggle) {
+        voiceToggle.addEventListener('click', () => {
+            voiceEnabled = !voiceEnabled;
+            localStorage.setItem('voiceEnabled', voiceEnabled.toString());
+            updateVoiceButton();
+
+            // 音声オフにした場合、吹き出しを表示
+            if (!voiceEnabled) {
+                showSpeechBubble('あ、どうも。何か話しかけてください。');
+            } else {
+                hideSpeechBubble();
+            }
+        });
+    }
+});
