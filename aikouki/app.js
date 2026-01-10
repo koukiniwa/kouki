@@ -220,27 +220,33 @@ function updateWave(deltaTime) {
         const rightLowerArm = humanoid.getNormalizedBoneNode('rightLowerArm');
         const rightHand = humanoid.getNormalizedBoneNode('rightHand');
 
+        // 手を振る動きのサイクル
+        const waveCycle = Math.sin(waveTimer * 5) * 0.6; // ゆっくりと大きく振る
+
         if (rightUpperArm) {
-            // 腕を上げる（Z軸回転で腕を上げる）
-            rightUpperArm.rotation.z = 2.5;
-            // 肩から前方に出す
-            rightUpperArm.rotation.x = -0.3;
-            // 手を振る動き（左右に振る）
-            rightUpperArm.rotation.y = Math.sin(waveTimer * 8) * 0.4;
+            // 腕を横から上に上げる（Z軸で上げる + 少し外側に）
+            rightUpperArm.rotation.z = 2.0 + waveCycle * 0.3; // 基本は2.0ラジアン（約115度）
+            // 前方に出す
+            rightUpperArm.rotation.x = -0.5;
+            // 左右に振る動き（Y軸回転）
+            rightUpperArm.rotation.y = waveCycle;
         }
 
         if (rightLowerArm) {
-            // 肘を少し曲げる
-            rightLowerArm.rotation.z = -0.5;
+            // 肘を軽く曲げる（手を振りやすくする）
+            rightLowerArm.rotation.z = -0.8;
+            // 肘も少し動かす
+            rightLowerArm.rotation.x = waveCycle * 0.2;
         }
 
         if (rightHand) {
-            // 手首を少し動かす
-            rightHand.rotation.z = Math.sin(waveTimer * 8) * 0.2;
+            // 手首を振る動きに合わせて動かす
+            rightHand.rotation.z = waveCycle * 0.3;
+            rightHand.rotation.y = waveCycle * 0.2;
         }
 
         // 3秒後に手を振るのを停止
-        if (waveTimer > 3) {
+        if (waveTimer > 3.5) {
             isWaving = false;
             waveTimer = 0;
         }
@@ -449,24 +455,23 @@ async function playGreeting() {
     isWaving = true;
     waveTimer = 0;
 
-    // 音声オン/オフで処理を分岐
-    if (voiceEnabled) {
-        // 音声オン：音声再生
-        await playVoice(greetingMessage);
-    } else {
-        // 音声オフ：吹き出し表示
-        showSpeechBubble(greetingMessage);
-        // 吹き出し表示中も軽くリップシンク
-        startSpeaking();
-        setTimeout(() => {
-            stopSpeaking();
-        }, 3000);
-    }
+    // 初回は吹き出しで表示（自動再生ポリシー回避）
+    showSpeechBubble(greetingMessage);
+
+    // リップシンク開始
+    startSpeaking();
+    setTimeout(() => {
+        stopSpeaking();
+    }, 3000);
 
     // 3秒後にニュートラルに戻す
     setTimeout(() => {
         setExpression('neutral');
-    }, 3000);
+        // 吹き出しも非表示（音声オンの場合のみ）
+        if (voiceEnabled) {
+            hideSpeechBubble();
+        }
+    }, 3500);
 }
 
 // 吹き出しを表示する関数
