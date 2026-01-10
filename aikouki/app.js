@@ -76,51 +76,38 @@ function adjustArmPose() {
     if (!humanoid) return;
 
     try {
-        // 肩と腕を下ろす（X軸で下方向に回転）
-        const leftShoulder = humanoid.getNormalizedBoneNode('leftShoulder');
+        // 腕を体の横に沿って下に下ろす
         const leftUpperArm = humanoid.getNormalizedBoneNode('leftUpperArm');
         const leftLowerArm = humanoid.getNormalizedBoneNode('leftLowerArm');
 
-        if (leftShoulder) {
-            leftShoulder.rotation.x = 0.3;    // 肩を下げる
-            leftShoulder.rotation.y = 0;
-            leftShoulder.rotation.z = 0;
-        }
-
         if (leftUpperArm) {
-            // X軸で腕を下に回転
-            leftUpperArm.rotation.x = 0.6;    // 前に回転（腕を下げる）
+            // 左腕: Z軸で負の回転（横から下へ）
+            leftUpperArm.rotation.x = 0;
             leftUpperArm.rotation.y = 0;
-            leftUpperArm.rotation.z = 0.2;    // 少し内側に
+            leftUpperArm.rotation.z = -0.8;   // 体の横に沿って下に（負の値）
             console.log('左上腕を調整:', leftUpperArm.rotation);
         }
         if (leftLowerArm) {
-            leftLowerArm.rotation.x = -0.1;   // 肘を少し曲げる
+            leftLowerArm.rotation.x = 0;
             leftLowerArm.rotation.y = 0;
-            leftLowerArm.rotation.z = 0;
+            leftLowerArm.rotation.z = 0.1;    // 肘を少し曲げる
         }
 
         // 右腕を下ろす（左右対称）
-        const rightShoulder = humanoid.getNormalizedBoneNode('rightShoulder');
         const rightUpperArm = humanoid.getNormalizedBoneNode('rightUpperArm');
         const rightLowerArm = humanoid.getNormalizedBoneNode('rightLowerArm');
 
-        if (rightShoulder) {
-            rightShoulder.rotation.x = 0.3;
-            rightShoulder.rotation.y = 0;
-            rightShoulder.rotation.z = 0;
-        }
-
         if (rightUpperArm) {
-            rightUpperArm.rotation.x = 0.6;
+            // 右腕: Z軸で正の回転（横から下へ）
+            rightUpperArm.rotation.x = 0;
             rightUpperArm.rotation.y = 0;
-            rightUpperArm.rotation.z = -0.2;  // 少し内側に（左腕と逆）
+            rightUpperArm.rotation.z = 0.8;   // 体の横に沿って下に（正の値）
             console.log('右上腕を調整:', rightUpperArm.rotation);
         }
         if (rightLowerArm) {
-            rightLowerArm.rotation.x = -0.1;
+            rightLowerArm.rotation.x = 0;
             rightLowerArm.rotation.y = 0;
-            rightLowerArm.rotation.z = 0;
+            rightLowerArm.rotation.z = -0.1;  // 肘を少し曲げる
         }
 
         // すべてのボーンを確認（デバッグ用）
