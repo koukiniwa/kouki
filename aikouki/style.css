@@ -328,9 +328,10 @@ body::after {
    ============================================ */
 .speech-bubble {
   position: absolute;
-  top: 20%;
-  right: 5%;
-  max-width: 400px;
+  bottom: 100px;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: 500px;
   background: white;
   border-radius: 20px;
   padding: 24px 28px;
@@ -342,14 +343,14 @@ body::after {
 .speech-bubble::before {
   content: '';
   position: absolute;
-  left: -15px;
-  top: 50%;
-  transform: translateY(-50%);
+  left: 50%;
+  top: -15px;
+  transform: translateX(-50%);
   width: 0;
   height: 0;
   border-style: solid;
-  border-width: 15px 15px 15px 0;
-  border-color: transparent white transparent transparent;
+  border-width: 0 15px 15px 15px;
+  border-color: transparent transparent white transparent;
 }
 
 .speech-bubble p {
@@ -628,11 +629,12 @@ body::after {
   }
 
   .speech-bubble {
-    top: 15%;
-    right: 5%;
+    bottom: 90px;
     left: 5%;
+    right: 5%;
     max-width: none;
     padding: 20px 24px;
+    transform: none;
   }
 
   .speech-bubble p {
