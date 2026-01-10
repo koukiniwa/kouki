@@ -52,7 +52,7 @@ async function initAvatar() {
     loader.register((parser) => new VRMLoaderPlugin(parser));
 
     try {
-        const gltf = await loader.loadAsync('/aikouki/コウキ.vrm');
+        const gltf = await loader.loadAsync('./コウキ.vrm');
         vrm = gltf.userData.vrm;
         currentVrm = vrm;
 
