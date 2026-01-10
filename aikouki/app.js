@@ -72,58 +72,8 @@ async function initAvatar() {
         VRMUtils.removeUnnecessaryJoints(vrm.scene);
         scene.add(vrm.scene);
 
-        // 肌の色をきれいな肌色に調整（MToonマテリアル対応）
-        vrm.scene.traverse((object) => {
-            if (object.isMesh && object.material) {
-                const materials = Array.isArray(object.material) ? object.material : [object.material];
-                materials.forEach((material) => {
-                    console.log('マテリアル:', material.name, 'タイプ:', material.type);
-
-                    // MToonマテリアルの色調整
-                    const materialName = (material.name || '').toLowerCase();
-                    const isSkinMaterial = materialName.includes('skin') ||
-                                          materialName.includes('face') ||
-                                          materialName.includes('body');
-
-                    // VRMのMToonマテリアル用のパラメータを調整
-                    if (material.uniforms) {
-                        // 肌のマテリアルを明るくする
-                        if (isSkinMaterial) {
-                            // litFactor（明るさ）を調整
-                            if (material.uniforms.litFactor) {
-                                material.uniforms.litFactor.value = 1.0;
-                            }
-                            // shadeMultiply（影の色）を明るくする
-                            if (material.uniforms.shadeMultiplyTexture || material.uniforms.shadeColorFactor) {
-                                if (material.uniforms.shadeColorFactor) {
-                                    const shadeColor = material.uniforms.shadeColorFactor.value;
-                                    if (shadeColor && shadeColor.isVector3) {
-                                        shadeColor.set(0.95, 0.90, 0.85); // より明るい影色
-                                    }
-                                }
-                            }
-                            // parametricRimLift（リムライト）を追加
-                            if (material.uniforms.parametricRimLiftFactor) {
-                                material.uniforms.parametricRimLiftFactor.value = 0.2;
-                            }
-
-                            console.log('✅ MToonマテリアル調整:', material.name);
-                        }
-
-                        // 全体的に色を明るく
-                        if (material.uniforms.colorFactor) {
-                            const color = material.uniforms.colorFactor.value;
-                            if (color && color.isVector4) {
-                                // 赤みを保ちながら明るく
-                                color.x = Math.min(color.x * 1.15, 1.0); // R
-                                color.y = Math.min(color.y * 1.10, 1.0); // G
-                                color.z = Math.min(color.z * 1.05, 1.0); // B
-                            }
-                        }
-                    }
-                });
-            }
-        });
+        // VRMモデルのマテリアル情報を確認（デバッグ用）
+        console.log('VRMモデル読み込み完了 - ライトで明るさを調整しています');
 
         // 初期表情を設定（ニュートラル）
         setExpression('neutral');
