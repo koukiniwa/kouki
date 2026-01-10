@@ -46,13 +46,18 @@ async function initAvatar() {
     camera.position.set(0, 0.9, 3.2);
     camera.lookAt(0, 0.9, 0);
 
-    // ライト設定
-    const light = new THREE.DirectionalLight(0xffffff, 1.5);
+    // ライト設定（明るくして肌を白く見せる）
+    const light = new THREE.DirectionalLight(0xfff5f0, 2.5); // 暖色系で明るく
     light.position.set(1, 1, 1).normalize();
     scene.add(light);
 
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+    const ambientLight = new THREE.AmbientLight(0xfff8f5, 1.2); // 環境光も明るく
     scene.add(ambientLight);
+
+    // 補助光を追加（顔を明るく）
+    const fillLight = new THREE.DirectionalLight(0xffffff, 1.0);
+    fillLight.position.set(-1, 0.5, 1).normalize();
+    scene.add(fillLight);
 
     // VRMモデル読み込み
     const loader = new GLTFLoader();
@@ -67,71 +72,54 @@ async function initAvatar() {
         VRMUtils.removeUnnecessaryJoints(vrm.scene);
         scene.add(vrm.scene);
 
-        // 肌の色をきれいな肌色に調整（テクスチャベース）
+        // 肌の色をきれいな肌色に調整（MToonマテリアル対応）
         vrm.scene.traverse((object) => {
             if (object.isMesh && object.material) {
                 const materials = Array.isArray(object.material) ? object.material : [object.material];
                 materials.forEach((material) => {
                     console.log('マテリアル:', material.name, 'タイプ:', material.type);
 
-                    // テクスチャがある場合、キャンバスできれいな肌色に調整
-                    if (material.map && material.map.image) {
-                        const texture = material.map;
-                        const image = texture.image;
+                    // MToonマテリアルの色調整
+                    const materialName = (material.name || '').toLowerCase();
+                    const isSkinMaterial = materialName.includes('skin') ||
+                                          materialName.includes('face') ||
+                                          materialName.includes('body');
 
-                        // 画像が完全に読み込まれているか確認
-                        if (!image.complete || image.width === 0) {
-                            console.log('画像が未ロード:', material.name);
-                            return;
-                        }
-
-                        try {
-                            // キャンバスを作成してテクスチャを調整
-                            const canvas = document.createElement('canvas');
-                            canvas.width = image.width;
-                            canvas.height = image.height;
-                            const ctx = canvas.getContext('2d');
-
-                            // 画像を描画
-                            ctx.drawImage(image, 0, 0);
-
-                            // ピクセルデータを取得
-                            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-                            const data = imageData.data;
-
-                            // 各ピクセルをきれいな肌色に調整
-                            for (let i = 0; i < data.length; i += 4) {
-                                // 赤みを保ちながら明るくする（健康的な肌色）
-                                // R（赤）は強めに明るく
-                                data[i] = Math.min(data[i] * 1.3 + 50, 255);
-                                // G（緑）は中程度に明るく
-                                data[i + 1] = Math.min(data[i + 1] * 1.2 + 40, 255);
-                                // B（青）は控えめに（青白さを防ぐ）
-                                data[i + 2] = Math.min(data[i + 2] * 1.1 + 30, 255);
-                                // Alpha（透明度）は変更しない
+                    // VRMのMToonマテリアル用のパラメータを調整
+                    if (material.uniforms) {
+                        // 肌のマテリアルを明るくする
+                        if (isSkinMaterial) {
+                            // litFactor（明るさ）を調整
+                            if (material.uniforms.litFactor) {
+                                material.uniforms.litFactor.value = 1.0;
+                            }
+                            // shadeMultiply（影の色）を明るくする
+                            if (material.uniforms.shadeMultiplyTexture || material.uniforms.shadeColorFactor) {
+                                if (material.uniforms.shadeColorFactor) {
+                                    const shadeColor = material.uniforms.shadeColorFactor.value;
+                                    if (shadeColor && shadeColor.isVector3) {
+                                        shadeColor.set(0.95, 0.90, 0.85); // より明るい影色
+                                    }
+                                }
+                            }
+                            // parametricRimLift（リムライト）を追加
+                            if (material.uniforms.parametricRimLiftFactor) {
+                                material.uniforms.parametricRimLiftFactor.value = 0.2;
                             }
 
-                            // 明るくした画像データを戻す
-                            ctx.putImageData(imageData, 0, 0);
-
-                            // 新しいテクスチャとして設定
-                            const newTexture = new THREE.CanvasTexture(canvas);
-                            newTexture.colorSpace = texture.colorSpace;
-                            newTexture.flipY = texture.flipY;
-                            material.map = newTexture;
-                            material.needsUpdate = true;
-
-                            console.log('✅ テクスチャをきれいな肌色に調整:', material.name);
-                        } catch (error) {
-                            console.error('テクスチャ調整エラー:', material.name, error);
+                            console.log('✅ MToonマテリアル調整:', material.name);
                         }
-                    }
 
-                    // 追加で暖色系の発光色を設定（健康的な肌の色）
-                    if (material.emissive) {
-                        material.emissive.setRGB(0.2, 0.15, 0.1); // ピーチ系の色
-                        material.emissiveIntensity = 0.8;
-                        material.needsUpdate = true;
+                        // 全体的に色を明るく
+                        if (material.uniforms.colorFactor) {
+                            const color = material.uniforms.colorFactor.value;
+                            if (color && color.isVector4) {
+                                // 赤みを保ちながら明るく
+                                color.x = Math.min(color.x * 1.15, 1.0); // R
+                                color.y = Math.min(color.y * 1.10, 1.0); // G
+                                color.z = Math.min(color.z * 1.05, 1.0); // B
+                            }
+                        }
                     }
                 });
             }
