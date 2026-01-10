@@ -20,6 +20,8 @@ let randomGestureTimer = 0; // ランダムジェスチャーのタイマー
 let nextGestureTime = 10 + Math.random() * 10; // 次のジェスチャーまでの時間（10-20秒）
 let currentGesture = null; // 現在実行中のジェスチャー
 let gestureProgress = 0; // ジェスチャーの進行度
+let gestureDirection = 1; // ジェスチャーの方向（1 or -1）
+let gestureTarget = null; // ジェスチャーのターゲット（腕など）
 
 // VRMアバターの初期化
 async function initAvatar() {
@@ -257,11 +259,22 @@ function updateHeadTilt(deltaTime) {
 
 // ランダムなジェスチャーを開始
 function startRandomGesture() {
-    if (isTiltingHead || isSpeaking) return; // 話している時やすでに動作中はスキップ
+    if (isTiltingHead || isSpeaking || !currentVrm || !currentVrm.humanoid) return; // 話している時やすでに動作中はスキップ
 
     const gestures = ['headTilt', 'armRaise', 'bodyLean'];
     currentGesture = gestures[Math.floor(Math.random() * gestures.length)];
     gestureProgress = 0;
+
+    // 方向を決定（左右ランダム）
+    gestureDirection = Math.random() > 0.5 ? 1 : -1;
+
+    // armRaiseの場合、どちらの腕を使うか決定
+    if (currentGesture === 'armRaise') {
+        const humanoid = currentVrm.humanoid;
+        gestureTarget = Math.random() > 0.5 ?
+            humanoid.getNormalizedBoneNode('rightUpperArm') :
+            humanoid.getNormalizedBoneNode('leftUpperArm');
+    }
 }
 
 // ランダムジェスチャーのアニメーション更新
@@ -276,49 +289,46 @@ function updateRandomGesture(deltaTime) {
             // 軽く首を傾げる（1.5秒）
             const head = humanoid.getNormalizedBoneNode('head');
             if (head) {
-                const direction = Math.random() > 0.5 ? 1 : -1; // 左右ランダム
                 if (gestureProgress < 0.75) {
-                    head.rotation.z = direction * 0.2 * Math.sin(gestureProgress * Math.PI / 0.75);
+                    head.rotation.z = gestureDirection * 0.2 * Math.sin(gestureProgress * Math.PI / 0.75);
                 } else if (gestureProgress < 1.5) {
-                    head.rotation.z = direction * 0.2 * Math.sin((1.5 - gestureProgress) * Math.PI / 0.75);
+                    head.rotation.z = gestureDirection * 0.2 * Math.sin((1.5 - gestureProgress) * Math.PI / 0.75);
                 } else {
                     head.rotation.z = 0;
                     currentGesture = null;
+                    gestureTarget = null;
                 }
             }
         } else if (currentGesture === 'armRaise') {
             // 片腕を少し上げる（2秒）
-            const arm = Math.random() > 0.5 ?
-                humanoid.getNormalizedBoneNode('rightUpperArm') :
-                humanoid.getNormalizedBoneNode('leftUpperArm');
-
-            if (arm) {
-                const baseRotation = arm === humanoid.getNormalizedBoneNode('rightUpperArm') ? 1.2 : -1.2;
+            if (gestureTarget) {
                 if (gestureProgress < 1.0) {
-                    arm.rotation.x = -0.3 * Math.sin(gestureProgress * Math.PI);
+                    gestureTarget.rotation.x = -0.3 * Math.sin(gestureProgress * Math.PI);
                 } else if (gestureProgress < 2.0) {
-                    arm.rotation.x = -0.3 * Math.sin((2.0 - gestureProgress) * Math.PI);
+                    gestureTarget.rotation.x = -0.3 * Math.sin((2.0 - gestureProgress) * Math.PI);
                 } else {
-                    arm.rotation.x = 0;
+                    gestureTarget.rotation.x = 0;
                     currentGesture = null;
+                    gestureTarget = null;
                 }
             }
         } else if (currentGesture === 'bodyLean') {
             // 体を軽く傾ける（2秒）
             if (currentVrm.scene && gestureProgress < 2.0) {
-                const direction = Math.random() > 0.5 ? 1 : -1;
                 const leanAmount = 0.02 * Math.sin(gestureProgress * Math.PI / 2.0);
-                currentVrm.scene.rotation.z = direction * leanAmount;
+                currentVrm.scene.rotation.z = gestureDirection * leanAmount;
             } else {
                 if (currentVrm.scene) {
                     currentVrm.scene.rotation.z = 0;
                 }
                 currentGesture = null;
+                gestureTarget = null;
             }
         }
     } catch (error) {
         console.log('ランダムジェスチャーエラー:', error);
         currentGesture = null;
+        gestureTarget = null;
     }
 }
 
