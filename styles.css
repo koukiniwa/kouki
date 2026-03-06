@@ -989,7 +989,7 @@ body {
 
   /* ブログ - モバイル */
   #blog-posts {
-    padding: 0 var(--space-2);
+    padding: 0 var(--space-1);
   }
 
   /* 記事画像 - モバイル */
@@ -999,7 +999,7 @@ body {
   }
 
   .post-content {
-    padding: var(--space-4);
+    padding: var(--space-3) var(--space-2);
   }
 
   .profile-container {
@@ -1070,9 +1070,9 @@ body {
   }
 
   .blog-post {
-    padding: var(--space-4);
+    padding: 0;
     margin-bottom: var(--space-3);
-    border-radius: var(--radius-xl);
+    border-radius: var(--radius-lg);
   }
 
   .blog-post:hover {
