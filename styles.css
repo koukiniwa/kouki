@@ -7,9 +7,9 @@
   --color-primary-light: #2a2a4e;
   --color-primary-dark: #0f0f1a;
   --color-text-primary: #2c3e50;
-  --color-text-secondary: #64748b;
+  --color-text-secondary: #374151;
   --color-text-tertiary: #94a3b8;
-  --color-background: #fafafa;
+  --color-background: #f1f5f9;
   --color-surface: #ffffff;
   --color-border: #e2e8f0;
   --color-hover: #f1f5f9;
@@ -269,77 +269,77 @@ body {
   width: 100%;
   overflow: hidden;
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: center;
-  margin-bottom: var(--space-10);
+  margin-bottom: var(--space-6);
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+  padding: var(--space-8) var(--space-4);
 }
 
-.hero-image {
-  position: relative;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  background: var(--color-background);
-}
-
-.hero-image img {
-  width: 100%;
-  height: auto;
-  max-height: 80vh;
-  object-fit: contain;
-  display: block;
-}
-
-.hero-overlay {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 50%;
-  background: linear-gradient(
-    to top,
-    rgba(0, 0, 0, 0.7) 0%,
-    rgba(0, 0, 0, 0) 100%
-  );
-  pointer-events: none;
+/* PC用：コンパクトなヒーロー */
+@media (min-width: 769px) {
+  .hero-section {
+    padding: var(--space-10) var(--space-4);
+  }
 }
 
 .hero-content {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  position: relative;
   z-index: 2;
   text-align: center;
   color: var(--color-surface);
   padding: var(--space-6) var(--space-4);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4);
+}
+
+/* ヒーロー内SNSリンク */
+.hero-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-2);
+}
+
+.hero-link {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-2) var(--space-3);
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: var(--radius-full);
+  color: var(--color-surface);
+  text-decoration: none;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  transition: all var(--transition-base);
+}
+
+.hero-link:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: translateY(-2px);
+}
+
+
+.hero-link-icon {
+  font-size: var(--font-size-lg);
+}
+
+.hero-link-text {
+  white-space: nowrap;
 }
 
 .hero-subtitle {
-  font-size: clamp(1.125rem, 2vw, 1.5rem);
-  font-weight: var(--font-weight-medium);
-  margin-bottom: var(--space-4);
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  font-weight: var(--font-weight-normal);
   line-height: var(--line-height-normal);
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
-}
-
-.hero-cta {
-  display: inline-block;
-  padding: var(--space-3) var(--space-6);
-  background: var(--color-surface);
-  color: var(--color-primary);
-  text-decoration: none;
-  border-radius: var(--radius-full);
-  font-size: var(--font-size-lg);
-  font-weight: var(--font-weight-semibold);
-  transition: all var(--transition-base);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-}
-
-.hero-cta:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
-  background: var(--color-hover);
+  opacity: 0.9;
+  margin: 0;
 }
 
 /* ============================================
@@ -696,16 +696,44 @@ body {
   background: var(--color-surface);
   margin-bottom: var(--space-6);
   border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
   transition: all var(--transition-base);
-  border: 1px solid var(--color-border);
   overflow: hidden;
 }
 
 .blog-post:hover {
-  box-shadow: var(--shadow-lg);
-  transform: translateY(-3px);
-  border-color: transparent;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
+}
+
+/* PC用：左に画像、右に文章の横並びレイアウト */
+@media (min-width: 769px) {
+  .blog-post {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+  }
+
+  /* 画像がある記事：左側に画像 */
+  .blog-post:has(.post-featured-image) .post-featured-image {
+    flex: 0 0 40%;
+    max-width: 450px;
+    min-width: 280px;
+  }
+
+  /* 画像がある記事：右側にコンテンツ */
+  .blog-post:has(.post-featured-image) .post-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  /* 画像がない記事：コンテンツを全幅で表示 */
+  .blog-post:not(:has(.post-featured-image)) .post-content {
+    flex: 1;
+    max-width: 100%;
+  }
 }
 
 /* Medium風：記事のアイキャッチ画像 */
@@ -725,13 +753,33 @@ body {
   transition: transform var(--transition-slow);
 }
 
+/* PC用：画像の高さを調整 */
+@media (min-width: 769px) {
+  .post-featured-image {
+    height: 100%;
+  }
+
+  .post-featured-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
 .blog-post:hover .post-featured-image img {
   transform: scale(1.02);
 }
 
 /* 記事コンテンツ */
 .post-content {
-  padding: var(--space-6);
+  padding: var(--space-5);
+}
+
+/* PC用：横並び時の余白調整 */
+@media (min-width: 769px) {
+  .post-content {
+    padding: var(--space-4) var(--space-5);
+  }
 }
 
 .post-date {
@@ -762,9 +810,9 @@ body {
 }
 
 .blog-post p {
-  margin-bottom: var(--space-4);
+  margin-bottom: var(--space-3);
   font-size: var(--font-size-lg);
-  line-height: 1.8;
+  line-height: 1.7;
   color: var(--color-text-secondary);
   font-weight: var(--font-weight-normal);
 }
@@ -850,25 +898,30 @@ body {
   /* ヒーローセクション - モバイル */
   .hero-section {
     margin-top: 60px;
-    margin-bottom: var(--space-6);
-  }
-
-  .hero-image img {
-    max-height: 60vh;
+    margin-bottom: var(--space-4);
+    padding: var(--space-6) var(--space-3);
   }
 
   .hero-content {
-    padding: var(--space-4) var(--space-3);
+    padding: 0;
+    gap: var(--space-3);
+  }
+
+  .hero-links {
+    gap: var(--space-1);
+  }
+
+  .hero-link {
+    padding: var(--space-1) var(--space-2);
+    font-size: var(--font-size-xs);
+  }
+
+  .hero-link-icon {
+    font-size: var(--font-size-base);
   }
 
   .hero-subtitle {
-    font-size: clamp(1rem, 4vw, 1.25rem);
-    margin-bottom: var(--space-3);
-  }
-
-  .hero-cta {
-    padding: var(--space-2) var(--space-4);
-    font-size: var(--font-size-base);
+    font-size: var(--font-size-sm);
   }
 
   /* ソーシャルリンク - モバイル（2列グリッド） */
