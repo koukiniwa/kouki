@@ -11,7 +11,8 @@
         "imports": {
             "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
             "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/",
-            "@pixiv/three-vrm": "https://cdn.jsdelivr.net/npm/@pixiv/three-vrm@2.1.0/lib/three-vrm.module.js"
+            "@pixiv/three-vrm": "https://cdn.jsdelivr.net/npm/@pixiv/three-vrm@2.1.0/lib/three-vrm.module.js",
+            "@pixiv/three-vrm-animation": "https://cdn.jsdelivr.net/npm/@pixiv/three-vrm-animation@2.1.0/lib/three-vrm-animation.module.js"
         }
     }
     </script>
@@ -25,13 +26,8 @@
     <!-- 戻るリンク -->
     <a href="../" class="back-link-fixed">← ブログに戻る</a>
 
-    <!-- 部屋の装飾要素 -->
-    <div class="room-window-left"></div>
-    <div class="room-shelf-right"></div>
-    <div class="room-plant"></div>
-    <div class="room-desk"></div>
-    <div class="room-clock"></div>
-    <div class="room-curtain"></div>
+    <!-- 背景画像 -->
+    <div id="bg-layer"></div>
 
     <!-- アバター表示エリア -->
     <div class="avatar-main">

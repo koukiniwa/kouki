@@ -2,6 +2,7 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { VRMLoaderPlugin, VRMUtils } from '@pixiv/three-vrm';
+import { VRMAnimationLoaderPlugin, createVRMAnimationClip } from '@pixiv/three-vrm-animation';
 
 // グローバル変数
 let scene, camera, renderer, vrm, currentVrm;
@@ -27,6 +28,12 @@ let mouseY = 0; // マウスY座標（-1 to 1）
 let expressionTimer = 0; // 表情変化タイマー
 let nextExpressionTime = 5 + Math.random() * 5; // 次の表情変化までの時間（5-10秒）
 let currentEmotion = 'neutral'; // 現在の感情
+let mixer = null; // AnimationMixer
+let animationAction = null; // 現在再生中のアニメーション
+let useExternalAnimation = false; // 外部アニメーション使用フラグ
+let animationClips = []; // 読み込んだアニメーションクリップ一覧
+let animSwitchTimer = 0; // アニメーション切り替えタイマー
+let nextAnimSwitchTime = 8 + Math.random() * 7; // 次の切り替えまでの時間（8〜15秒）
 
 // VRMアバターの初期化
 async function initAvatar() {
@@ -69,6 +76,7 @@ async function initAvatar() {
     // VRMモデル読み込み
     const loader = new GLTFLoader();
     loader.register((parser) => new VRMLoaderPlugin(parser));
+    loader.register((parser) => new VRMAnimationLoaderPlugin(parser));
 
     try {
         const gltf = await loader.loadAsync('./コウキ.vrm');
@@ -79,11 +87,13 @@ async function initAvatar() {
         VRMUtils.removeUnnecessaryJoints(vrm.scene);
         scene.add(vrm.scene);
 
-        // VRMモデルのマテリアル情報を確認（デバッグ用）
-        console.log('VRMモデル読み込み完了 - ライトで明るさを調整しています');
+        console.log('VRMモデル読み込み完了');
 
         // 初期表情を設定（ニュートラル）
         setExpression('neutral');
+
+        // 全アニメーションを読み込んでランダム切り替え開始
+        await loadAllAnimations();
 
         console.log('VRMアバター読み込み完了');
 
@@ -107,6 +117,103 @@ async function initAvatar() {
         camera.updateProjectionMatrix();
         renderer.setSize(width, height);
     });
+}
+
+// 全アニメーションを読み込んでランダム再生を開始
+async function loadAllAnimations() {
+    const animFiles = ['VRMA_01.vrma', 'VRMA_02.vrma', 'VRMA_03.vrma', 'VRMA_04.vrma', 'VRMA_05.vrma', 'VRMA_06.vrma', 'VRMA_07.vrma'];
+    const animLoader = new GLTFLoader();
+    animLoader.register((parser) => new VRMAnimationLoaderPlugin(parser));
+
+    mixer = new THREE.AnimationMixer(currentVrm.scene);
+
+    for (const file of animFiles) {
+        try {
+            const gltf = await animLoader.loadAsync(`./animations/${file}`);
+            const vrmAnimation = gltf.userData.vrmAnimations?.[0];
+            if (vrmAnimation) {
+                const clip = createVRMAnimationClip(vrmAnimation, currentVrm);
+                animationClips.push(clip);
+            }
+        } catch (e) {
+            console.log(`読み込み失敗: ${file}`);
+        }
+    }
+
+    if (animationClips.length > 0) {
+        useExternalAnimation = true;
+
+        // 最初はVRMA_02（手を振る）を1回だけ再生
+        const introClip = animationClips[1]; // VRMA_02
+        animationClips.splice(1, 1); // ランダムローテーションから除外
+
+        const introAction = mixer.clipAction(introClip);
+        introAction.setLoop(THREE.LoopOnce, 1);
+        introAction.clampWhenFinished = true;
+        introAction.play();
+        animationAction = introAction;
+
+        // 終わったらランダムローテーション開始
+        mixer.addEventListener('finished', () => {
+            playRandomAnimation();
+        });
+
+        console.log(`${animationClips.length}個のアニメーション読み込み完了`);
+    }
+}
+
+let lastAnimIndex = -1; // 直前のアニメーションindex
+
+// ランダムにアニメーションを再生（同じものは連続しない）
+function playRandomAnimation() {
+    if (!mixer || animationClips.length === 0) return;
+
+    if (animationAction) {
+        animationAction.fadeOut(0.5);
+    }
+
+    let index;
+    do {
+        index = Math.floor(Math.random() * animationClips.length);
+    } while (index === lastAnimIndex && animationClips.length > 1);
+    lastAnimIndex = index;
+
+    animationAction = mixer.clipAction(animationClips[index]);
+    animationAction.setLoop(THREE.LoopOnce, 1);
+    animationAction.clampWhenFinished = true;
+    animationAction.reset().fadeIn(0.5).play();
+}
+
+// VRMアニメーションを読み込む関数
+async function loadVRMAnimation(url) {
+    if (!currentVrm) return;
+
+    const animLoader = new GLTFLoader();
+    animLoader.register((parser) => new VRMAnimationLoaderPlugin(parser));
+
+    try {
+        const animGltf = await animLoader.loadAsync(url);
+        const vrmAnimation = animGltf.userData.vrmAnimations?.[0];
+
+        if (!vrmAnimation) {
+            console.log('アニメーションデータが見つかりません（手動アニメーションを使用）');
+            return;
+        }
+
+        // AnimationClipを作成
+        const clip = createVRMAnimationClip(vrmAnimation, currentVrm);
+
+        // AnimationMixerを作成してアクション再生
+        mixer = new THREE.AnimationMixer(currentVrm.scene);
+        animationAction = mixer.clipAction(clip);
+        animationAction.play();
+
+        useExternalAnimation = true;
+        console.log('Mixamoアニメーション読み込み完了:', url);
+    } catch (error) {
+        console.log('アニメーションファイルなし。手動アニメーションを使用:', url);
+        useExternalAnimation = false;
+    }
 }
 
 // 瞬きアニメーション
@@ -623,20 +730,30 @@ function animate() {
     const deltaTime = clock.getDelta();
 
     if (currentVrm) {
+        // アニメーションミキサーを更新
+        if (mixer && useExternalAnimation) {
+            mixer.update(deltaTime);
+
+        }
+
         currentVrm.update(deltaTime);
         updateBlink(deltaTime);
         updateLipSync(deltaTime);
-        updateBreathing(deltaTime);
         updateEyeTracking(deltaTime); // 視線追従
         updateIdleExpression(deltaTime); // 待機時の表情変化
+
+        // 外部アニメーションがない場合のみ手動アニメーションを使用
+        if (!useExternalAnimation) {
+            updateBreathing(deltaTime);
+        }
 
         // 首を傾げているときはアイドルアニメーションの頭の動きをスキップ
         if (isTiltingHead) {
             updateHeadTilt(deltaTime);
         } else if (currentGesture) {
-            // ランダムジェスチャー実行中はアイドルアニメーションをスキップ
             updateRandomGesture(deltaTime);
-        } else {
+        } else if (!useExternalAnimation) {
+            // 外部アニメーションがない場合のみ手動アイドルを使用
             updateIdle(deltaTime);
         }
 
@@ -948,9 +1065,31 @@ function updateVoiceButton() {
     }
 }
 
+// 時間帯に応じた背景を設定
+function updateBackground() {
+    const hour = new Date().getHours();
+    let bgImage;
+
+    if (hour >= 6 && hour < 15) {
+        bgImage = './backgrounds/day.jpg';
+    } else if (hour >= 15 && hour < 18) {
+        bgImage = './backgrounds/evening.jpg';
+    } else if (hour >= 18 && hour < 23) {
+        bgImage = './backgrounds/night-on.jpg';
+    } else {
+        bgImage = './backgrounds/night_off.jpg';
+    }
+
+    const bgLayer = document.getElementById('bg-layer');
+    if (bgLayer) {
+        bgLayer.style.backgroundImage = `url('${bgImage}')`;
+    }
+}
+
 // ページ読み込み時にアバター初期化とイベントリスナー設定
 window.addEventListener('DOMContentLoaded', () => {
     initAvatar();
+    updateBackground();
 
     // localStorageから音声設定を読み込み
     const savedVoice = localStorage.getItem('voiceEnabled');
