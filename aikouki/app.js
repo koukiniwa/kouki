@@ -56,8 +56,8 @@ async function initAvatar() {
     scene = new THREE.Scene();
 
     // カメラ設定（足まで見えるように）
-    camera = new THREE.PerspectiveCamera(40, canvasWidth / canvasHeight, 0.1, 20);
-    camera.position.set(0, 0.9, 3.2);
+    camera = new THREE.PerspectiveCamera(45, canvasWidth / canvasHeight, 0.1, 20);
+    camera.position.set(0, 0.9, 2.7);
     camera.lookAt(0, 0.9, 0);
 
     // ライト設定（自然な肌色）
@@ -1077,7 +1077,7 @@ function updateBackground() {
     } else if (hour >= 18 && hour < 23) {
         bgImage = './backgrounds/night-on.jpg';
     } else {
-        bgImage = './backgrounds/night_off.jpg';
+        bgImage = './backgrounds/night-off.jpg';
     }
 
     const bgLayer = document.getElementById('bg-layer');
