@@ -989,7 +989,7 @@ body {
 
   /* ブログ - モバイル */
   #blog-posts {
-    padding: 0 var(--space-1);
+    padding: 0 var(--space-2);
   }
 
   /* 記事画像 - モバイル */
@@ -999,7 +999,7 @@ body {
   }
 
   .post-content {
-    padding: var(--space-2) var(--space-1);
+    padding: var(--space-2);
   }
 
   .profile-container {
