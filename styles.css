@@ -644,7 +644,7 @@ body {
 }
 
 #blog-posts {
-  max-width: 860px;
+  max-width: 1000px;
   margin: 0 auto;
   padding: 0 24px;
 }
@@ -687,7 +687,8 @@ body {
 }
 
 .blog-post .post-featured-image {
-  flex: 0 0 38%;
+  flex: 0 0 45%;
+  min-height: 240px;
   overflow: hidden;
 }
 
