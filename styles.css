@@ -599,18 +599,21 @@ body {
   margin-bottom: 24px;
 }
 
-.blog-letter {
+.blog-letter,
+.split-letter {
   display: inline-block;
   opacity: 0;
-  color: #111;
+  color: inherit;
 }
 
-.blog-hero-title.animate .blog-letter {
+.blog-hero-title.animate .blog-letter,
+.split-title.animate .split-letter {
   animation: blogLetterDrop 0.8s cubic-bezier(0.36, 0.07, 0.19, 0.97) forwards;
   animation-delay: calc(var(--i) * 0.12s);
 }
 
-.blog-hero-title.shimmer .blog-letter {
+.blog-hero-title.shimmer .blog-letter,
+.split-title.shimmer .split-letter {
   opacity: 1;
   animation: blogShimmer 0.8s ease forwards;
   animation-delay: calc(var(--i) * 0.08s);

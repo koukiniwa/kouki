@@ -112,7 +112,9 @@
       <!-- 右：シンプルな説明 -->
       <div class="ai-right">
         <span class="section-label reveal">AI Assistant</span>
-        <h2 class="section-heading reveal reveal-d1">AIこうき</h2>
+        <h2 class="section-heading split-title">
+          <span class="split-letter" style="--i:0">A</span><span class="split-letter" style="--i:1">I</span><span class="split-letter" style="--i:2">こ</span><span class="split-letter" style="--i:3">う</span><span class="split-letter" style="--i:4">き</span>
+        </h2>
         <div class="section-divider reveal reveal-d2"></div>
         <p class="section-desc reveal reveal-d3">
           3Dアバターと会話できる<br>AIアシスタントです。<br><br>
@@ -134,7 +136,9 @@
     <div class="uchubin-right">
       <div class="uchubin-text">
         <span class="uchubin-label reveal">Space Media</span>
-        <h2 class="uchubin-title reveal reveal-d1">宇宙便</h2>
+        <h2 class="uchubin-title split-title">
+          <span class="split-letter" style="--i:0">宇</span><span class="split-letter" style="--i:1">宙</span><span class="split-letter" style="--i:2">便</span>
+        </h2>
         <div class="uchubin-divider reveal reveal-d2"></div>
         <p class="uchubin-desc reveal reveal-d3">
           NASA・JAXA・SpaceXなど、<br>
@@ -390,25 +394,29 @@
 
     document.querySelectorAll('.reveal, .blog-post').forEach(el => revealObserver.observe(el));
 
-    // BLOG文字 スクロールで見えたらアニメーション
-    const blogTitle = document.querySelector('.blog-hero-title');
-    if (blogTitle) {
-      const blogObserver = new IntersectionObserver((entries) => {
+    // タイトル文字アニメーション（BLOG・AIこうき・宇宙便）
+    function animateTitle(titleEl, letterSelector) {
+      const obs = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
           if (entry.isIntersecting) {
-            blogTitle.classList.add('animate');
-            const letters = blogTitle.querySelectorAll('.blog-letter');
+            titleEl.classList.add('animate');
+            const letters = titleEl.querySelectorAll(letterSelector);
             const lastDelay = (letters.length - 1) * 0.12 + 0.8;
             setTimeout(() => {
-              blogTitle.classList.remove('animate');
-              blogTitle.classList.add('shimmer');
+              titleEl.classList.remove('animate');
+              titleEl.classList.add('shimmer');
             }, lastDelay * 1000);
-            blogObserver.unobserve(blogTitle);
+            obs.unobserve(titleEl);
           }
         });
       }, { threshold: 0.5 });
-      blogObserver.observe(blogTitle);
+      obs.observe(titleEl);
     }
+
+    const blogTitle = document.querySelector('.blog-hero-title');
+    if (blogTitle) animateTitle(blogTitle, '.blog-letter');
+
+    document.querySelectorAll('.split-title').forEach(el => animateTitle(el, '.split-letter'));
 
 
     // ナビゲーション スクロールで透明→不透明
