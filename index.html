@@ -12,18 +12,6 @@
   <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
   <link rel="shortcut icon" href="icons/favicon.ico">
   <link rel="manifest" href="manifest.json">
-  <!-- Three.js / VRM (AIアバタープレビュー用) -->
-  <script type="importmap">
-  {
-    "imports": {
-      "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
-      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/",
-      "@pixiv/three-vrm": "https://cdn.jsdelivr.net/npm/@pixiv/three-vrm@2.1.0/lib/three-vrm.module.js",
-      "@pixiv/three-vrm-animation": "https://cdn.jsdelivr.net/npm/@pixiv/three-vrm-animation@2.1.0/lib/three-vrm-animation.module.js"
-    }
-  }
-  </script>
-
   <link rel="preconnect" href="https://firestore.googleapis.com">
   <link rel="preconnect" href="https://www.gstatic.com">
   <link rel="dns-prefetch" href="https://firestore.googleapis.com">
@@ -103,53 +91,33 @@
   <section id="ai-section" class="ai-section">
     <div class="ai-split">
 
-      <!-- 左：アバター（sticky） -->
+      <!-- 左：aikouki画面そのまま -->
       <div class="ai-left">
         <div class="avatar-screen-frame">
           <div class="avatar-screen-inner">
-            <div id="ai-bg" class="avatar-bg"></div>
-            <canvas id="ai-canvas" class="avatar-canvas"></canvas>
-            <div class="avatar-screen-overlay">
-              <a href="aikouki/index.html" class="avatar-open-btn">話しかける →</a>
-            </div>
+            <iframe
+              id="avatarFrame"
+              class="avatar-iframe"
+              src="aikouki/index.html"
+              title="AIこうき"
+              scrolling="no"
+            ></iframe>
+            <a href="aikouki/index.html" class="avatar-tap-area" aria-label="AIこうきと話す"></a>
           </div>
           <div class="avatar-glow"></div>
         </div>
       </div>
 
-      <!-- 右：説明 -->
+      <!-- 右：シンプルな説明 -->
       <div class="ai-right">
         <span class="section-label reveal">AI Assistant</span>
         <h2 class="section-heading reveal reveal-d1">AIこうき</h2>
         <div class="section-divider reveal reveal-d2"></div>
         <p class="section-desc reveal reveal-d3">
-          3Dアバター搭載のAIアシスタント。<br>音声で話しかけると、AIこうきがリアルタイムで返答します。
+          3Dアバターと音声で会話できる<br>AIアシスタントです。<br><br>
+          農学・宇宙・AIなど、<br>幅広い話題に答えます。
         </p>
-
-        <div class="ai-features reveal reveal-d1">
-          <div class="ai-feature-card">
-            <span class="ai-feature-icon">🤖</span>
-            <h3>AIチャット</h3>
-            <p>テキストで気軽に話しかけられます</p>
-          </div>
-          <div class="ai-feature-card">
-            <span class="ai-feature-icon">🎤</span>
-            <h3>音声対話</h3>
-            <p>マイクで話しかけると音声で返答</p>
-          </div>
-          <div class="ai-feature-card">
-            <span class="ai-feature-icon">🧍</span>
-            <h3>3Dアバター</h3>
-            <p>VRMモデルがリアルタイムで動作</p>
-          </div>
-          <div class="ai-feature-card">
-            <span class="ai-feature-icon">🌙</span>
-            <h3>時間帯対応</h3>
-            <p>朝・昼・夜で背景が変化します</p>
-          </div>
-        </div>
-
-        <a href="aikouki/index.html" class="cta-glow reveal reveal-d2">AIこうきと話す →</a>
+        <a href="aikouki/index.html" class="cta-glow reveal reveal-d4">AIこうきと話す →</a>
       </div>
 
     </div>
@@ -182,100 +150,6 @@
     </div>
     <p class="copyright">© 2025 Kouki Niwa. All rights reserved.</p>
   </footer>
-
-  <!-- ===== AIアバタープレビュー ===== -->
-  <script type="module">
-    import * as THREE from 'three';
-    import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-    import { VRMLoaderPlugin } from '@pixiv/three-vrm';
-    import { VRMAnimationLoaderPlugin, createVRMAnimationClip } from '@pixiv/three-vrm-animation';
-
-    window.initAvatarPreview = async function() {
-      const canvas = document.getElementById('ai-canvas');
-      const bgEl   = document.getElementById('ai-bg');
-
-      // 時間帯で背景を選択
-      const h = new Date().getHours();
-      const bgImg = h >= 6 && h < 17 ? 'aikouki/backgrounds/day.jpg'
-                  : h >= 17 && h < 20 ? 'aikouki/backgrounds/evening.jpg'
-                  : 'aikouki/backgrounds/night-on.jpg';
-      bgEl.style.backgroundImage = `url('${bgImg}')`;
-
-      const w = canvas.clientWidth  || 420;
-      const h2 = canvas.clientHeight || 700;
-
-      const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
-      renderer.setSize(w, h2);
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-
-      const scene = new THREE.Scene();
-      const camera = new THREE.PerspectiveCamera(45, w / h2, 0.1, 20);
-      camera.position.set(0, 0.9, 2.7);
-      camera.lookAt(0, 0.9, 0);
-
-      scene.add(new THREE.DirectionalLight(0xfff5ed, 1.8).position.set(1,1,1) && new THREE.DirectionalLight(0xfff5ed, 1.8));
-      scene.add(new THREE.AmbientLight(0xfff0e8, 0.9));
-      const fill = new THREE.DirectionalLight(0xffeedd, 0.6);
-      fill.position.set(-1, 0.5, 1);
-      scene.add(fill);
-
-      const loader = new GLTFLoader();
-      loader.register(p => new VRMLoaderPlugin(p));
-      loader.register(p => new VRMAnimationLoaderPlugin(p));
-
-      // VRMモデル読み込み
-      let vrm, mixer, clock = new THREE.Clock();
-      try {
-        const gltf = await loader.loadAsync('aikouki/コウキ.vrm');
-        vrm = gltf.userData.vrm;
-        scene.add(vrm.scene);
-
-        // idleアニメーション読み込み
-        try {
-          const animGltf = await loader.loadAsync('aikouki/animations/idle.vrma');
-          const vrmAnim = animGltf.userData.vrmAnimations?.[0];
-          if (vrmAnim) {
-            mixer = new THREE.AnimationMixer(vrm.scene);
-            const clip = createVRMAnimationClip(vrmAnim, vrm);
-            mixer.clipAction(clip).play();
-          }
-        } catch(e) { /* アニメーションなしでも続行 */ }
-
-      } catch(e) {
-        console.warn('VRM読み込みエラー:', e);
-        return;
-      }
-
-      let blinkTimer = 0;
-      function animate() {
-        requestAnimationFrame(animate);
-        const delta = clock.getDelta();
-        if (mixer) mixer.update(delta);
-        if (vrm) {
-          vrm.update(delta);
-          // 瞬き
-          blinkTimer += delta;
-          if (blinkTimer > 3 + Math.random() * 2) {
-            blinkTimer = 0;
-            vrm.expressionManager?.setValue('blink', 1);
-            setTimeout(() => vrm.expressionManager?.setValue('blink', 0), 150);
-          }
-        }
-        renderer.render(scene, camera);
-      }
-      animate();
-
-      // リサイズ対応
-      window.addEventListener('resize', () => {
-        const nw = canvas.clientWidth, nh = canvas.clientHeight;
-        if (nw && nh) {
-          renderer.setSize(nw, nh);
-          camera.aspect = nw / nh;
-          camera.updateProjectionMatrix();
-        }
-      });
-    };
-  </script>
 
   <!-- ===== Firebase SDK ===== -->
   <script type="module">
@@ -485,17 +359,6 @@
 
     document.querySelectorAll('.reveal, .blog-post').forEach(el => revealObserver.observe(el));
 
-    // アバターcanvas 遅延読み込み（セクション表示時に開始）
-    const aiSection = document.getElementById('ai-section');
-    let avatarStarted = false;
-    const avatarTrigger = new IntersectionObserver((entries) => {
-      if (entries[0].isIntersecting && !avatarStarted) {
-        avatarStarted = true;
-        initAvatarPreview();
-        avatarTrigger.disconnect();
-      }
-    }, { rootMargin: '100px' });
-    avatarTrigger.observe(aiSection);
 
     // ナビゲーション スクロールで透明→不透明
     const topNav = document.getElementById('topNav');

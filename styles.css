@@ -417,57 +417,20 @@ body {
     0 32px 80px rgba(0,0,0,0.7);
 }
 
-.avatar-bg {
-  position: absolute;
-  inset: 0;
-  background-size: cover;
-  background-position: center top;
-  background-repeat: no-repeat;
-  z-index: 0;
-}
-
-.avatar-canvas {
-  position: absolute;
-  inset: 0;
-  width: 100% !important;
-  height: 100% !important;
-  z-index: 1;
+.avatar-iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
   display: block;
+  pointer-events: none;
 }
 
-/* ホバーで話しかけるボタン表示 */
-.avatar-screen-overlay {
+/* クリックで飛べる透明レイヤー */
+.avatar-tap-area {
   position: absolute;
   inset: 0;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  padding-bottom: 28px;
-  background: linear-gradient(to top, rgba(5,5,16,0.7) 0%, transparent 40%);
-  opacity: 0;
-  transition: opacity 0.3s;
-}
-
-.avatar-screen-inner:hover .avatar-screen-overlay {
-  opacity: 1;
-}
-
-.avatar-open-btn {
-  display: inline-block;
-  padding: 12px 32px;
-  background: #ffffff;
-  color: #080808;
-  font-size: 0.9rem;
-  font-weight: 800;
-  border-radius: 999px;
-  text-decoration: none;
-  pointer-events: all;
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.avatar-open-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 0 30px rgba(255,255,255,0.2);
+  z-index: 2;
+  cursor: pointer;
 }
 
 /* グロー（後ろの光） */
@@ -818,6 +781,7 @@ body {
 .reveal-d1 { transition-delay: 0.1s; }
 .reveal-d2 { transition-delay: 0.2s; }
 .reveal-d3 { transition-delay: 0.3s; }
+.reveal-d4 { transition-delay: 0.4s; }
 
 .blog-post {
   opacity: 0;
