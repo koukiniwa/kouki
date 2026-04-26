@@ -206,29 +206,6 @@ body {
   animation: fadeInDown 0.8s ease 0.3s forwards;
 }
 
-.hero-tagline {
-  font-size: clamp(0.9rem, 2vw, 1.1rem);
-  color: rgba(255,255,255,0.6);
-  letter-spacing: 0.2em;
-  margin-bottom: 20px;
-  min-height: 1.6em;
-  font-weight: 300;
-}
-
-.hero-tagline .cursor {
-  display: inline-block;
-  width: 2px;
-  height: 1em;
-  background: rgba(255,255,255,0.6);
-  margin-left: 2px;
-  vertical-align: middle;
-  animation: blink 0.8s step-end infinite;
-}
-
-@keyframes blink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0; }
-}
 
 @keyframes heroLetterDrop {
   0%   { opacity: 0; transform: translateY(-80px) scale(1.3); }
