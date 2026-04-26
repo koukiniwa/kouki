@@ -227,6 +227,7 @@ body {
   display: inline-block;
   opacity: 0;
   color: #ffffff;
+  white-space: pre;
 }
 
 .hero-title.animate .hero-letter {
