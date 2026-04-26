@@ -485,9 +485,27 @@ body {
   flex: 1;
   background: #eef1f8;
   display: flex;
-  flex-direction: column;
-  justify-content: center;
+  flex-direction: row;
+  align-items: center;
+  gap: 40px;
   padding: 60px 56px;
+}
+
+.uchubin-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.uchubin-preview {
+  flex: 0 0 42%;
+}
+
+.uchubin-screenshot {
+  width: 100%;
+  border-radius: 8px;
+  box-shadow: 0 8px 32px rgba(13,27,62,0.15);
+  display: block;
 }
 
 .uchubin-label {
@@ -552,7 +570,13 @@ body {
     width: 140px;
   }
   .uchubin-right {
+    flex-direction: column;
     padding: 48px 24px;
+    gap: 32px;
+  }
+  .uchubin-preview {
+    flex: none;
+    width: 100%;
   }
   .uchubin-btn {
     align-self: center;
