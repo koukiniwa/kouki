@@ -566,9 +566,69 @@ body {
    BLOG SECTION
    ============================================ */
 .blog-section-wrapper {
-  padding: 120px 0 80px;
+  padding: 0 0 80px;
   background: #f4f4f4;
   border-top: 1px solid var(--border);
+}
+
+.blog-hero {
+  position: relative;
+  overflow: hidden;
+  padding: 80px 24px 60px;
+  text-align: center;
+}
+
+.blog-hero-bg-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: clamp(120px, 20vw, 220px);
+  font-weight: 900;
+  letter-spacing: -0.05em;
+  color: rgba(0,0,0,0.04);
+  user-select: none;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.blog-hero-content {
+  position: relative;
+  z-index: 1;
+}
+
+.blog-hero-title {
+  font-size: clamp(2.8rem, 6vw, 4.5rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--text);
+  margin-bottom: 28px;
+}
+
+.blog-hero-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+.blog-tag {
+  display: inline-block;
+  padding: 6px 18px;
+  border-radius: 999px;
+  background: #ffffff;
+  border: 1px solid var(--border);
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  letter-spacing: 0.02em;
+}
+
+.blog-hero-desc {
+  font-size: 1rem;
+  color: var(--text-muted);
+  letter-spacing: 0.02em;
 }
 
 #blog-posts {
