@@ -441,40 +441,18 @@ body {
    宇宙便 SECTION
    ============================================ */
 .uchubin-section {
-  position: relative;
-  min-height: 520px;
+  background: #0d1b3e;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
 }
 
-.uchubin-bg {
-  position: absolute;
-  inset: 0;
-  background-image: url('aikouki/backgrounds/night-on.jpg');
-  background-size: cover;
-  background-position: center;
-  transform: scale(1.05);
-  transition: transform 8s ease;
-}
-
-.uchubin-section:hover .uchubin-bg {
-  transform: scale(1.08);
-}
-
-.uchubin-overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, rgba(0,0,10,0.75) 0%, rgba(0,5,30,0.65) 100%);
-}
-
 .uchubin-content {
-  position: relative;
-  z-index: 2;
   text-align: center;
   padding: 80px 24px;
-  max-width: 600px;
+  max-width: 700px;
+  width: 100%;
 }
 
 .uchubin-logo {
