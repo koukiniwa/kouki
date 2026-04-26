@@ -390,13 +390,24 @@
 
     document.querySelectorAll('.reveal, .blog-post').forEach(el => revealObserver.observe(el));
 
-    // BLOG文字 ドロップ後にシマー
-    const blogLetters = document.querySelectorAll('.blog-letter');
-    if (blogLetters.length) {
-      const lastDelay = (blogLetters.length - 1) * 0.12 + 0.2 + 0.8;
-      setTimeout(() => {
-        blogLetters.forEach(l => l.classList.add('landed'));
-      }, lastDelay * 1000);
+    // BLOG文字 スクロールで見えたらアニメーション
+    const blogTitle = document.querySelector('.blog-hero-title');
+    if (blogTitle) {
+      const blogObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            blogTitle.classList.add('animate');
+            const letters = blogTitle.querySelectorAll('.blog-letter');
+            const lastDelay = (letters.length - 1) * 0.12 + 0.8;
+            setTimeout(() => {
+              blogTitle.classList.remove('animate');
+              blogTitle.classList.add('shimmer');
+            }, lastDelay * 1000);
+            blogObserver.unobserve(blogTitle);
+          }
+        });
+      }, { threshold: 0.5 });
+      blogObserver.observe(blogTitle);
     }
 
 
