@@ -463,7 +463,7 @@ body {
 .uchubin-section {
   display: flex;
   align-items: stretch;
-  min-height: 480px;
+  min-height: 640px;
   overflow: hidden;
 }
 
@@ -485,26 +485,26 @@ body {
   flex: 1;
   background: #eef1f8;
   display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 40px;
-  padding: 60px 56px;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 .uchubin-text {
-  flex: 1;
   display: flex;
   flex-direction: column;
+  padding: 48px 56px 40px;
 }
 
 .uchubin-preview {
-  flex: 0 0 55%;
+  flex: 1;
+  overflow: hidden;
 }
 
 .uchubin-screenshot {
   width: 100%;
-  border-radius: 8px;
-  box-shadow: 0 8px 32px rgba(13,27,62,0.15);
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
   display: block;
 }
 
@@ -569,14 +569,11 @@ body {
   .uchubin-icon {
     width: 140px;
   }
-  .uchubin-right {
-    flex-direction: column;
-    padding: 48px 24px;
-    gap: 32px;
+  .uchubin-text {
+    padding: 40px 24px 32px;
   }
   .uchubin-preview {
-    flex: none;
-    width: 100%;
+    min-height: 240px;
   }
   .uchubin-btn {
     align-self: center;
