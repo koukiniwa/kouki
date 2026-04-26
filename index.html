@@ -362,9 +362,11 @@
 
     // ナビゲーション スクロールで透明→不透明
     const topNav = document.getElementById('topNav');
-    window.addEventListener('scroll', () => {
-      topNav.classList.toggle('scrolled', window.scrollY > 60);
-    });
+    function updateNav() {
+      topNav.classList.toggle('scrolled', window.scrollY > window.innerHeight * 0.8);
+    }
+    window.addEventListener('scroll', updateNav);
+    updateNav();
 
     // スムーズスクロール
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
