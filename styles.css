@@ -477,6 +477,13 @@ body {
   max-width: 600px;
 }
 
+.uchubin-logo {
+  width: 260px;
+  max-width: 70vw;
+  margin-bottom: 8px;
+  mix-blend-mode: screen;
+}
+
 .uchubin-label {
   display: block;
   font-size: 0.7rem;
