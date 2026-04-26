@@ -438,6 +438,95 @@ body {
 }
 
 /* ============================================
+   宇宙便 SECTION
+   ============================================ */
+.uchubin-section {
+  position: relative;
+  min-height: 520px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.uchubin-bg {
+  position: absolute;
+  inset: 0;
+  background-image: url('aikouki/backgrounds/night-on.jpg');
+  background-size: cover;
+  background-position: center;
+  transform: scale(1.05);
+  transition: transform 8s ease;
+}
+
+.uchubin-section:hover .uchubin-bg {
+  transform: scale(1.08);
+}
+
+.uchubin-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(0,0,10,0.75) 0%, rgba(0,5,30,0.65) 100%);
+}
+
+.uchubin-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  padding: 80px 24px;
+  max-width: 600px;
+}
+
+.uchubin-label {
+  display: block;
+  font-size: 0.7rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.45);
+  margin-bottom: 16px;
+}
+
+.uchubin-title {
+  font-size: clamp(2.5rem, 6vw, 4rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #ffffff;
+  margin-bottom: 20px;
+}
+
+.uchubin-divider {
+  width: 40px;
+  height: 1px;
+  background: rgba(255,255,255,0.25);
+  margin: 0 auto 28px;
+}
+
+.uchubin-desc {
+  font-size: 1.05rem;
+  color: rgba(255,255,255,0.65);
+  line-height: 1.9;
+  margin-bottom: 48px;
+}
+
+.uchubin-btn {
+  display: inline-block;
+  padding: 16px 48px;
+  background: #ffffff;
+  color: #111111;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  border-radius: 999px;
+  text-decoration: none;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.uchubin-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 32px rgba(255,255,255,0.2);
+}
+
+/* ============================================
    BLOG SECTION
    ============================================ */
 .blog-section-wrapper {
