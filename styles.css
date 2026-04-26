@@ -80,25 +80,6 @@ body {
   background: var(--bg-subtle);
 }
 
-.nav-item-uchubin {
-  background: rgba(255,255,255,0.15);
-  color: #fff !important;
-  border: 1px solid rgba(255,255,255,0.3);
-}
-
-.nav-item-uchubin:hover {
-  background: rgba(255,255,255,0.28) !important;
-}
-
-.top-nav.scrolled .nav-item-uchubin {
-  background: #0d1b3e;
-  color: #fff !important;
-  border: 1px solid #0d1b3e;
-}
-
-.top-nav.scrolled .nav-item-uchubin:hover {
-  background: #1a2f5e !important;
-}
 
 .nav-social {
   display: flex;
