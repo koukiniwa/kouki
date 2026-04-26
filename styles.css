@@ -247,8 +247,9 @@ body {
 }
 
 .hero-cta-primary {
-  background: #ffffff;
-  color: #111111;
+  background: transparent;
+  border: 1.5px solid rgba(255,255,255,0.8);
+  color: #ffffff;
 }
 
 .hero-cta-primary:hover {
