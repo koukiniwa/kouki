@@ -353,7 +353,7 @@ body {
    AI SECTION
    ============================================ */
 .ai-section {
-  padding: 120px 24px;
+  padding: 0;
   position: relative;
 }
 
@@ -363,6 +363,127 @@ body {
   top: 0; left: 0; right: 0;
   height: 1px;
   background: linear-gradient(90deg, transparent, var(--border), transparent);
+  z-index: 1;
+}
+
+/* 2カラム分割レイアウト */
+.ai-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 100vh;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* 左：アバター（sticky） */
+.ai-left {
+  position: sticky;
+  top: 72px;
+  height: calc(100vh - 72px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px 40px 48px;
+}
+
+/* 右：説明（スクロール） */
+.ai-right {
+  padding: 120px 48px 120px 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: left;
+}
+
+.ai-right .section-label,
+.ai-right .section-heading,
+.ai-right .section-divider,
+.ai-right .section-desc {
+  text-align: left;
+}
+
+.ai-right .section-divider {
+  margin: 0 0 28px;
+}
+
+/* アバタースクリーンフレーム */
+.avatar-screen-frame {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  aspect-ratio: 9/16;
+  max-height: calc(100vh - 160px);
+}
+
+.avatar-screen-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 24px;
+  overflow: hidden;
+  border: 1px solid rgba(0,245,255,0.2);
+  background: #050510;
+  box-shadow:
+    0 0 0 1px rgba(0,245,255,0.08),
+    0 32px 80px rgba(0,0,0,0.6);
+}
+
+.avatar-iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: block;
+  pointer-events: none;
+}
+
+/* ホバーで話しかけるボタン表示 */
+.avatar-screen-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 28px;
+  background: linear-gradient(to top, rgba(5,5,16,0.7) 0%, transparent 40%);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.avatar-screen-inner:hover .avatar-screen-overlay {
+  opacity: 1;
+}
+
+.avatar-open-btn {
+  display: inline-block;
+  padding: 12px 32px;
+  background: linear-gradient(135deg, var(--neon-cyan), var(--neon-purple));
+  color: #000;
+  font-size: 0.9rem;
+  font-weight: 800;
+  border-radius: 999px;
+  text-decoration: none;
+  pointer-events: all;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.avatar-open-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 40px rgba(0,245,255,0.4);
+}
+
+/* ネオングロー（後ろの光） */
+.avatar-glow {
+  position: absolute;
+  inset: -20px;
+  background: radial-gradient(ellipse at center, rgba(0,245,255,0.12) 0%, rgba(191,0,255,0.06) 50%, transparent 70%);
+  border-radius: 40px;
+  z-index: -1;
+  animation: glowBreath 3s ease-in-out infinite;
+}
+
+@keyframes glowBreath {
+  0%, 100% { opacity: 0.7; transform: scale(1); }
+  50%       { opacity: 1;   transform: scale(1.04); }
 }
 
 .ai-features {
@@ -755,7 +876,42 @@ body {
     font-size: clamp(3rem, 15vw, 5rem);
   }
 
-  .ai-section,
+  /* モバイル：縦積みレイアウト */
+  .ai-split {
+    grid-template-columns: 1fr;
+  }
+
+  .ai-left {
+    position: relative;
+    top: 0;
+    height: 60vw;
+    max-height: 400px;
+    padding: 24px 24px 0;
+  }
+
+  .avatar-screen-frame {
+    aspect-ratio: unset;
+    width: 100%;
+    height: 100%;
+    max-width: 100%;
+    max-height: 100%;
+  }
+
+  .ai-right {
+    padding: 40px 24px 80px;
+    text-align: center;
+  }
+
+  .ai-right .section-label,
+  .ai-right .section-heading,
+  .ai-right .section-desc {
+    text-align: center;
+  }
+
+  .ai-right .section-divider {
+    margin: 0 auto 28px;
+  }
+
   .blog-section-wrapper {
     padding: 80px 0;
   }

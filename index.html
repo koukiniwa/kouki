@@ -89,38 +89,64 @@
 
   <!-- ===== AI SECTION ===== -->
   <section id="ai-section" class="ai-section">
-    <div class="section-inner">
-      <span class="section-label reveal">AI Assistant</span>
-      <h2 class="section-heading reveal reveal-d1">AIこうき</h2>
-      <div class="section-divider reveal reveal-d2"></div>
-      <p class="section-desc reveal reveal-d3">
-        3Dアバター搭載のAIアシスタント。音声で話しかけると、<br class="pc-only">AIこうきがリアルタイムで返答します。
-      </p>
+    <div class="ai-split">
 
-      <div class="ai-features reveal reveal-d1">
-        <div class="ai-feature-card">
-          <span class="ai-feature-icon">🤖</span>
-          <h3>AIチャット</h3>
-          <p>テキストで気軽に話しかけられます</p>
-        </div>
-        <div class="ai-feature-card">
-          <span class="ai-feature-icon">🎤</span>
-          <h3>音声対話</h3>
-          <p>マイクで話しかけると音声で返答</p>
-        </div>
-        <div class="ai-feature-card">
-          <span class="ai-feature-icon">🧍</span>
-          <h3>3Dアバター</h3>
-          <p>VRMモデルがリアルタイムで動作</p>
-        </div>
-        <div class="ai-feature-card">
-          <span class="ai-feature-icon">🌙</span>
-          <h3>時間帯対応</h3>
-          <p>朝・昼・夜で背景が変化します</p>
+      <!-- 左：アバター（sticky） -->
+      <div class="ai-left">
+        <div class="avatar-screen-frame">
+          <div class="avatar-screen-inner">
+            <iframe
+              id="avatarFrame"
+              class="avatar-iframe"
+              src=""
+              data-src="aikouki/index.html"
+              title="AIこうき"
+              scrolling="no"
+              loading="lazy"
+            ></iframe>
+            <div class="avatar-screen-overlay">
+              <a href="aikouki/index.html" class="avatar-open-btn">話しかける →</a>
+            </div>
+          </div>
+          <div class="avatar-glow"></div>
         </div>
       </div>
 
-      <a href="aikouki/index.html" class="cta-glow reveal reveal-d2">AIこうきと話す →</a>
+      <!-- 右：説明 -->
+      <div class="ai-right">
+        <span class="section-label reveal">AI Assistant</span>
+        <h2 class="section-heading reveal reveal-d1">AIこうき</h2>
+        <div class="section-divider reveal reveal-d2"></div>
+        <p class="section-desc reveal reveal-d3">
+          3Dアバター搭載のAIアシスタント。<br>音声で話しかけると、AIこうきがリアルタイムで返答します。
+        </p>
+
+        <div class="ai-features reveal reveal-d1">
+          <div class="ai-feature-card">
+            <span class="ai-feature-icon">🤖</span>
+            <h3>AIチャット</h3>
+            <p>テキストで気軽に話しかけられます</p>
+          </div>
+          <div class="ai-feature-card">
+            <span class="ai-feature-icon">🎤</span>
+            <h3>音声対話</h3>
+            <p>マイクで話しかけると音声で返答</p>
+          </div>
+          <div class="ai-feature-card">
+            <span class="ai-feature-icon">🧍</span>
+            <h3>3Dアバター</h3>
+            <p>VRMモデルがリアルタイムで動作</p>
+          </div>
+          <div class="ai-feature-card">
+            <span class="ai-feature-icon">🌙</span>
+            <h3>時間帯対応</h3>
+            <p>朝・昼・夜で背景が変化します</p>
+          </div>
+        </div>
+
+        <a href="aikouki/index.html" class="cta-glow reveal reveal-d2">AIこうきと話す →</a>
+      </div>
+
     </div>
   </section>
 
@@ -359,6 +385,18 @@
     }, { threshold: 0.12 });
 
     document.querySelectorAll('.reveal, .blog-post').forEach(el => revealObserver.observe(el));
+
+    // アバターiframe 遅延読み込み
+    const avatarFrame = document.getElementById('avatarFrame');
+    const avatarObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && !avatarFrame.src) {
+          avatarFrame.src = avatarFrame.dataset.src;
+          avatarObserver.disconnect();
+        }
+      });
+    }, { rootMargin: '200px' });
+    avatarObserver.observe(avatarFrame);
 
     // ナビゲーション スクロールで透明→不透明
     const topNav = document.getElementById('topNav');
