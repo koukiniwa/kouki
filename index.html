@@ -74,8 +74,11 @@
     </video>
     <div class="hero-overlay"></div>
     <div class="hero-content">
-      <h1 class="hero-title">丹羽康揮</h1>
-      <div class="hero-ctas">
+      <p class="hero-tagline" id="heroTagline"></p>
+      <h1 class="hero-title" id="heroTitle">
+        <span class="hero-letter" style="--i:0">丹</span><span class="hero-letter" style="--i:1">羽</span><span class="hero-letter" style="--i:2">康</span><span class="hero-letter" style="--i:3">揮</span>
+      </h1>
+      <div class="hero-ctas" id="heroCtas" style="opacity:0">
         <a href="#ai-section" class="hero-cta hero-cta-primary">🤖 AIこうきへ</a>
         <a href="#blog-section" class="hero-cta hero-cta-secondary">📝 ブログを読む</a>
         <a href="#uchubin-section" class="hero-cta hero-cta-secondary">🚀 宇宙便</a>
@@ -417,6 +420,40 @@
 
     document.querySelectorAll('.split-title').forEach(el => animateTitle(el, '.split-letter'));
 
+
+    // ヒーロー タイプライター → 名前ドロップ
+    (function() {
+      const tagline = document.getElementById('heroTagline');
+      const title   = document.getElementById('heroTitle');
+      const ctas    = document.getElementById('heroCtas');
+      const text    = '農 × 宇宙 × AI';
+      let i = 0;
+
+      const cursor = document.createElement('span');
+      cursor.className = 'cursor';
+      tagline.appendChild(cursor);
+
+      function typeChar() {
+        if (i < text.length) {
+          tagline.insertBefore(document.createTextNode(text[i++]), cursor);
+          setTimeout(typeChar, 80);
+        } else {
+          // カーソル消す → 名前ドロップ
+          setTimeout(() => {
+            cursor.remove();
+            title.classList.add('animate');
+            const letters = title.querySelectorAll('.hero-letter');
+            const done = (letters.length - 1) * 0.12 + 0.7 + 0.1;
+            setTimeout(() => {
+              ctas.style.transition = 'opacity 0.6s ease';
+              ctas.style.opacity = '1';
+            }, done * 1000);
+          }, 400);
+        }
+      }
+
+      setTimeout(typeChar, 600);
+    })();
 
     // ナビゲーション スクロールで透明→不透明
     const topNav = document.getElementById('topNav');
