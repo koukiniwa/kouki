@@ -441,25 +441,33 @@ body {
    宇宙便 SECTION
    ============================================ */
 .uchubin-section {
+  display: flex;
+  align-items: stretch;
+  min-height: 480px;
+  overflow: hidden;
+}
+
+.uchubin-left {
+  flex: 0 0 40%;
   background: #0d1b3e;
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
+  padding: 60px 40px;
 }
 
-.uchubin-content {
-  text-align: center;
-  padding: 80px 24px;
-  max-width: 700px;
-  width: 100%;
+.uchubin-icon {
+  width: 220px;
+  max-width: 50%;
 }
 
-.uchubin-logo {
-  width: 260px;
-  max-width: 70vw;
-  margin-bottom: 8px;
-  mix-blend-mode: screen;
+.uchubin-right {
+  flex: 1;
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 60px 56px;
 }
 
 .uchubin-label {
@@ -467,48 +475,68 @@ body {
   font-size: 0.7rem;
   letter-spacing: 0.25em;
   text-transform: uppercase;
-  color: rgba(255,255,255,0.45);
+  color: #999999;
   margin-bottom: 16px;
 }
 
 .uchubin-title {
-  font-size: clamp(2.5rem, 6vw, 4rem);
+  font-size: clamp(2rem, 4vw, 3rem);
   font-weight: 800;
   letter-spacing: -0.02em;
-  color: #ffffff;
+  color: #111111;
   margin-bottom: 20px;
 }
 
 .uchubin-divider {
   width: 40px;
   height: 1px;
-  background: rgba(255,255,255,0.25);
-  margin: 0 auto 28px;
+  background: #e5e5e5;
+  margin-bottom: 28px;
 }
 
 .uchubin-desc {
   font-size: 1.05rem;
-  color: rgba(255,255,255,0.65);
+  color: #444444;
   line-height: 1.9;
-  margin-bottom: 48px;
+  margin-bottom: 40px;
 }
 
 .uchubin-btn {
   display: inline-block;
-  padding: 16px 48px;
-  background: #ffffff;
-  color: #111111;
+  padding: 14px 40px;
+  background: #0d1b3e;
+  color: #ffffff;
   font-size: 1rem;
   font-weight: 700;
   letter-spacing: 0.03em;
   border-radius: 999px;
   text-decoration: none;
+  align-self: flex-start;
   transition: transform 0.3s, box-shadow 0.3s;
 }
 
 .uchubin-btn:hover {
   transform: translateY(-3px);
-  box-shadow: 0 8px 32px rgba(255,255,255,0.2);
+  box-shadow: 0 8px 32px rgba(13,27,62,0.25);
+}
+
+@media (max-width: 768px) {
+  .uchubin-section {
+    flex-direction: column;
+  }
+  .uchubin-left {
+    flex: none;
+    padding: 48px 24px;
+  }
+  .uchubin-icon {
+    width: 140px;
+  }
+  .uchubin-right {
+    padding: 48px 24px;
+  }
+  .uchubin-btn {
+    align-self: center;
+  }
 }
 
 /* ============================================
