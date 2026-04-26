@@ -566,7 +566,7 @@ body {
    ============================================ */
 .blog-section-wrapper {
   padding: 120px 0 80px;
-  background: var(--bg);
+  background: #f4f4f4;
   border-top: 1px solid var(--border);
 }
 
