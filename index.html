@@ -308,7 +308,8 @@
         const monthId = month.replace('.', '-');
 
         html += `<section id="${monthId}" class="blog-month-section">
-          <h2 class="month-title">${monthName}</h2>`;
+          <h2 class="month-title">${monthName}</h2>
+          <div class="posts-grid">`;
 
         postsByMonth[month].forEach(post => {
           html += `<article class="blog-post">`;
@@ -330,7 +331,7 @@
           html += `</div></article>`;
         });
 
-        html += `</section>`;
+        html += `</div></section>`;
       });
 
       blogPostsContainer.innerHTML = html;
