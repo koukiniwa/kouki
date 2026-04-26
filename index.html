@@ -391,6 +391,15 @@
 
     document.querySelectorAll('.reveal, .blog-post').forEach(el => revealObserver.observe(el));
 
+    // BLOG文字 ドロップ後にシマー
+    const blogLetters = document.querySelectorAll('.blog-letter');
+    if (blogLetters.length) {
+      const lastDelay = (blogLetters.length - 1) * 0.12 + 0.2 + 0.8;
+      setTimeout(() => {
+        blogLetters.forEach(l => l.classList.add('landed'));
+      }, lastDelay * 1000);
+    }
+
 
     // ナビゲーション スクロールで透明→不透明
     const topNav = document.getElementById('topNav');

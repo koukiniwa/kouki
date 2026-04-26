@@ -578,15 +578,16 @@ body {
   text-align: center;
 }
 
-@keyframes blogLetterIn {
-  0% {
-    opacity: 0;
-    transform: translateY(60px) skewY(4deg);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0) skewY(0deg);
-  }
+@keyframes blogLetterDrop {
+  0%   { opacity: 0; transform: translateY(-120px) scale(1.4); }
+  60%  { opacity: 1; transform: translateY(16px) scale(0.95); }
+  80%  { transform: translateY(-8px) scale(1.02); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes blogShimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position: 200% center; }
 }
 
 .blog-hero-title {
@@ -595,15 +596,23 @@ body {
   letter-spacing: -0.04em;
   line-height: 1;
   margin-bottom: 24px;
-  overflow: hidden;
 }
 
 .blog-letter {
   display: inline-block;
-  color: var(--text);
   opacity: 0;
-  animation: blogLetterIn 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-  animation-delay: calc(var(--i) * 0.1s + 0.3s);
+  animation: blogLetterDrop 0.8s cubic-bezier(0.36, 0.07, 0.19, 0.97) forwards;
+  animation-delay: calc(var(--i) * 0.12s + 0.2s);
+  background: linear-gradient(90deg, #111 0%, #555 40%, #111 60%, #111 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.blog-letter.landed {
+  animation: blogShimmer 1.2s ease forwards;
+  animation-delay: calc(var(--i) * 0.05s);
 }
 
 .blog-hero-desc {
