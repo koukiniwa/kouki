@@ -92,10 +92,14 @@ async function initAvatar() {
         // 初期表情を設定（ニュートラル）
         setExpression('neutral');
 
-        // 全アニメーションを読み込んでランダム切り替え開始
-        await loadAllAnimations();
+        // ローディング画面を非表示
+        const loadingEl = document.getElementById('avatar-loading');
+        if (loadingEl) loadingEl.style.display = 'none';
 
         console.log('VRMアバター読み込み完了');
+
+        // アニメーションはバックグラウンドで並列読み込み（アバター表示をブロックしない）
+        loadAllAnimations();
 
         // 初回挨拶（1秒後に実行）
         setTimeout(() => {
@@ -127,16 +131,17 @@ async function loadAllAnimations() {
 
     mixer = new THREE.AnimationMixer(currentVrm.scene);
 
-    for (const file of animFiles) {
-        try {
-            const gltf = await animLoader.loadAsync(`./animations/${file}`);
-            const vrmAnimation = gltf.userData.vrmAnimations?.[0];
+    // 全アニメーションを並列で読み込む
+    const results = await Promise.allSettled(
+        animFiles.map(file => animLoader.loadAsync(`./animations/${file}`))
+    );
+    for (const result of results) {
+        if (result.status === 'fulfilled') {
+            const vrmAnimation = result.value.userData.vrmAnimations?.[0];
             if (vrmAnimation) {
                 const clip = createVRMAnimationClip(vrmAnimation, currentVrm);
                 animationClips.push(clip);
             }
-        } catch (e) {
-            console.log(`読み込み失敗: ${file}`);
         }
     }
 
