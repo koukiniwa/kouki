@@ -59,9 +59,8 @@
   <!-- モバイルメニュー -->
   <nav class="mobile-nav" id="mobileNav">
     <a href="#ai-section" class="nav-link" onclick="closeMobileMenu()">🤖 AIこうき</a>
+    <a href="#uchubin-section" class="nav-link" onclick="closeMobileMenu()">🚀 宇宙便</a>
     <a href="#blog-section" class="nav-link" onclick="closeMobileMenu()">📝 ブログ</a>
-    <div class="mobile-nav-divider"></div>
-    <!-- 月別リンクはJSで動的に追加 -->
   </nav>
 
   <!-- JS互換用（非表示） -->
@@ -358,20 +357,7 @@
     }
 
     function updateNavigation(months) {
-      const mobileNav = document.querySelector('.mobile-nav');
-      mobileNav.querySelectorAll('.month-nav-link').forEach(l => l.remove());
-
-      months.forEach(month => {
-        const monthName = convertMonthName(month);
-        const monthId = month.replace('.', '-');
-
-        const link = document.createElement('a');
-        link.href = `#${monthId}`;
-        link.className = 'nav-link month-nav-link';
-        link.textContent = monthName;
-        link.onclick = closeMobileMenu;
-        mobileNav.appendChild(link);
-      });
+      // モバイルメニューへの月別リンク追加は廃止
     }
 
     window.retryLoadPosts = function() {
