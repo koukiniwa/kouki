@@ -609,11 +609,16 @@ body {
 
 .blog-month-filter {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  overflow-x: auto;
   justify-content: center;
   gap: 8px;
   margin-top: 24px;
+  padding-bottom: 4px;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
+.blog-month-filter::-webkit-scrollbar { display: none; }
 
 .month-pill {
   display: inline-block;
