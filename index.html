@@ -44,8 +44,8 @@
     <a href="#" class="nav-brand">丹羽康揮</a>
     <div class="nav-center">
       <a href="#ai-section" class="nav-item">AIこうき</a>
-      <a href="#blog-section" class="nav-item">ブログ</a>
       <a href="#uchubin-section" class="nav-item">宇宙便</a>
+      <a href="#blog-section" class="nav-item">ブログ</a>
     </div>
     <div class="nav-social">
       <a href="https://instagram.com/kouki__n" target="_blank" title="Instagram" aria-label="Instagram">📷</a>
@@ -484,7 +484,7 @@
             });
           }
         });
-      }, { threshold: 0.3 });
+      }, { rootMargin: '-10% 0px -60% 0px', threshold: 0 });
 
       sections.forEach(s => {
         const el = document.getElementById(s.id);
