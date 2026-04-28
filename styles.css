@@ -80,6 +80,17 @@ body {
   background: var(--bg-subtle);
 }
 
+.nav-item.active {
+  color: #fff;
+  background: rgba(255,255,255,0.18);
+}
+
+.top-nav.scrolled .nav-item.active {
+  color: var(--text);
+  background: var(--bg-subtle);
+  font-weight: 700;
+}
+
 
 .nav-social {
   display: flex;

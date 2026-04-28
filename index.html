@@ -466,6 +466,32 @@
       });
     });
 
+    // ナビ アクティブセクションハイライト
+    (function() {
+      const sections = [
+        { id: 'ai-section',      href: '#ai-section' },
+        { id: 'uchubin-section', href: '#uchubin-section' },
+        { id: 'blog-section',    href: '#blog-section' },
+      ];
+      const navItems = document.querySelectorAll('.nav-center .nav-item');
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const activeHref = '#' + entry.target.id;
+            navItems.forEach(a => {
+              a.classList.toggle('active', a.getAttribute('href') === activeHref);
+            });
+          }
+        });
+      }, { threshold: 0.3 });
+
+      sections.forEach(s => {
+        const el = document.getElementById(s.id);
+        if (el) observer.observe(el);
+      });
+    })();
+
     // モバイルメニュー
     function toggleMobileMenu() {
       const mobileNav = document.getElementById('mobileNav');
