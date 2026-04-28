@@ -164,6 +164,7 @@
       <h2 class="blog-hero-title">
         <span class="blog-letter" style="--i:0">B</span><span class="blog-letter" style="--i:1">L</span><span class="blog-letter" style="--i:2">O</span><span class="blog-letter" style="--i:3">G</span>
       </h2>
+      <div id="blog-month-filter" class="blog-month-filter"></div>
     </div>
 
     <div id="blog-posts">
@@ -357,7 +358,28 @@
     }
 
     function updateNavigation(months) {
-      // モバイルメニューへの月別リンク追加は廃止
+      const filter = document.getElementById('blog-month-filter');
+      if (!filter) return;
+      filter.innerHTML = '';
+      months.forEach(month => {
+        const monthName = convertMonthName(month);
+        const monthId = month.replace('.', '-');
+        const btn = document.createElement('a');
+        btn.href = `#${monthId}`;
+        btn.className = 'month-pill';
+        btn.textContent = monthName;
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          const target = document.getElementById(monthId);
+          if (target) {
+            const top = target.getBoundingClientRect().top + window.scrollY - 80;
+            window.scrollTo({ top, behavior: 'smooth' });
+          }
+          document.querySelectorAll('.month-pill').forEach(p => p.classList.remove('active'));
+          btn.classList.add('active');
+        });
+        filter.appendChild(btn);
+      });
     }
 
     window.retryLoadPosts = function() {
