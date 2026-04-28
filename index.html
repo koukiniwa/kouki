@@ -174,6 +174,11 @@
     </div>
   </section>
 
+  <!-- ブログトップへ戻るボタン -->
+  <button id="backToBlog" class="back-to-blog" onclick="document.getElementById('blog-section').scrollIntoView({behavior:'smooth'})" aria-label="ブログトップへ戻る">
+    ↑ BLOG TOP
+  </button>
+
   <!-- ===== FOOTER ===== -->
   <footer class="main-footer">
     <div class="footer-links">
@@ -473,6 +478,27 @@
         }
       });
     });
+
+    // ブログトップへ戻るボタン（ブログセクション内でのみ表示）
+    (function() {
+      const btn = document.getElementById('backToBlog');
+      const blogSection = document.getElementById('blog-section');
+      const blogHero = document.querySelector('.blog-hero');
+      if (!btn || !blogSection || !blogHero) return;
+      const obs = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          btn.classList.toggle('visible', !entry.isIntersecting);
+        });
+      }, { threshold: 0.5 });
+      obs.observe(blogHero);
+      // ブログセクションを出たら非表示
+      const obsOut = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (!entry.isIntersecting) btn.classList.remove('visible');
+        });
+      }, { threshold: 0 });
+      obsOut.observe(blogSection);
+    })();
 
     // ナビ アクティブセクションハイライト
     (function() {
