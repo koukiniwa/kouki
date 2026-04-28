@@ -69,7 +69,7 @@
 
   <!-- ===== HERO ===== -->
   <section class="hero">
-    <video class="hero-video" autoplay muted loop playsinline>
+    <video class="hero-video" autoplay muted loop playsinline preload="auto" id="hero-video">
       <source src="aikouki/bd.mp4" type="video/mp4">
     </video>
     <div class="hero-overlay"></div>
@@ -440,6 +440,16 @@
     }
     window.addEventListener('scroll', updateNav);
     updateNav();
+
+    // モバイルで動画が自動再生されない場合の対策
+    const heroVideo = document.getElementById('hero-video');
+    if (heroVideo) {
+      heroVideo.play().catch(() => {
+        // タッチ操作時に再試行
+        document.addEventListener('touchstart', () => heroVideo.play().catch(() => {}), { once: true });
+        document.addEventListener('click', () => heroVideo.play().catch(() => {}), { once: true });
+      });
+    }
 
     // スムーズスクロール
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
