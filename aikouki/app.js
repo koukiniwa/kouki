@@ -13,7 +13,6 @@ let blinkTimer = 0;
 let speakTimer = 0;
 let breathTimer = 0;
 let idleTimer = 0;
-let voiceEnabled = true; // 音声のオン/オフ（デフォルトはオン）
 let isTiltingHead = false; // 首を傾げているかどうか
 let tiltTimer = 0;
 let hasGreeted = false; // 初回挨拶済みかどうか
@@ -825,111 +824,6 @@ function analyzeEmotion(text) {
 // ===== 既存のチャット機能 =====
 const API_ENDPOINT = 'https://ai-kouki-backend-610abb7fb0bc.herokuapp.com/api/chat';
 let conversationHistory = [];
-let recognition = null;
-let isListening = false;
-
-// Web Speech API の初期化
-if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    recognition = new SpeechRecognition();
-    recognition.lang = 'ja-JP';
-    recognition.continuous = false;
-    recognition.interimResults = false;
-
-    recognition.onresult = (event) => {
-        const transcript = event.results[0][0].transcript;
-        document.getElementById('userInput').value = transcript;
-        sendMessage();
-    };
-
-    recognition.onerror = (event) => {
-        console.error('音声認識エラー:', event.error);
-        stopListening();
-    };
-
-    recognition.onend = () => {
-        stopListening();
-    };
-}
-
-// 音声認識の開始/停止
-function toggleVoiceRecognition() {
-    if (!recognition) {
-        alert('お使いのブラウザは音声認識に対応していません。');
-        return;
-    }
-
-    if (isListening) {
-        stopListening();
-    } else {
-        startListening();
-    }
-}
-
-function startListening() {
-    if (!recognition || isListening) return;
-
-    try {
-        recognition.start();
-        isListening = true;
-        const micButton = document.getElementById('micButton');
-        micButton.classList.add('listening');
-        micButton.textContent = '⏹️';
-    } catch (error) {
-        console.error('音声認識開始エラー:', error);
-    }
-}
-
-function stopListening() {
-    if (!recognition || !isListening) return;
-
-    try {
-        recognition.stop();
-    } catch (error) {
-        console.error('音声認識停止エラー:', error);
-    }
-
-    isListening = false;
-    const micButton = document.getElementById('micButton');
-    micButton.classList.remove('listening');
-    micButton.textContent = '🎤';
-}
-
-// 音声再生機能
-async function playVoice(text) {
-    const TTS_ENDPOINT = 'https://ai-kouki-backend-610abb7fb0bc.herokuapp.com/api/tts';
-
-    try {
-        const response = await fetch(TTS_ENDPOINT, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ text: text })
-        });
-
-        if (!response.ok) throw new Error('音声生成エラー');
-
-        const audioBlob = await response.blob();
-        const audioUrl = URL.createObjectURL(audioBlob);
-        const audio = new Audio(audioUrl);
-
-        // 再生開始時にリップシンク開始
-        audio.onplay = () => {
-            startSpeaking();
-        };
-
-        // 再生終了時にリップシンク停止
-        audio.onended = () => {
-            stopSpeaking();
-        };
-
-        await audio.play();
-
-    } catch (error) {
-        console.error('音声再生エラー:', error);
-    }
-}
 
 // 初回挨拶を実行する関数
 async function playGreeting() {
@@ -957,10 +851,6 @@ async function playGreeting() {
     // 3.5秒後にニュートラルに戻す
     setTimeout(() => {
         setExpression('neutral');
-        // 吹き出しも非表示（音声オンの場合のみ）
-        if (voiceEnabled) {
-            hideSpeechBubble();
-        }
     }, 3500);
 }
 
@@ -990,10 +880,7 @@ async function sendMessage() {
     conversationHistory.push({ role: 'user', content: message });
     userInput.value = '';
 
-    // 音声オフの場合、ローディング表示
-    if (!voiceEnabled) {
-        showSpeechBubble('考え中...');
-    }
+    showSpeechBubble('考え中...');
 
     try {
         // バックエンド API に送信
@@ -1025,21 +912,13 @@ async function sendMessage() {
         // 感情に応じた動作を実行
         playEmotionalGesture(emotion);
 
-        // 音声オン/オフで処理を分岐
-        if (voiceEnabled) {
-            // 音声オン：音声再生のみ（吹き出し非表示）
-            hideSpeechBubble();
-            await playVoice(data.reply);
-        } else {
-            // 音声オフ：吹き出しで表示（音声なし）
-            showSpeechBubble(data.reply);
-            // 吹き出し表示中も軽くリップシンク
-            startSpeaking();
-            const speakDuration = Math.min(data.reply.length * 100, 3000);
-            setTimeout(() => {
-                stopSpeaking();
-            }, speakDuration);
-        }
+        // 吹き出しで表示
+        showSpeechBubble(data.reply);
+        startSpeaking();
+        const speakDuration = Math.min(data.reply.length * 100, 3000);
+        setTimeout(() => {
+            stopSpeaking();
+        }, speakDuration);
 
         // 3秒後にニュートラルに戻す
         setTimeout(() => {
@@ -1048,25 +927,7 @@ async function sendMessage() {
 
     } catch (error) {
         console.error('エラー:', error);
-        if (!voiceEnabled) {
-            showSpeechBubble('申し訳ない。何かエラーが起きた。');
-        }
-    }
-}
-
-// 音声トグルボタンの表示を更新
-function updateVoiceButton() {
-    const voiceToggle = document.getElementById('voiceToggle');
-    if (voiceToggle) {
-        if (voiceEnabled) {
-            voiceToggle.textContent = '🔊';
-            voiceToggle.classList.remove('voice-off');
-            voiceToggle.title = '音声: オン';
-        } else {
-            voiceToggle.textContent = '🔇';
-            voiceToggle.classList.add('voice-off');
-            voiceToggle.title = '音声: オフ';
-        }
+        showSpeechBubble('申し訳ない。何かエラーが起きた。');
     }
 }
 
@@ -1096,20 +957,9 @@ window.addEventListener('DOMContentLoaded', () => {
     initAvatar();
     updateBackground();
 
-    // localStorageから音声設定を読み込み
-    const savedVoice = localStorage.getItem('voiceEnabled');
-    if (savedVoice === 'false') {
-        voiceEnabled = false;
-    }
-
-    // 音声トグルボタンの初期状態を設定
-    updateVoiceButton();
-
     // イベントリスナーを設定
     const sendButton = document.getElementById('sendButton');
     const userInput = document.getElementById('userInput');
-    const micButton = document.getElementById('micButton');
-    const voiceToggle = document.getElementById('voiceToggle');
 
     if (sendButton) {
         sendButton.addEventListener('click', sendMessage);
@@ -1119,23 +969,6 @@ window.addEventListener('DOMContentLoaded', () => {
         userInput.addEventListener('keypress', (event) => {
             if (event.key === 'Enter') {
                 sendMessage();
-            }
-        });
-    }
-
-    if (micButton) {
-        micButton.addEventListener('click', toggleVoiceRecognition);
-    }
-
-    if (voiceToggle) {
-        voiceToggle.addEventListener('click', () => {
-            voiceEnabled = !voiceEnabled;
-            localStorage.setItem('voiceEnabled', voiceEnabled.toString());
-            updateVoiceButton();
-
-            // 音声オンにした場合、吹き出しを非表示
-            if (voiceEnabled) {
-                hideSpeechBubble();
             }
         });
     }
