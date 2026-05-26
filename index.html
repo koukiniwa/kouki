@@ -191,28 +191,20 @@
     <p class="copyright">© 2025 Kouki Niwa. All rights reserved.</p>
   </footer>
 
-  <!-- ===== Firebase SDK ===== -->
-  <script type="module">
-    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-    import { getFirestore, collection, query, orderBy, getDocs } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+  <!-- ===== ブログ読み込み（Firestore REST API） ===== -->
+  <script>
+    const FIRESTORE_URL = 'https://firestore.googleapis.com/v1/projects/my-blog-98be9/databases/(default)/documents/posts?key=AIzaSyC3qFo-qx2NOsfpmJ1sfUSDMit4ALiqBz4&pageSize=300';
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyC3qFo-qx2NOsfpmJ1sfUSDMit4ALiqBz4",
-      authDomain: "my-blog-98be9.firebaseapp.com",
-      projectId: "my-blog-98be9",
-      storageBucket: "my-blog-98be9.firebasestorage.app",
-      messagingSenderId: "107291416222",
-      appId: "1:107291416222:web:0934aee64004a759f9cd8f"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-
-    function withTimeout(promise, ms) {
-      const timeout = new Promise((_, reject) =>
-        setTimeout(() => reject(new Error('タイムアウト')), ms)
-      );
-      return Promise.race([promise, timeout]);
+    // Firestoreのtyped JSON → 通常オブジェクトに変換
+    function parseDoc(doc) {
+      const f = doc.fields || {};
+      return {
+        title:      f.title?.stringValue      || '',
+        date:       f.date?.stringValue        || '',
+        month:      f.month?.stringValue       || '',
+        paragraphs: (f.paragraphs?.arrayValue?.values || []).map(v => v.stringValue || ''),
+        image:      f.image?.stringValue       || null
+      };
     }
 
     function loadFromCache() {
@@ -220,8 +212,7 @@
         const cached = localStorage.getItem('blogPostsCache');
         if (cached) {
           const data = JSON.parse(cached);
-          const expired = Date.now() - data.timestamp > 24 * 60 * 60 * 1000;
-          return { posts: data.posts, expired };
+          return { posts: data.posts, expired: Date.now() - data.timestamp > 24 * 60 * 60 * 1000 };
         }
       } catch (e) {}
       return null;
@@ -229,11 +220,33 @@
 
     function saveToCache(postsByMonth) {
       try {
-        localStorage.setItem('blogPostsCache', JSON.stringify({
-          posts: postsByMonth,
-          timestamp: Date.now()
-        }));
+        localStorage.setItem('blogPostsCache', JSON.stringify({ posts: postsByMonth, timestamp: Date.now() }));
       } catch (e) {}
+    }
+
+    async function fetchPosts(timeoutMs) {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), timeoutMs);
+      try {
+        const res = await fetch(FIRESTORE_URL, { signal: controller.signal });
+        clearTimeout(timer);
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const json = await res.json();
+
+        const posts = (json.documents || []).map(parseDoc);
+        posts.sort((a, b) => b.date.localeCompare(a.date));
+
+        const postsByMonth = {};
+        for (const post of posts) {
+          const month = post.month || post.date.substring(0, 7);
+          if (!postsByMonth[month]) postsByMonth[month] = [];
+          postsByMonth[month].push(post);
+        }
+        return postsByMonth;
+      } catch (e) {
+        clearTimeout(timer);
+        throw e;
+      }
     }
 
     async function loadPosts(retryCount = 0) {
@@ -242,30 +255,18 @@
 
       const cached = loadFromCache();
       if (cached && retryCount === 0) {
-        // キャッシュがあれば期限切れでもすぐ表示、バックグラウンドで更新
+        // キャッシュがあればすぐ表示、バックグラウンドで更新
         renderPosts(cached.posts);
         fetchAndUpdate();
         return;
       }
 
       try {
-        const postsQuery = query(collection(db, 'posts'), orderBy('date', 'desc'));
-        const querySnapshot = await withTimeout(getDocs(postsQuery), 15000);
-
-        const postsByMonth = {};
-        querySnapshot.forEach((doc) => {
-          const data = doc.data();
-          const month = data.month || data.date.substring(0, 7);
-          if (!postsByMonth[month]) postsByMonth[month] = [];
-          postsByMonth[month].push(data);
-        });
-
+        const postsByMonth = await fetchPosts(15000);
         saveToCache(postsByMonth);
         renderPosts(postsByMonth);
-
       } catch (error) {
         console.error('記事の読み込みエラー:', error);
-
         if (retryCount < maxRetries) {
           const delay = Math.min(2000 * (retryCount + 1), 8000);
           blogPostsContainer.innerHTML = `
@@ -286,20 +287,10 @@
 
     async function fetchAndUpdate() {
       try {
-        const postsQuery = query(collection(db, 'posts'), orderBy('date', 'desc'));
-        const querySnapshot = await withTimeout(getDocs(postsQuery), 10000);
-
-        const postsByMonth = {};
-        querySnapshot.forEach((doc) => {
-          const data = doc.data();
-          const month = data.month || data.date.substring(0, 7);
-          if (!postsByMonth[month]) postsByMonth[month] = [];
-          postsByMonth[month].push(data);
-        });
-
+        const postsByMonth = await fetchPosts(10000);
         const newJson = JSON.stringify(postsByMonth);
         const cachedPosts = loadFromCache();
-        if (JSON.stringify(cachedPosts) !== newJson) {
+        if (JSON.stringify(cachedPosts?.posts) !== newJson) {
           saveToCache(postsByMonth);
           renderPosts(postsByMonth);
         }
@@ -349,7 +340,7 @@
       // スクロールアニメーション再適用
       document.querySelectorAll('.blog-post').forEach((el, i) => {
         el.style.transitionDelay = `${(i % 5) * 0.08}s`;
-        revealObserver.observe(el);
+        if (typeof revealObserver !== 'undefined') revealObserver.observe(el);
       });
     }
 
@@ -388,7 +379,8 @@
       loadPosts(0);
     };
 
-    loadPosts();
+    // 他のスクリプト（revealObserver等）の初期化を待ってから実行
+    setTimeout(() => loadPosts(), 0);
   </script>
 
   <script>
