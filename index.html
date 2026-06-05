@@ -193,7 +193,8 @@
 
   <!-- ===== ブログ読み込み（Firestore REST API） ===== -->
   <script>
-    const FIRESTORE_URL = 'https://firestore.googleapis.com/v1/projects/my-blog-98be9/databases/(default)/documents/posts?key=AIzaSyC3qFo-qx2NOsfpmJ1sfUSDMit4ALiqBz4&pageSize=300';
+    // runQuery: 日付降順で全件取得（GET+pageSize方式だとID順になり新しい投稿が漏れる）
+    const FIRESTORE_QUERY_URL = 'https://firestore.googleapis.com/v1/projects/my-blog-98be9/databases/(default)/documents:runQuery?key=AIzaSyC3qFo-qx2NOsfpmJ1sfUSDMit4ALiqBz4';
 
     // Firestoreのtyped JSON → 通常オブジェクトに変換
     function parseDoc(doc) {
@@ -212,7 +213,7 @@
         const cached = localStorage.getItem('blogPostsCache');
         if (cached) {
           const data = JSON.parse(cached);
-          return { posts: data.posts, expired: Date.now() - data.timestamp > 24 * 60 * 60 * 1000 };
+          return { posts: data.posts, expired: Date.now() - data.timestamp > 60 * 60 * 1000 }; // 1時間
         }
       } catch (e) {}
       return null;
@@ -228,13 +229,22 @@
       const controller = new AbortController();
       const timer = setTimeout(() => controller.abort(), timeoutMs);
       try {
-        const res = await fetch(FIRESTORE_URL, { signal: controller.signal });
+        const res = await fetch(FIRESTORE_QUERY_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            structuredQuery: {
+              from: [{ collectionId: 'posts' }],
+              orderBy: [{ field: { fieldPath: 'date' }, direction: 'DESCENDING' }]
+            }
+          }),
+          signal: controller.signal
+        });
         clearTimeout(timer);
         if (!res.ok) throw new Error('HTTP ' + res.status);
-        const json = await res.json();
+        const results = await res.json();
 
-        const posts = (json.documents || []).map(parseDoc);
-        posts.sort((a, b) => b.date.localeCompare(a.date));
+        const posts = results.filter(r => r.document).map(r => parseDoc(r.document));
 
         const postsByMonth = {};
         for (const post of posts) {
@@ -255,7 +265,7 @@
 
       const cached = loadFromCache();
       if (cached && retryCount === 0) {
-        // キャッシュがあればすぐ表示、バックグラウンドで更新
+        // キャッシュをすぐ表示し、バックグラウンドで最新データに更新
         renderPosts(cached.posts);
         fetchAndUpdate();
         return;
