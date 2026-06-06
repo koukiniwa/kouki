@@ -177,6 +177,7 @@ body {
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  background: #060d1f;
 }
 
 .hero-video {
