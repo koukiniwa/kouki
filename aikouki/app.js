@@ -822,7 +822,7 @@ function analyzeEmotion(text) {
 }
 
 // ===== 既存のチャット機能 =====
-const API_ENDPOINT = 'https://ai-kouki-backend-610abb7fb0bc.herokuapp.com/api/chat';
+const API_ENDPOINT = 'https://ai-kouki-backend.vercel.app/api/chat';
 let conversationHistory = [];
 
 // 初回挨拶を実行する関数
