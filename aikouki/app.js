@@ -822,8 +822,9 @@ function analyzeEmotion(text) {
 }
 
 // ===== 既存のチャット機能 =====
-const API_ENDPOINT = 'https://ai-kouki-backend.vercel.app/api/chat';
+const API_ENDPOINT = 'https://ai-kouki-backend.vercel.app/api/index?route=chat';
 let conversationHistory = [];
+const sessionId = 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
 
 // 初回挨拶を実行する関数
 async function playGreeting() {
@@ -891,7 +892,7 @@ async function sendMessage() {
             },
             body: JSON.stringify({
                 message: message,
-                conversationHistory: conversationHistory
+                session_id: sessionId
             })
         });
 
